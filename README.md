@@ -1,15 +1,15 @@
 # Spread
 
 # Contributers 
-Z'heondre Angel Calcano 01141688
-Ryan Allen
+*Z'heondre Angel Calcano 01141688
+*Ryan Allen
 
 # Idea
 Would like to have a zombie game where the player or players play as the zombies and your responsibility is
 infecting or convertering as many civilians as possible before law enforcement stops you or before the infected get cured. Difficulty will be increased per level. We would like to have this in 3d so we have to start doing the research now to see which libraries will be needed and how long will it take. 2d would be easier. 
 
 # Final Project Goals
-3d if possible if not then 2d bird's eye view
+*3d if possible if not then 2d bird's eye view
 
 Implement Civilian Functionality: 
 * Walk randomly, react to being attack.
@@ -54,5 +54,10 @@ It would also be nice to have a multiplayer mode, to make things simple we could
 
 Include a hazmat and army class
 
-Hazmat will have weapons that do more damage, also will have better cures, maybe freeze zombies ? 
-Army class, will do more damage, can set bombs, walk faster and will have more units
+Hazmat:
+*will have weapons that do more damage
+*also will have better cures, maybe freeze zombies ? 
+Army class: 
+*will do more damage,
+*can set bombs, 
+*walk faster and will have more units
