@@ -2,7 +2,7 @@
 
 # Contributers 
 * Z'heondre Angel Calcano 01141688
-* Ryan Allen
+* Ryan Allen 01581519
 
 # Idea
 Develop a zombie game where the player or players play as the zombies and your responsibility is
