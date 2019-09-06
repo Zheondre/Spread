@@ -1,8 +1,8 @@
 # Spread
 
 # Contributers 
-*Z'heondre Angel Calcano 01141688
-*Ryan Allen
+* Z'heondre Angel Calcano 01141688
+* Ryan Allen
 
 # Idea
 Would like to have a zombie game where the player or players play as the zombies and your responsibility is
