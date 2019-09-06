@@ -11,6 +11,9 @@ infecting or convertering as many civilians as possible before law enforcement s
 # Final Project Goals
 *3d if possible if not then 2d bird's eye view
 
+Game Gui/Layout: 
+Where the user should hit on the screen to attack, drop a bomb, run etc
+
 Implement Civilian Functionality: 
 * Walk randomly, react to being attack.
 * Run to the closet health pack, emt, hazmat or hospital to get healed if infected
@@ -55,9 +58,9 @@ It would also be nice to have a multiplayer mode, to make things simple we could
 Include a hazmat and army class
 
 Hazmat:
-*will have weapons that do more damage
-*also will have better cures, maybe freeze zombies ? 
+* will have weapons that do more damage
+* also will have better cures, maybe freeze zombies ? 
 Army class: 
-*will do more damage,
-*can set bombs, 
-*walk faster and will have more units
+* will do more damage,
+* can set bombs, 
+* walk faster and will have more units
