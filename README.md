@@ -14,6 +14,9 @@ infecting or convertering as many civilians as possible before law enforcement s
 Game Gui/Layout: 
 Where the user should hit on the screen to attack, drop a bomb, run etc
 
+Weapons Items Class: 
+
+
 Implement Civilian Functionality: 
 * Walk randomly, react to being attack.
 * Run to the closet health pack, emt, hazmat or hospital to get healed if infected
@@ -37,8 +40,8 @@ Medics:
 * faster healing 
 * transport the hurt
 
-police
-* will shoot at zombies, can call for back up
+Police:
+* will shoot at zombies, can call for back up, eat donuts
 
 Debug class: 
 
