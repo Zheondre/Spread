@@ -53,9 +53,8 @@ Need to create a level abstraction to keep adding more to each level as the pers
 
 # If we Have enough time
 
-It would also be nice to have a multiplayer mode, to make things simple we could aim for both players to be zombies. The long run if we can have one player on the zombie team an other player on the civilian team or multiple players on both teams.  
-
-Include a hazmat and army class
+* Multiplayer Mode
+* People can choose to be zombies or civilians 
 
 Hazmat:
 * will have weapons that do more damage
