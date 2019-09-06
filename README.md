@@ -76,6 +76,7 @@ Accounts:
 Hazmat:
 * Has a faster firing weapon that causes more damage
 * Cures infections faster, maybe freeze zombies ? 
+
 Army class: 
 * Will do more damage,
 * Can set bombs, 
