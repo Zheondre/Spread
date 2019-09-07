@@ -15,6 +15,7 @@ infecting or convertering as many civilians as possible before law enforcement s
 Graphic Libraries:
 
 Master Class: 
+* Stores Player's Stats
 * Allocates all objects 
 * Manages Levels
 * Monitors memory usage 
