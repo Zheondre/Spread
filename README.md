@@ -23,10 +23,13 @@ Master Class:
 Game Gui/Layout: 
 * Where the user should hit on the screen to attack, drop a bomb, run etc
 * Splash screen
-* Menue
-* 
+* Menu
+* Pause Screen
+* Loading Screen
+* Major Error Screen
 
 Weapons Items Class: 
+???
 
 Implement Civilian Functionality: 
 * Walk randomly, react to being attack.
