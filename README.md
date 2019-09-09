@@ -44,6 +44,14 @@ Supported Android Versions ?:
   * Can builds graphics from scratch
 * cons
   * Will take too much time
+  
+# Libgdx 
+* Pros
+  * Extensive documentation
+  * Better for 2d than 3d (Could be pro or con)
+* cons
+  
+  
 
 Recommended Versions: 
 * OpenGL ES 1.0 and 1.1 - This API specification is supported by Android 1.0 and higher.
