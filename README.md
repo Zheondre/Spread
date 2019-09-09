@@ -15,9 +15,9 @@ infecting or convertering as many civilians as possible before law enforcement s
 Supported Android Versions ?: 
 
 
-Graphic Libraries:
+# Graphic Libraries:
 
-* Google Maps Platform ?
+# Google Maps Platform ?
  * Pros 
   1 year free 
  * Cons 
@@ -35,7 +35,7 @@ Graphic Libraries:
 * Tutorials 
  https://www.androidauthority.com/an-introduction-to-unity3d-666066/
 
-* Unreal Engine ? 
+# Unreal Engine ? 
 * Pros
 * cons
 
