@@ -23,7 +23,6 @@ Supported Android Versions ?:
  * Cons 
   Brand new library so wont have as many tutorials will be more difficult to import
 
-
 # Unity3d for android app
 * Pros 
   * free 
@@ -35,21 +34,16 @@ Supported Android Versions ?:
 * Tutorials 
  https://www.androidauthority.com/an-introduction-to-unity3d-666066/
 
-# Unreal Engine ? 
+# Unreal Engine
 * Pros
 * cons
 
+# OpenGL 
 Recommended Versions: 
 * OpenGL ES 1.0 and 1.1 - This API specification is supported by Android 1.0 and higher.
 * OpenGL ES 2.0 - This API specification is supported by Android 2.2 (API level 8) and higher.
 * OpenGL ES 3.0 - This API specification is supported by Android 4.3 (API level 18) and higher.
 * OpenGL ES 3.1 - This API specification is supported by Android 5.0 (API level 21) and higher.
-
-Master Class: 
-* Stores Player's Stats
-* Allocates all objects 
-* Manages Levels
-* Monitors memory usage 
 
 Game Gui/Layout: 
 * Where the user should hit on the screen to attack, drop a bomb, run etc
@@ -59,10 +53,18 @@ Game Gui/Layout:
 * Loading Screen
 * Major Error Screen
 
+# Project Polymorphism 
+
+Master Class: 
+* Stores Player's Stats
+* Allocates all objects 
+* Manages Levels
+* Monitors memory usage 
+
 Weapons Items Class: 
 ???
 
-Implement Civilian Functionality: 
+Civilian Class: 
 * Walk randomly, react to being attack.
 * Run to the closet health pack, emt, hazmat or hospital to get healed if infected
 * Call for help if hurt or see a civilian near by getting hurt.
@@ -70,22 +72,22 @@ Implement Civilian Functionality:
 * will try to heal infection before turning into a zombie
 * Depending the level might carry a weapon
 
-Zombie Functionality; 
+Zombie Class; 
 * Can choose to set a bomb off at first to start an infection but this will alert people, 
 * or infect in a sneaky way such as an attack from behing ect, 
 * If more than one zombie is alive and your current player dies and no other player is using another zombie u can control the next zombie. 
 
-Emt: 
+Emt Class: 
 * Cure the infected, emts carry no weapons 
 * Emts can teleport infected to the hospital
 * Can call for more emts or police 
 
-Medics: 
+Medics Class: 
 * Carries a weapon 
 * Faster healing 
 * Transport the hurt
 
-Police:
+Police Class:
 * Will shoot at zombies, can call for back up, eat donuts for health or throw donuts to distract zombie
 
 Debug class: 
