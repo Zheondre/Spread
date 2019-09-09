@@ -45,7 +45,7 @@ Recommended Versions:
 * OpenGL ES 3.0 - This API specification is supported by Android 4.3 (API level 18) and higher.
 * OpenGL ES 3.1 - This API specification is supported by Android 5.0 (API level 21) and higher.
 
-Game Gui/Layout: 
+# Game Gui & Screen Layout: 
 * Where the user should hit on the screen to attack, drop a bomb, run etc
 * Splash screen
 * Menu
