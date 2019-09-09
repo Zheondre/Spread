@@ -39,6 +39,11 @@ Supported Android Versions ?:
 * cons
 
 # OpenGL 
+* Pros
+  * Can builds graphics from scratch
+* cons
+  * Will take too much time
+
 Recommended Versions: 
 * OpenGL ES 1.0 and 1.1 - This API specification is supported by Android 1.0 and higher.
 * OpenGL ES 2.0 - This API specification is supported by Android 2.2 (API level 8) and higher.
