@@ -12,7 +12,19 @@ infecting or convertering as many civilians as possible before law enforcement s
 
 * 3d if possible if not then 2d bird's eye view, or 2d scrolling 
 
+Supported Android Versions ?: 
+
+
 Graphic Libraries:
+
+* Unity ? 
+* Unreal Engine ? 
+
+Recommended Versions: 
+* OpenGL ES 1.0 and 1.1 - This API specification is supported by Android 1.0 and higher.
+* OpenGL ES 2.0 - This API specification is supported by Android 2.2 (API level 8) and higher.
+* OpenGL ES 3.0 - This API specification is supported by Android 4.3 (API level 18) and higher.
+* OpenGL ES 3.1 - This API specification is supported by Android 5.0 (API level 21) and higher.
 
 Master Class: 
 * Stores Player's Stats
