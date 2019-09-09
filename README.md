@@ -18,16 +18,26 @@ Supported Android Versions ?:
 Graphic Libraries:
 
 * Google Maps Platform ?
+ * Pros 
+  1 year free 
+ * Cons 
+  Brand new library so wont have as many tutorials will be more difficult to import
+
+
 # Unity3d for android app
 * Pros 
+  * free 
   * User friendly saves time
   * includes a physics engine 
 * Cons 
   * might not have amazing graphics
   * wont have the best performance in the world
+* Tutorials 
+ https://www.androidauthority.com/an-introduction-to-unity3d-666066/
 
 * Unreal Engine ? 
-* 
+* Pros
+* cons
 
 Recommended Versions: 
 * OpenGL ES 1.0 and 1.1 - This API specification is supported by Android 1.0 and higher.
