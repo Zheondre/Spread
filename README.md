@@ -18,11 +18,11 @@ Supported Android Versions ?:
 Graphic Libraries:
 
 * Google Maps Platform ?
-* Unity3d for android app
-# Pros 
+#Unity3d for android app
+* Pros 
   * User friendly saves time
   * includes a physics engine 
-# Cons 
+* Cons 
   * might not have amazing graphics
   * wont have the best performance in the world
 
