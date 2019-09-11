@@ -43,6 +43,7 @@ Supported Android Versions ?:
 * Pros
   recommened by google 
 * cons
+not written in Java
 
 # OpenGL - wont use 
 * Pros
@@ -54,9 +55,17 @@ Supported Android Versions ?:
 * Pros
   * Extensive documentation
   * Better for 2d than 3d (Could be pro or con)
+  * Written in Java
+  
 * cons
-  
-  
+
+# JMonkey Engine 
+
+* Pros
+  3d 
+  Documentation 
+  Written in Java
+* Cons
 
 Recommended Versions: 
 * OpenGL ES 1.0 and 1.1 - This API specification is supported by Android 1.0 and higher.
