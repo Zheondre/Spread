@@ -31,6 +31,7 @@ Supported Android Versions ?:
   * recommended by google 
   * i think we can link the unity development studio to android studio
 * Cons 
+  * libraries use C# not sure if we can use this library
   *  can't use the free version if we generate incoome over a certain amount
   * might not have amazing graphics
   * wont have the best performance in the world
