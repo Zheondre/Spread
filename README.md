@@ -28,7 +28,10 @@ Supported Android Versions ?:
   * free 
   * User friendly saves time
   * includes a physics engine 
+  * recommended by google 
+  * i think we can link the unity development studio to android studio
 * Cons 
+  *  can't use the free version if we generate incoome over a certain amount
   * might not have amazing graphics
   * wont have the best performance in the world
 * Tutorials 
@@ -37,9 +40,10 @@ Supported Android Versions ?:
 
 # Unreal Engine
 * Pros
+  recommened by google 
 * cons
 
-# OpenGL 
+# OpenGL - wont use 
 * Pros
   * Can builds graphics from scratch
 * cons
