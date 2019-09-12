@@ -30,6 +30,10 @@ Supported Android Versions ?:
   * includes a physics engine 
   * recommended by google 
   * i think we can link the unity development studio to android studio
+  
+  Importing Unity into andriod studio
+  * https://medium.com/@davidbeloosesky/embedded-unity-within-android-app-7061f4f473a
+  
 * Cons 
   * libraries use C# not sure if we can use this library
   *  can't use the free version if we generate incoome over a certain amount
