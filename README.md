@@ -28,7 +28,15 @@ Supported Android Versions ?:
   * free 
   * User friendly saves time
   * includes a physics engine 
+  * recommended by google 
+  * i think we can link the unity development studio to android studio
+  
+  Importing Unity into andriod studio
+  * https://medium.com/@davidbeloosesky/embedded-unity-within-android-app-7061f4f473a
+  
 * Cons 
+  * libraries use C# not sure if we can use this library
+  *  can't use the free version if we generate incoome over a certain amount
   * might not have amazing graphics
   * wont have the best performance in the world
 * Tutorials 
@@ -37,9 +45,11 @@ Supported Android Versions ?:
 
 # Unreal Engine
 * Pros
+  recommened by google 
 * cons
+not written in Java
 
-# OpenGL 
+# OpenGL - wont use 
 * Pros
   * Can builds graphics from scratch
 * cons
@@ -49,9 +59,17 @@ Supported Android Versions ?:
 * Pros
   * Extensive documentation
   * Better for 2d than 3d (Could be pro or con)
+  * Written in Java
+  
 * cons
-  
-  
+
+# JMonkey Engine 
+
+* Pros
+  3d 
+  Documentation 
+  Written in Java
+* Cons
 
 Recommended Versions: 
 * OpenGL ES 1.0 and 1.1 - This API specification is supported by Android 1.0 and higher.
