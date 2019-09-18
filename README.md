@@ -60,6 +60,8 @@ not written in Java
 
 https://github.com/libgdx/libgdx/wiki/Tile-maps
 
+https://www.gamefromscratch.com/post/2014/04/16/LibGDX-Tutorial-11-Tiled-Maps-Part-1-Simple-Orthogonal-Maps.aspx
+
 * Tutorials
 
 https://www.youtube.com/watch?v=XUb97Wv9R6o
