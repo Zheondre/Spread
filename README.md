@@ -14,7 +14,6 @@ infecting or convertering as many civilians as possible before law enforcement s
 
 Supported Android Versions ?: 
 
-
 # Graphic Libraries:
 
 # Google Maps Platform ?
@@ -56,6 +55,10 @@ not written in Java
   * Will take too much time
   
 # Libgdx 
+
+* map editors
+
+https://github.com/libgdx/libgdx/wiki/Tile-maps
 
 * Tutorials
 
