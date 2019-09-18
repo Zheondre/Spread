@@ -62,6 +62,8 @@ https://github.com/libgdx/libgdx/wiki/Tile-maps
 
 https://www.gamefromscratch.com/post/2014/04/16/LibGDX-Tutorial-11-Tiled-Maps-Part-1-Simple-Orthogonal-Maps.aspx
 
+https://opengameart.org/content/best-orthogonal-rectangular-tilesets-for-tilemaps
+
 * Tutorials
 
 https://www.youtube.com/watch?v=XUb97Wv9R6o
