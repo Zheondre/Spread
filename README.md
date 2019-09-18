@@ -63,6 +63,9 @@ not written in Java
   
 * cons
 
+* Tutorial Link:
+  * https://www.gamefromscratch.com/page/LibGDX-Video-Tutorial-Series.aspx
+
 # JMonkey Engine 
 
 * Pros
