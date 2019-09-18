@@ -56,6 +56,13 @@ not written in Java
   * Will take too much time
   
 # Libgdx 
+
+* Tutorials
+
+https://www.youtube.com/watch?v=XUb97Wv9R6o
+
+https://www.gamefromscratch.com/page/LibGDX-Tutorial-series.aspx
+
 * Pros
   * Extensive documentation
   * Better for 2d than 3d (Could be pro or con)
