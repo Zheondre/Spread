@@ -9,10 +9,11 @@ they also explain how to modify the tiles in a map during game play, we wont add
 package com.mygdx.world;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class gameMap {
 
-    public abstract void render(OrthographicCamera camera);
+    public void render(OrthographicCamera camera, SpriteBatch batch);
     public abstract void update(float deltaTime);
     public abstract void disposeTileMap();
 

@@ -20,15 +20,16 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
 
-
 // this isnt platform specific
 
 public class MyGdxGame extends ApplicationAdapter {
-	//SpriteBatch batch;
+	SpriteBatch batch;
 	//Texture img;
 	OrthographicCamera camera;
 	gameMap m_GameMap;
 
+
+	//we shouldnt load the game here we will have to do so in a
 	@Override
 	public void create () {
 
@@ -47,14 +48,10 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void render () {
 /*
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			//sprite.translate(-1f);
-		}
-
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			//sprite.translate(1f);
-		}
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {	//sprite.translate(-1f);}
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {	//sprite.translate(1f);  }
 */
+		batch = new SpriteBatch();
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -64,7 +61,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
 
 		//crashing here
-		m_GameMap.render(camera);
+		m_GameMap.render(camera,batch);
 
 		camera.update();
 	//	tiledMapRenderer.setView(camera);
