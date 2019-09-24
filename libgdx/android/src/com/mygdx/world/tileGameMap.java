@@ -38,8 +38,11 @@ public class tileGameMap extends gameMap {
 
        m_TileMapRender.setView(camera);
        m_TileMapRender.render();
-       super.render(camera, batch);
 
+       batch.setProjectionMatrix(camera.combined);
+       batch.begin();
+       super. render(camera, batch);
+       batch.end();
     }
 
     @Override

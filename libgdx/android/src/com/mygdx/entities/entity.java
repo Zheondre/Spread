@@ -13,6 +13,8 @@ public abstract class entity {
     protected Vector2 mPos;
     protected boolean amIOnTheGound = true ;
 
+    protected int classID;
+
     public enum whoAreYou{
         Zombie,
         Person,
@@ -34,33 +36,40 @@ public abstract class entity {
         this.amIOnTheGound = true;
     }
 
-    public entity(float x, float y, gameMap Map) {
+    public entity(float x, float y, int classID, gameMap Map) {
         this.mPos = new Vector2(x, y);
         this.mVelocityY = 0;
         this.mMap = Map;
-        this.amIOnTheGound= true; // every thing will be on the ground for now
+        this.amIOnTheGound = true; // every thing will be on the ground for now
+        this.classID = classID;
     }
 
     public abstract void render(SpriteBatch batch);
-
-    protected void moveX(float amount){// will check for collisions for every entity
-
-
-    }
 
     public Vector2 getPos() {
         return mPos;
     }
 
-    public float getPosX(){
+    /*
+    protected void moveX(float amount){// will check for collisions for every entity
 
-        return mPos.x;
+    float newX = mPos.X + amount;
+    if(!thereIsNotACollision)
+        this.mPos.x = newX;
+
     }
-    public float getPosY(){
 
-        return mPos.y;
+    protected void moveY(float amount){// will check for collisions for every entity
+        float newY = mPos.Y + amount;
+        if(!thereIsNotACollision)
+            this.mPos.Y = newY;
+
     }
-
+*/
+    public void setPosX(float x){mPos.x =x;}
+    public void setPosY(float y){mPos.y =y;}
+    public float getPosX(){ return mPos.x; }
+    public float getPosY(){ return mPos.y; }
     public float getVelocityY() {
         return mVelocityY;
     }
@@ -73,4 +82,7 @@ public abstract class entity {
         return amIOnTheGound;
     }
 
+    public void update(float dTime) {
+
+    }
 }

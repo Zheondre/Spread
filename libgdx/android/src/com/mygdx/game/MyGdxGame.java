@@ -24,12 +24,14 @@ import com.mygdx.world.tileGameMap;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
-	//Texture img;
+	Texture img;
+
 	OrthographicCamera camera;
+
 	gameMap m_GameMap;
 
 
-	//we shouldnt load the game here we will have to do so in a
+	//we shouldnt load the game here we will have to do so in an activaty
 	@Override
 	public void create () {
 
@@ -62,20 +64,19 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		//crashing here
 		m_GameMap.render(camera,batch);
-
+		m_GameMap.update(Gdx.graphics.getDeltaTime());
 		camera.update();
 	//	tiledMapRenderer.setView(camera);
 	//	tiledMapRenderer.render();
 
 	}
 
-/*
+
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
+		//m_GameMap.dispose();
 	}
-	*/
 /*
 	@Override
 	public boolean keyDown(int keycode) {

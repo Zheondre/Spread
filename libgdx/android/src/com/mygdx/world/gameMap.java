@@ -13,14 +13,30 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class gameMap {
 
-    public void render(OrthographicCamera camera, SpriteBatch batch);
-    public abstract void update(float deltaTime);
-    public abstract void disposeTileMap();
+    public void render(OrthographicCamera camera, SpriteBatch batch){
+    }
 
-    //abstract TileType()
+    public void update(float deltaTime){
+    }
 
     public abstract int getWidth();
     public abstract int getHeight();
     public abstract int getLayers();
+    //public int getPixelWth();
+    //public int getPixelWth();
+
+/*
+    public boolean doesPersonCollideWithMap(float x, float y, int col, int row) {
+    }
+
+    public boolean doesPersonCollideWithPerson(float x, float y, int w, int h)
+    {
+        if(x < 0 || y < 0 || ((x + w ) > getPixelWth()) || ((y + h ) > getPixelWth()))
+            return true;
+    }
+*/
+    public abstract void disposeTileMap();
+
+    //abstract TileType()
 
 }
