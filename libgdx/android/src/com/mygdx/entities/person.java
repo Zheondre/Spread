@@ -27,9 +27,39 @@ public class person extends zombie {
         this.mInfctTime = 0;
     }
 
-    public void processMoves()
-    {//virtual function
+    @Override
+    public void update(float dTime){
 
+        if(this.iscpu()){
+            processMoves(dTime);
+        } else {
+            this.update(dTime);
+        }
+    }
+
+    public void processMoves(float dTime)
+    {//virtual function
+        //check alertness
+        //check if hurt or if infected
+
+        switch(mAlerted) {// we might want to change these into enums
+            case 0:
+                //over a random amount of time
+                //walk randomly
+                break;
+            case 1:
+                // you're hurt look for cover
+            break;
+            case 2:
+                //oo shit i see a zombie, run or attack at a safe distance
+                break;
+            case 3:
+                // you're infected look for a place to heal
+                break;
+            case 4:
+
+                break;
+        }
     }
 
     public boolean areYouAZombie() {
@@ -46,6 +76,7 @@ public class person extends zombie {
 
     public void setInfected(boolean Infected) {
         this.mInfected = Infected;
+
     }
 
     public int getAlerted() {

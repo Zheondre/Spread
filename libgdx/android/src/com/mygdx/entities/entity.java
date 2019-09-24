@@ -50,39 +50,32 @@ public abstract class entity {
         return mPos;
     }
 
-    /*
+
     protected void moveX(float amount){// will check for collisions for every entity
-
-    float newX = mPos.X + amount;
-    if(!thereIsNotACollision)
-        this.mPos.x = newX;
-
+    float newX = mPos.x + amount;
+    //if(!thereIsNotACollision && !WeArntOutSideTheMap)
+      //  this.mPos.x = newX;
     }
 
     protected void moveY(float amount){// will check for collisions for every entity
-        float newY = mPos.Y + amount;
-        if(!thereIsNotACollision)
-            this.mPos.Y = newY;
-
+        float newY = mPos.y + amount;
+        //if(!thereIsNotACollision && !WeArntOutSideTheMap)
+          //  this.mPos.y= newY;
     }
-*/
-    public void setPosX(float x){mPos.x =x;}
-    public void setPosY(float y){mPos.y =y;}
+
+    public void setPosX(float x){ mPos.x = x; }
+    public void setPosY(float y){ mPos.y = y; }
+
     public float getPosX(){ return mPos.x; }
     public float getPosY(){ return mPos.y; }
-    public float getVelocityY() {
-        return mVelocityY;
-    }
+    public float getVelocityY() { return mVelocityY; }
 
-    public gameMap getMap() {
-        return mMap;
-    }
+    public gameMap getMap() { return mMap; }
 
-    public boolean isOnGround() {
-        return amIOnTheGound;
-    }
+    public boolean isOnGround() { return amIOnTheGound; }
 
     public void update(float dTime) {
+       // if()
 
     }
 }

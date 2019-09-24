@@ -10,13 +10,28 @@ package com.mygdx.world;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.entities.entity;
+import com.mygdx.entities.person;
+
+
+import java.util.ArrayList;
 
 public abstract class gameMap {
 
-    public void render(OrthographicCamera camera, SpriteBatch batch){
+    protected ArrayList<entity> people;
+
+    public gameMap(){
+        people = new ArrayList<entity>();
+        people.add(new person(false,0,this));
+        people.add(new person(true,1,this));
     }
 
-    public void update(float deltaTime){
+    public void render(OrthographicCamera camera, SpriteBatch batch){
+        people.get(0).render(batch);
+    }
+
+    public void update(float deltaT){
+        people.get(0).update(deltaT);
     }
 
     public abstract int getWidth();

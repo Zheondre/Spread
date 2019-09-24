@@ -25,11 +25,6 @@ public class tileGameMap extends gameMap {
     public tileGameMap() {
 
         m_TileMap = new TmxMapLoader().load("house_road.tmx"); // we will have to make this dynamic based on user map selection
-
-        if(m_TileMap == null) {
-
-            Log.d("testing","tileGameMap constructor");
-        }
         m_TileMapRender = new OrthogonalTiledMapRenderer(m_TileMap);
     }
 
@@ -41,13 +36,12 @@ public class tileGameMap extends gameMap {
 
        batch.setProjectionMatrix(camera.combined);
        batch.begin();
-       super. render(camera, batch);
+       super.render(camera, batch);
        batch.end();
     }
 
     @Override
     public void update(float delta){ //update what the method name should say what we are updating
-
     }
 
     @Override

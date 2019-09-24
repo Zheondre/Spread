@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class zombie extends entity {
 
-   private static final int  speed = 80;
+   private static final int speed = 80;
 
     protected int infections;
     protected int attackPt;
@@ -33,6 +33,7 @@ public class zombie extends entity {
 
     public zombie(boolean IsCpu, int classID, gameMap map) {
         super((float)Math.random(),(float)Math.random(), classID, map);
+        //random methods dont seem to work
         /*
         we will need to position characters in different locations based on the map and class  id
         we can figure this out later
@@ -53,27 +54,46 @@ public class zombie extends entity {
         }
     }
 
+    /*
     public boolean onTouchEvent(MotionEvent e){
 
         super.setPosX(e.getX());
         super.setPosY(e.getY());
         switch(e.getAction()){
-
         }
         return true;
     }
+    */
     //@Override
     public void update(float dTime){
 
+        if(!this.mIsCpu) {
+            //checkfortouchevents
+            //need to also move the camera
+            //mMap.update(dTime);
+            if(Gdx.input.isKeyPressed(Keys.UP))
+                moveX(speed * dTime);
+
+            if(Gdx.input.isKeyPressed(Keys.DOWN))
+                moveX(-speed * dTime);
+
+            if(Gdx.input.isKeyPressed(Keys.LEFT))
+                moveY(-speed * dTime);
+
+            if(Gdx.input.isKeyPressed(Keys.RIGHT))
+                moveY(speed * dTime);
+        } else {
+            //proceedBehavoir
+        }
        // MotionEvent event;
       //  super.setPosX(event.getX());
     }
 
    // @Override
     public void render(SpriteBatch batch){
-
+        //mMap.update();
         batch.draw(image,mPos.x, mPos.y, mWidth, mHeight);
-        batch.end();
+      //  batch.end();
     }
 
     public void attack(){}
