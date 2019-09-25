@@ -66,6 +66,8 @@ https://opengameart.org/content/best-orthogonal-rectangular-tilesets-for-tilemap
 
 * Tutorials
 
+https://www.youtube.com/watch?v=MAFawG6lEkw&list=PLrnO5Pu2zAHIKPZ8o14_FNIp9KVvwPNpn
+
 https://www.youtube.com/watch?v=XUb97Wv9R6o
 
 https://www.gamefromscratch.com/page/LibGDX-Tutorial-series.aspx
