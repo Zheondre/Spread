@@ -13,20 +13,7 @@ public abstract class entity {
     protected Vector2 mPos;
     protected boolean amIOnTheGound = true ;
 
-    protected int classID;
-
-    public enum whoAreYou{
-        Zombie,
-        Person,
-        Security,
-        Cop,
-        Army,
-        Emt,
-        Medic,
-        Hazmat,
-        Master,
-        Debug,
-    }
+    protected classIdEnum classID;
 
     public entity() {
         //mMap = NULL;
@@ -36,12 +23,12 @@ public abstract class entity {
         this.amIOnTheGound = true;
     }
 
-    public entity(float x, float y, int classID, gameMap Map) {
-        this.mPos = new Vector2(x, y);
+    public entity(entityInfo entType, gameMap Map) {
+        this.mPos = new Vector2(entType.getXpos(), entType.getXpos());
         this.mVelocityY = 0;
         this.mMap = Map;
         this.amIOnTheGound = true; // every thing will be on the ground for now
-        this.classID = classID;
+        this.classID = entType.getId();
     }
 
     public abstract void render(SpriteBatch batch);
@@ -49,7 +36,6 @@ public abstract class entity {
     public Vector2 getPos() {
         return mPos;
     }
-
 
     protected void moveX(float amount){// will check for collisions for every entity
     float newX = mPos.x + amount;

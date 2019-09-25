@@ -21,7 +21,7 @@ public class zombie extends entity {
     protected int infections;
     protected int attackPt;
     protected int health;
-    protected int weapon;
+    protected classIdEnum weapon;
 
     Texture image;
 
@@ -31,8 +31,8 @@ public class zombie extends entity {
 
     private boolean mIsCpu;
 
-    public zombie(boolean IsCpu, int classID, gameMap map) {
-        super((float)Math.random(),(float)Math.random(), classID, map);
+    public zombie(entityInfo entType, gameMap map) {
+        super(entType, map);
         //random methods dont seem to work
         /*
         we will need to position characters in different locations based on the map and class  id
@@ -41,12 +41,12 @@ public class zombie extends entity {
 
         image = new Texture("player.png");// need to make this dynamic
 
-        this.classID = classID;
+        this.classID = entType.getId();
         this.infections = 0;
-        this.attackPt = 3;
-        this.health = 100;
-        this.weapon = 0;
-        this.mIsCpu = IsCpu;
+        this.attackPt = entType.getAttackPt();//
+        this.health = entType.getHealth();
+        this.weapon = entType.getWeapon();
+        this.mIsCpu = entType.isCpu();
 
         if(this.mIsCpu){
             //put player towards the beginning of map if its not a new game
@@ -133,15 +133,15 @@ public class zombie extends entity {
         this.health = health;
     }
 
-    public void setWeapon(byte weapon) {
+    public void setWeapon(classIdEnum weapon) {
         this.weapon = weapon;
     }
 
-    public int getClsId() {
+    public classIdEnum getClsId() {
         return classID;
     }
 
-    public void setClsId(int clsId) {
+    public void setClsId(classIdEnum clsId) {
         this.classID = clsId;
     }
         //public zombie* instance() {}

@@ -11,6 +11,7 @@ package com.mygdx.world;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.entities.entity;
+import com.mygdx.entities.entityInfo;
 import com.mygdx.entities.person;
 
 
@@ -22,8 +23,8 @@ public abstract class gameMap {
 
     public gameMap(){
         people = new ArrayList<entity>();
-        people.add(new person(false,0,this));
-        people.add(new person(true,1,this));
+        people.add(new person(entityInfo.PERSON,this));
+        people.add(new person(entityInfo.ZPLAYER,this));
     }
 
     public void render(OrthographicCamera camera, SpriteBatch batch){

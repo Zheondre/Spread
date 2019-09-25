@@ -10,19 +10,12 @@ public class person extends zombie {
     private int mAlerted;
     private int mInfctTime;
 
-    public person(boolean iscpu, int classId, gameMap map) {
+    public person(entityInfo entityType, gameMap map) {
 
-        super(iscpu, classId, map);
-        if (classId < 0) {
-            //depending on the class we might have a weapon and different attack points
-            this.mZombie = false;
-            this.mInfected = false;
-        } else {
-            //this is a zombie;
-            this.mZombie = true;
-            this.mInfected = true;
-        }
+        super(entityType, map);
 
+        this.mZombie =  entityType.isZombie();
+        this.mInfected = entityType.isInfected();
         this.mAlerted = 0;
         this.mInfctTime = 0;
     }
