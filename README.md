@@ -72,6 +72,8 @@ https://www.youtube.com/watch?v=XUb97Wv9R6o
 
 https://www.gamefromscratch.com/page/LibGDX-Tutorial-series.aspx
 
+https://www.youtube.com/watch?v=a8MPxzkwBwo&list=PLZm85UZQLd2SXQzsF-a0-pPF6IWDDdrXt
+
 * Pros
   * Extensive documentation
   * Better for 2d than 3d (Could be pro or con)
