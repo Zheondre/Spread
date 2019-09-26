@@ -42,6 +42,7 @@ public class tileGameMap extends gameMap {
 
     @Override
     public void update(float delta){ //update what the method name should say what we are updating
+        super.update(delta);
     }
 
     @Override
@@ -50,17 +51,17 @@ public class tileGameMap extends gameMap {
     }
 
     @Override
-    public int getWidth(){
+    public int getMapWidth(){
        return 0;
     }
 
     @Override
-    public int getHeight(){
+    public int getMapHeight(){
        return 0;
     }
 
     @Override
-    public int getLayers(){
+    public int getMapLayers(){
         return 0;
     }
 }
