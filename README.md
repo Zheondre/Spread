@@ -14,7 +14,6 @@ infecting or convertering as many civilians as possible before law enforcement s
 
 Supported Android Versions ?: 
 
-
 # Graphic Libraries:
 
 # Google Maps Platform ?
@@ -56,6 +55,25 @@ not written in Java
   * Will take too much time
   
 # Libgdx 
+
+* map editors
+
+https://github.com/libgdx/libgdx/wiki/Tile-maps
+
+https://www.gamefromscratch.com/post/2014/04/16/LibGDX-Tutorial-11-Tiled-Maps-Part-1-Simple-Orthogonal-Maps.aspx
+
+https://opengameart.org/content/best-orthogonal-rectangular-tilesets-for-tilemaps
+
+* Tutorials
+
+https://www.youtube.com/watch?v=MAFawG6lEkw&list=PLrnO5Pu2zAHIKPZ8o14_FNIp9KVvwPNpn
+
+https://www.youtube.com/watch?v=XUb97Wv9R6o
+
+https://www.gamefromscratch.com/page/LibGDX-Tutorial-series.aspx
+
+https://www.youtube.com/watch?v=a8MPxzkwBwo&list=PLZm85UZQLd2SXQzsF-a0-pPF6IWDDdrXt
+
 * Pros
   * Extensive documentation
   * Better for 2d than 3d (Could be pro or con)
