@@ -20,13 +20,13 @@ public class person extends zombie {
         this.mInfctTime = 0;
     }
 
-    @Override
+   // @Override
     public void update(float dTime){
 
         if(this.iscpu()){
             processMoves(dTime);
         } else {
-            this.update(dTime);
+            super.update(dTime);
         }
     }
 

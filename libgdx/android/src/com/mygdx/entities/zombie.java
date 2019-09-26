@@ -48,6 +48,8 @@ public class zombie extends entity {
         this.weapon = entType.getWeapon();
         this.mIsCpu = entType.isCpu();
 
+        //this.randomWalkTime;
+
         if(this.mIsCpu){
             //put player towards the beginning of map if its not a new game
             //if its a new game dont draw the spite yet we got to set a bomb before hand
@@ -64,9 +66,21 @@ public class zombie extends entity {
         return true;
     }
     */
-    //@Override
+  //  @Override
     public void update(float dTime){
 
+        int xtemp = (int)(Math.random()*((40-2)+1))+2;
+        int ytemp = (int)(Math.random()*((40-2)+1))+2;
+        if(xtemp % 2 == 0)
+        {
+            xtemp *= -1;
+        }
+        if(ytemp % 2 == 0)
+        {
+            ytemp *= -1;
+        }
+        moveX(xtemp * dTime);
+        moveY(ytemp * dTime);
         if(!this.mIsCpu) {
             //checkfortouchevents
             //need to also move the camera
@@ -91,9 +105,7 @@ public class zombie extends entity {
 
    // @Override
     public void render(SpriteBatch batch){
-        //mMap.update();
         batch.draw(image,mPos.x, mPos.y, mWidth, mHeight);
-      //  batch.end();
     }
 
     public void attack(){}

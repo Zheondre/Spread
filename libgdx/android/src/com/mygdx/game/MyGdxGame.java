@@ -52,7 +52,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {	//sprite.translate(-1f);}
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {	//sprite.translate(1f);  }
 */
-		Log.d("MyGdxGame.Render()", "1st Line of Render");
+		//Log.d("MyGdxGame.Render()", "1st Line of Render");
 
 		batch = new SpriteBatch();
 		Gdx.gl.glClearColor(1, 0, 0, 1);
@@ -65,6 +65,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		m_GameMap.render(camera,batch);
 		m_GameMap.update(Gdx.graphics.getDeltaTime());
+		//m_GameMap.update(1);
 		camera.update();
 	//	tiledMapRenderer.setView(camera);
 	//	tiledMapRenderer.render();

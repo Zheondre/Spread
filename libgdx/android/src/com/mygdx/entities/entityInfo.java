@@ -12,6 +12,8 @@ If something is missing update file please
 
 //should we include file path's in here or in side actual class ?
 
+import com.badlogic.gdx.graphics.Texture;
+
 public enum entityInfo {
 
     ZPLAYER(classIdEnum.PZombie),
@@ -40,6 +42,8 @@ public enum entityInfo {
     private boolean zombie;
     private boolean infected;
 
+    private Texture Image;
+
     entityInfo(classIdEnum id) {
 
         //this.width = width;
@@ -63,32 +67,38 @@ public enum entityInfo {
 
         switch(id){
             case PZombie:
-                this.xpos = 0;
-                this.ypos = 0;
+                this.xpos = 300;
+                this.ypos = 300;
                 this.infected = true;
                 this.zombie = true;
                 this.isCpu = false;
+                //this.image = new Texture("player.png");
                 break;
             case PPerson:
                 this.xpos = 0;
                 this.ypos = 0;
                 this.isCpu = false;
+               // this.image = new Texture("player.png");
                 break;
             case Zombie:
                 this.infectPts = 3;
                 this.zombie = true;
                 this.infected = true;
                 this.walkSpeed = 40;
+                // this.image = new Texture("player.png");
                 break;
             case Person:
                 break;
+            // this.image = new Texture("player.png");
             case Security:
                 this.armor = 40;
                 this.weapon = classIdEnum.BATON;
+                // this.image = new Texture("player.png");
                 break;
             case Cop:
                 this.armor = 70;
                 this.weapon = classIdEnum.PISTOL;
+                // this.image = new Texture("player.png");
                 break;
             default:
                 //throw an error, unknown type

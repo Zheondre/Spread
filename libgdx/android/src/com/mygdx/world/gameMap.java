@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 import com.mygdx.entities.person;
+import com.mygdx.entities.zombie;
 
 
 import java.util.ArrayList;
@@ -23,8 +24,8 @@ public abstract class gameMap {
 
     public gameMap(){
         people = new ArrayList<entity>();
-        people.add(new person(entityInfo.PERSON,this));
-        people.add(new person(entityInfo.ZPLAYER,this));
+        people.add(new zombie(entityInfo.ZPLAYER,this));
+        //people.add(new person(entityInfo.PERSON,this));
     }
 
     public void render(OrthographicCamera camera, SpriteBatch batch){
@@ -35,11 +36,11 @@ public abstract class gameMap {
         people.get(0).update(deltaT);
     }
 
-    public abstract int getWidth();
-    public abstract int getHeight();
-    public abstract int getLayers();
-    //public int getPixelWth();
-    //public int getPixelWth();
+  //  public abstract int getPixelWidth();
+   // public abstract int getPixelHeight();
+    public abstract int getMapLayers();
+    public abstract int getMapWidth();
+    public abstract int getMapHeight();
 
 /*
     public boolean doesPersonCollideWithMap(float x, float y, int col, int row) {
@@ -53,6 +54,6 @@ public abstract class gameMap {
 */
     public abstract void disposeTileMap();
 
-    //abstract TileType()
+    //abstract TileType getTileTypeByLocation(int layer, float x , float y);
 
 }
