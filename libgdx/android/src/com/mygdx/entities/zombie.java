@@ -16,8 +16,6 @@ import java.util.Random;
 
 public class zombie extends entity {
 
-   private static final int speed = 80;
-
     protected int infections;
     protected int attackPt;
     protected int health;
@@ -33,7 +31,6 @@ public class zombie extends entity {
 
     public zombie(entityInfo entType, gameMap map) {
         super(entType, map);
-        //random methods dont seem to work
         /*
         we will need to position characters in different locations based on the map and class  id
         we can figure this out later
@@ -56,16 +53,6 @@ public class zombie extends entity {
         }
     }
 
-    /*
-    public boolean onTouchEvent(MotionEvent e){
-
-        super.setPosX(e.getX());
-        super.setPosY(e.getY());
-        switch(e.getAction()){
-        }
-        return true;
-    }
-    */
   //  @Override
     public void update(float dTime){
 
@@ -79,25 +66,15 @@ public class zombie extends entity {
         {
             ytemp *= -1;
         }
-        moveX(xtemp * dTime);
-        moveY(ytemp * dTime);
-        if(!this.mIsCpu) {
-            //checkfortouchevents
+
+        if(this.mIsCpu) {
+            moveX(xtemp * dTime);
+            moveY(ytemp * dTime);
             //need to also move the camera
             //mMap.update(dTime);
-            if(Gdx.input.isKeyPressed(Keys.UP))
-                moveX(speed * dTime);
 
-            if(Gdx.input.isKeyPressed(Keys.DOWN))
-                moveX(-speed * dTime);
-
-            if(Gdx.input.isKeyPressed(Keys.LEFT))
-                moveY(-speed * dTime);
-
-            if(Gdx.input.isKeyPressed(Keys.RIGHT))
-                moveY(speed * dTime);
         } else {
-            //proceedBehavoir
+            super.update(dTime);
         }
        // MotionEvent event;
       //  super.setPosX(event.getX());
@@ -125,6 +102,7 @@ public class zombie extends entity {
     public int getHeight(){
         return mHeight;
     }
+
     public int getInfections() {
         return infections;
     }
@@ -156,5 +134,4 @@ public class zombie extends entity {
     public void setClsId(classIdEnum clsId) {
         this.classID = clsId;
     }
-        //public zombie* instance() {}
 }

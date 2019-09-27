@@ -18,6 +18,7 @@ public class person extends zombie {
         this.mInfected = entityType.isInfected();
         this.mAlerted = 0;
         this.mInfctTime = 0;
+
     }
 
    // @Override

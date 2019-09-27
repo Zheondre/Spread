@@ -39,7 +39,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		float wdth = Gdx.graphics.getWidth();
 		float hght = Gdx.graphics.getHeight();
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, wdth - 700, hght - 700);
+		camera.setToOrtho(false, wdth - 900, hght - 900);
 		camera.update();
 
 		m_GameMap = new tileGameMap();
@@ -48,11 +48,6 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-/*
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {	//sprite.translate(-1f);}
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {	//sprite.translate(1f);  }
-*/
-		//Log.d("MyGdxGame.Render()", "1st Line of Render");
 
 		batch = new SpriteBatch();
 		Gdx.gl.glClearColor(1, 0, 0, 1);
@@ -67,68 +62,5 @@ public class MyGdxGame extends ApplicationAdapter {
 		m_GameMap.update(Gdx.graphics.getDeltaTime());
 		//m_GameMap.update(1);
 		camera.update();
-	//	tiledMapRenderer.setView(camera);
-	//	tiledMapRenderer.render();
 	}
-
-
-	@Override
-	public void dispose () {
-		batch.dispose();
-		//m_GameMap.dispose();
-	}
-/*
-	@Override
-	public boolean keyDown(int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int keycode) {
-		if(keycode == Input.Keys.LEFT)
-			camera.translate(-32,0);
-		if(keycode == Input.Keys.RIGHT)
-			camera.translate(32,0);
-		if(keycode == Input.Keys.UP)
-			camera.translate(0,-32);
-		if(keycode == Input.Keys.DOWN)
-			camera.translate(0,32);
-		if(keycode == Input.Keys.NUM_1)
-			tiledMap.getLayers().get(0).setVisible(!tiledMap.getLayers().get(0).isVisible());
-		if(keycode == Input.Keys.NUM_2)
-			tiledMap.getLayers().get(1).setVisible(!tiledMap.getLayers().get(1).isVisible());
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char character) {
-
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		return false;
-	}
-	*/
 }
