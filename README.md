@@ -171,11 +171,11 @@ Army class:
 
 # Proposal Organization
 
-Summary(1 paragraph):
+Summary (1 paragraph):
 * Idea from first assignment
 * Explain goal of game
 
-Design Details & Implementation(1-2 Pages):
+Design Details & Implementation (1-2 Pages):
 * LibGDX & LibGDX AI
 * GameScreenManager Class
 * Tiled Map Editor
