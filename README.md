@@ -168,3 +168,27 @@ Army class:
 * Will do more damage,
 * Can set bombs, 
 * Walk faster and will have more units
+
+# Proposal Organization
+
+Summary(1 paragraph):
+* Idea from first assignment
+* Explain goal of game
+
+Design Details & Implementation(1-2 Pages):
+* LibGDX & LibGDX AI
+* GameScreenManager Class
+* Tiled Map Editor
+* Github Repository
+* Use of emuluator, not physical device
+
+Features with explanation of implementation (1-2 pages):
+* Same features as second assignment, but with explained implementation
+
+Diagrams referenced in other sections (1 page):
+* Screen navigation mappings
+* Individual screen layouts
+
+
+
+
