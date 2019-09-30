@@ -26,23 +26,28 @@ public abstract class gameMap {
    // private player playerOneInstance = player.getInstance();
     private player playerOne;
 
+    public player getPlayerOne() {
+        return playerOne;
+    }
+
     public gameMap(){
 
         people = new ArrayList<entity>();
 
         playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
         people.add( playerOne.getHost());
-        //people.add(new zombie(entityInfo.ZPLAYER,this));
-        //people.add(new person(entityInfo.PERSON,this));
+        people.add(new person(entityInfo.PERSON,this));
     }
 
-    public void render(OrthographicCamera camera, SpriteBatch batch){
-        people.get(0).render(batch);
+    public void render( SpriteBatch batch){
+        people.get(0).render(batch);//z player
+        people.get(1).render(batch);//person
     }
 
     public void update(float deltaT){
-        //player
-        people.get(0).update(deltaT);
+        playerOne.update(deltaT); // zombie player
+
+        people.get(1).update(deltaT);//person
     }
 
   //  public abstract int getPixelWidth();

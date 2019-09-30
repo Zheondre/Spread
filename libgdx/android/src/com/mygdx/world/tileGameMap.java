@@ -13,30 +13,40 @@ import android.util.Log;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 public class tileGameMap extends gameMap {
 
-    TiledMap m_TileMap;
-    OrthogonalTiledMapRenderer m_TileMapRender;
+    private TiledMap m_TileMap;
+    private OrthogonalTiledMapRenderer m_TileMapRender;
+    private int mapWidth;
+    private int mapHeight;
+   // private int tileWidth;
+    //private int tileHeight;
+
 
     public tileGameMap() {
 
         m_TileMap = new TmxMapLoader().load("house_road.tmx"); // we will have to make this dynamic based on user map selection
         m_TileMapRender = new OrthogonalTiledMapRenderer(m_TileMap);
+        MapProperties MapProp = m_TileMap.getProperties();
+
+        mapWidth =  MapProp.get("width", Integer.class)* MapProp.get("tilewidth", Integer.class);
+        mapHeight =  MapProp.get("height", Integer.class)* MapProp.get("tileheight", Integer.class);
     }
 
     @Override
-    public void render(OrthographicCamera camera, SpriteBatch batch){
+    public void render( SpriteBatch batch){
 
-       m_TileMapRender.setView(camera);
+       m_TileMapRender.setView(this.getPlayerOne().getPlayCam());
        m_TileMapRender.render();
 
-       batch.setProjectionMatrix(camera.combined);
+       batch.setProjectionMatrix(this.getPlayerOne().getPlayCam().combined);
        batch.begin();
-       super.render(camera, batch);
+       super.render(batch);
        batch.end();
     }
 
@@ -52,16 +62,18 @@ public class tileGameMap extends gameMap {
 
     @Override
     public int getMapWidth(){
-       return 0;
+       return mapWidth;
     }
 
     @Override
     public int getMapHeight(){
-       return 0;
+       return mapHeight;
     }
 
     @Override
     public int getMapLayers(){
         return 0;
     }
+
+
 }

@@ -1,19 +1,21 @@
 package com.mygdx.entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.mygdx.world.gameMap;
 
 public abstract class entity  {
 
-    private static final int speed = 80;
+    private static final int speed = 40;
 
     protected float mVelocityY;
     protected gameMap mMap;
-    protected Vector2 mPos;
+
+    public Vector3 getmPos() {
+        return mPos;
+    }
+
+    protected Vector3 mPos;
 
     protected classIdEnum classID;
 
@@ -22,6 +24,11 @@ public abstract class entity  {
     private boolean moveRight;
     private boolean moveUp;
     private boolean moveDown;
+
+    private boolean validPath;
+
+    private int mapXMax;
+    private int mapYMax;
 
     public entity() {
         //mMap = NULL;
@@ -33,10 +40,11 @@ public abstract class entity  {
         this.moveRight= false;
         this.moveUp= false;
         this.moveDown= false;
+        this.validPath= false;
     }
 
     public entity(entityInfo entType, gameMap Map) {
-        this.mPos = new Vector2(entType.getXpos(), entType.getYpos());
+        this.mPos = new Vector3(entType.getXpos(), entType.getYpos(),0);
         this.mVelocityY = 0;
         this.mMap = Map;
         this.amIOnTheGound = true; // every thing will be on the ground for now
@@ -45,42 +53,64 @@ public abstract class entity  {
         this.moveRight= false;
         this.moveUp= false;
         this.moveDown= false;
+        this.validPath= false;
     }
 
     public abstract void render(SpriteBatch batch);
+    public abstract void setImage(String path);
 
     public void update(float dTime){
 
         if(moveRight)
-            moveX(speed * dTime);
+            validPath = moveX(speed * dTime);
 
         if(moveLeft)
-            moveX(-speed * dTime);
+            validPath = moveX(-speed * dTime);
 
         if(moveUp)
-            moveY(-speed * dTime);
+            validPath = moveY(speed * dTime);
 
         if(moveDown)
-            moveY(speed * dTime);
+            validPath = moveY(-speed * dTime);
     }
 
-    public Vector2 getPos() {
+    public Vector3 getPos() {
         return mPos;
     }
 
-    protected void moveX(float amount){// will check for collisions for every entity
+    protected boolean moveX(float amount){// will check for collisions for every entity
+        //need to check map bounds
+        //if(!thereIsNotACollision && !WeArntOutSideTheMap)
+        if(amount < 0)
+            if((mPos.x + amount) < 0)
+                return false;
 
-        mPos.x = mPos.x + amount;
-
-    //if(!thereIsNotACollision && !WeArntOutSideTheMap)
-      //  this.mPos.x = newX;
+        if(true) {
+            mPos.x = mPos.x + amount;
+            return true;
+        } else
+            return false;
     }
 
-    protected void moveY(float amount){// will check for collisions for every entity
+    protected boolean moveY(float amount){// will check for collisions for every entity
+//basing coordinates to real world instead of screen coordinates
 
-        mPos.y = mPos.y + amount;
+        /*//need to check map bounds
+        if(amount > 0)
+            if((mPos.y + amount) >mapsize)
+                return false;
+         */
+
+        if(amount < 0)
+            if((mPos.y + amount) < 0)
+                return false;
+
         //if(!thereIsNotACollision && !WeArntOutSideTheMap)
-          //  this.mPos.y= newY;
+       if(true) {
+           mPos.y = mPos.y + amount;
+           return true;
+       }else
+            return false;
     }
 
     public void setPosX(float x){ mPos.x = x; }
