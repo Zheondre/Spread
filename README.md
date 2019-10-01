@@ -64,6 +64,8 @@ https://www.gamefromscratch.com/post/2014/04/16/LibGDX-Tutorial-11-Tiled-Maps-Pa
 
 https://opengameart.org/content/best-orthogonal-rectangular-tilesets-for-tilemaps
 
+http://gaurav.munjal.us/Universal-LPC-Spritesheet-Character-Generator/
+
 * Tutorials
 
 https://www.youtube.com/watch?v=MAFawG6lEkw&list=PLrnO5Pu2zAHIKPZ8o14_FNIp9KVvwPNpn
