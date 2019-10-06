@@ -16,12 +16,16 @@ public class player implements InputProcessor {
     private int kills;
     private int converts;
 
+    private int myIndex;
+    private int tIndex;
+
     private float screenX;
     private float screenY;
 
     private OrthographicCamera playCam;
 
     private entity host;
+    private entity tHost;
 
     private ArrayList<entity> peopleRef;
 
@@ -107,6 +111,9 @@ public class player implements InputProcessor {
         this.host = host;
     }
 
+    public void setPeopleRef(ArrayList<entity> peopleRef) {
+        this.peopleRef = peopleRef;
+    }
 
     public void update(float dTime){
         host.update(dTime);
@@ -138,10 +145,9 @@ public class player implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        //Gdx.input.
         //Log.d("TouchDown", "Screen Touched In X " + screenX+ " Y "+ screenY);
-     // Log.d("Player Position", "X "+host.getPosX()+ " Y "+host.getPosY());
-        //basic player movement;
+        // Log.d("Player Position", "X "+host.getPosX()+ " Y "+host.getPosY());
+        int entSize;
 
         Vector3 pos = new Vector3(screenX, screenY, 0);
 
@@ -152,7 +158,6 @@ public class player implements InputProcessor {
 
         float tempy = (float)screenY - host.getPosY();
         float tempx =(float)screenX-host.getPosX();
-
 
        // (float) ((Math.atan2()) * 180.0d / Math.PI));
 
@@ -172,9 +177,83 @@ public class player implements InputProcessor {
         if((this.screenY - host.getPosY())> 25)
             host.setMoveUp(true);
 
-        //playCam.translate(host.getPosX(),host.getPosY());
+        //if longpressed then we are trying to get the zombie
+/*
+            if(leftButtonPressed)
+               host.setMoveLeft(true);
+
+            if(rightButtonPressed)
+                host.setMoveRight(true);
+
+            if(downButtonPressed)
+                host.setMoveDown(true);
+
+            if(upButtonPressed)
+                host.setMoveUp(true);
+
+            if(LZombButtonPressed){
+                myIndex = getPlayerIndex();
+                tIndex = myIndex;
+                entSize = peopleRef.size();
+
+                tIndex--;
+
+                if(tIndex < 0)
+                    tIndex = entSize-1;
+
+                while( (!((person)peopleRef.get(tIndex)).areYouAZombie()) ){
+                     if(tIndex - 1 < 0)
+                         tIndex = entSize - 1;
+                     else
+                        tIndex--;
+                }
+
+                 tHost = peopleRef.get(tIndex);
+            }
+
+            if(RZombButtonPressed){
+                myIndex = getPlayerIndex();
+                tIndex = myIndex;
+                entSize = peopleRef.size();
+
+                tIndex++;
+
+                if(tIndex > entSize - 1)
+                    tIndex = 0;
+
+                while( (!((person)peopleRef.get(tIndex)).areYouAZombie()) ){
+                    if(tIndex + 1> entSize -1)
+                        tIndex = 0;
+                    else
+                        tIndex++;
+                }
+
+                tHost = peopleRef.get(tIndex);
+             }
+
+            if(LZombButtonPressed || RZombButtonPressed) {
+                 //need to change class id
+                 if (myIndex!=tIndex) {
+                     ((zombie) host).setCpuStatus(true);
+                     host = tHost;
+                     host.setCpuStatus(false);
+                     myIndex = tIndex;
+                 }
+            }
+*/
+
+        //if(peopleRef.get(myindex).classID == entityInfo.ZOMBIE)
+            //playCam.translate(host.getPosX(),host.getPosY());
         return true;
     }
+
+    private int getPlayerIndex(){
+        int i;
+        for(i= 0; i < peopleRef.size(); i++);
+            peopleRef.get(i).equals(host);
+        return i;
+    }
+
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {

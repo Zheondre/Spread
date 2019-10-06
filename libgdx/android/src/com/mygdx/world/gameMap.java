@@ -37,6 +37,8 @@ public abstract class gameMap {
         playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
         people.add( playerOne.getHost());
         people.add(new person(entityInfo.PERSON,this));
+
+        playerOne.setPeopleRef(people);
     }
 
     public void render( SpriteBatch batch){

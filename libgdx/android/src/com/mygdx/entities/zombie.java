@@ -17,6 +17,7 @@ import java.util.Random;
 
 public class zombie extends entity {
 
+    protected int peopleConverted;
     protected int infections;
     protected int attackPt;
     protected int health;
