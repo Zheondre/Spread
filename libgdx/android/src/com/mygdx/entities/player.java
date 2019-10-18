@@ -43,7 +43,7 @@ public class player implements InputProcessor {
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
         playCam = new OrthographicCamera();
-        playCam.setToOrtho(false, wdth - 800, hght - 800);
+        playCam.setToOrtho(false, wdth - 1000, hght - 900);
         playCam.update();
 
         this.points = 0;
@@ -117,6 +117,8 @@ public class player implements InputProcessor {
 
     public void update(float dTime){
         host.update(dTime);
+        playCam.position.x = host.getPosX();
+        playCam.position.y = host.getPosY();
         playCam.update();
     }
     public OrthographicCamera getPlayCam() {

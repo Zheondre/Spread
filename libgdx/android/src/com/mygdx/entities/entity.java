@@ -6,7 +6,7 @@ import com.mygdx.world.gameMap;
 
 public abstract class entity  {
 
-    private static final int speed = 40;
+    private static final int speed = 80;
 
     protected float mVelocityY;
     protected gameMap mMap;

@@ -26,7 +26,7 @@ public class zombie extends entity {
     Texture image;
 
     private int mWidth = 14;
-    private int mHeight = 31;
+    private int mHeight = 15;
     private int wlkDirection;
     private float mWeight = 40;
 

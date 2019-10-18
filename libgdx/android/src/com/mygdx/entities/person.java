@@ -124,7 +124,6 @@ public class person extends zombie {
 
     public void decreaseInfectTime(int InfctTime){
         this.mInfctTime -= InfctTime;
-
     }
 }
 
