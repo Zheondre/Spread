@@ -159,7 +159,7 @@ public class player implements InputProcessor {
         this.screenY = pos.y;
 
         float tempy = (float)screenY - host.getPosY();
-        float tempx =(float)screenX-host.getPosX();
+        float tempx = (float)screenX - host.getPosX();
 
        // (float) ((Math.atan2()) * 180.0d / Math.PI));
 

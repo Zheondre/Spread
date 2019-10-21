@@ -1,6 +1,9 @@
 package com.mygdx.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.world.gameMap;
 
@@ -29,6 +32,11 @@ public abstract class entity  {
 
     private int mapXMax;
     private int mapYMax;
+
+    private TiledMapTileLayer.Cell cellx;
+    private TiledMapTileLayer.Cell celly;
+
+    private TiledMapTileLayer collisionLayer;
 
     public entity() {
         //mMap = NULL;
@@ -78,39 +86,65 @@ public abstract class entity  {
         return mPos;
     }
 
-    protected boolean moveX(float amount){// will check for collisions for every entity
-        //need to check map bounds
-        //if(!thereIsNotACollision && !WeArntOutSideTheMap)
-        if(amount < 0)
-            if((mPos.x + amount) < 0)
+    protected boolean moveX(float amount){
+        // Every moving entity will check for collisions
+
+       // mMap.getMapLayers().get("Buildings").getProperties().
+
+        if((mPos.x + amount) < 0)
                 return false;
 
-        if(true) {
-            mPos.x = mPos.x + amount;
-            return true;
-        } else
+        if((mPos.x + amount) > mMap.getMapWidth())
+                return false;
+
+        //we have to either loop through all the layers that contain blocked objects or merge them into one.
+        collisionLayer = (TiledMapTileLayer) mMap.getMapLayers().get("Buildings");
+
+        TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int)(mPos.x +amount),(int)mPos.y);
+
+        if(collisionLayer.getCell((int)(mPos.x +amount),(int)mPos.y) != null) {
+         int xy = 0;
+         int yx =0;
+
             return false;
+        }
+        /*
+        if(collisionLayer.getCell((int)(mPos.x +amount),
+               (int)mPos.y).getTile().getProperties().containsKey("blocked"))
+           return false;
+*/
+        mPos.x = mPos.x + amount;
+        return true;
+
     }
 
-    protected boolean moveY(float amount){// will check for collisions for every entity
+    protected boolean moveY(float amount){
 //basing coordinates to real world instead of screen coordinates
 
-        /*//need to check map bounds
-        if(amount > 0)
-            if((mPos.y + amount) >mapsize)
-                return false;
-         */
-
-        if(amount < 0)
-            if((mPos.y + amount) < 0)
-                return false;
-
-        //if(!thereIsNotACollision && !WeArntOutSideTheMap)
-       if(true) {
-           mPos.y = mPos.y + amount;
-           return true;
-       }else
+        if((mPos.y + amount) > mMap.getMapHeight())
             return false;
+
+        if((mPos.y + amount) < 0)
+            return false;
+
+        collisionLayer = (TiledMapTileLayer) mMap.getMapLayers().get("Buildings");
+
+      //int tiledId =  collisionLayer.getCell(1,1).getTile().getId();
+    TiledMapTileLayer.Cell celly = collisionLayer.getCell((int)mPos.x,(int)(mPos.y+amount));
+
+    if(collisionLayer.getCell((int)mPos.x,(int)(mPos.y+amount)) != null){
+            int xy = 0;
+            int yx =0;
+
+            return false;
+        }
+/*
+        if(collisionLayer.getCell((int)mPos.x,
+                (int)(mPos.y+amount)).getTile().getProperties().containsKey("blocked"))
+            return false; */
+
+       mPos.y = mPos.y + amount;
+       return true;
     }
 
     public void setPosX(float x){ mPos.x = x; }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ParticleControllerInfluencer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.mygdx.world.gameMap;
 
 import org.w3c.dom.Entity;

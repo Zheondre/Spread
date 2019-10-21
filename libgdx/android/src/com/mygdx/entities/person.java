@@ -1,5 +1,6 @@
 package com.mygdx.entities;
 
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.mygdx.world.gameMap;
 
 import static com.badlogic.gdx.Input.Keys.UP;

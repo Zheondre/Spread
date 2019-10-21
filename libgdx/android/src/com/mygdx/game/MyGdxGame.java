@@ -23,7 +23,7 @@ import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
 
 // this isnt platform specific
-
+//entry point to game
 public class MyGdxGame extends ApplicationAdapter {
 
 	SpriteBatch batch;
