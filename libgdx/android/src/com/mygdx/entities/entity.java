@@ -89,9 +89,8 @@ public abstract class entity  {
     protected boolean moveX(float amount){
         // Every moving entity will check for collisions
 
-       // mMap.getMapLayers().get("Buildings").getProperties().
-
-        if((mPos.x + amount) < 0)
+        float tileW, tileH;
+         if((mPos.x + amount) < 0)
                 return false;
 
         if((mPos.x + amount) > mMap.getMapWidth())
@@ -100,19 +99,16 @@ public abstract class entity  {
         //we have to either loop through all the layers that contain blocked objects or merge them into one.
         collisionLayer = (TiledMapTileLayer) mMap.getMapLayers().get("Buildings");
 
-        TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int)(mPos.x +amount),(int)mPos.y);
+        tileW = collisionLayer.getTileWidth();
+        tileH = collisionLayer.getTileHeight();
 
-        if(collisionLayer.getCell((int)(mPos.x +amount),(int)mPos.y) != null) {
+        TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int)((mPos.x +amount)/tileW),(int)(mPos.y/tileH));
+
+        if(collisionLayer.getCell((int)((mPos.x +amount)/tileW),(int)(mPos.y/tileH)) != null) {
          int xy = 0;
-         int yx =0;
-
             return false;
         }
-        /*
-        if(collisionLayer.getCell((int)(mPos.x +amount),
-               (int)mPos.y).getTile().getProperties().containsKey("blocked"))
-           return false;
-*/
+
         mPos.x = mPos.x + amount;
         return true;
 
@@ -120,7 +116,7 @@ public abstract class entity  {
 
     protected boolean moveY(float amount){
 //basing coordinates to real world instead of screen coordinates
-
+        float tileW, tileH;
         if((mPos.y + amount) > mMap.getMapHeight())
             return false;
 
@@ -129,19 +125,14 @@ public abstract class entity  {
 
         collisionLayer = (TiledMapTileLayer) mMap.getMapLayers().get("Buildings");
 
-      //int tiledId =  collisionLayer.getCell(1,1).getTile().getId();
-    TiledMapTileLayer.Cell celly = collisionLayer.getCell((int)mPos.x,(int)(mPos.y+amount));
+        tileW = collisionLayer.getTileWidth();
+        tileH = collisionLayer.getTileHeight();
 
-    if(collisionLayer.getCell((int)mPos.x,(int)(mPos.y+amount)) != null){
-            int xy = 0;
-            int yx =0;
+        TiledMapTileLayer.Cell celly = collisionLayer.getCell((int)mPos.x,(int)(mPos.y+amount));
 
-            return false;
+        if(collisionLayer.getCell((int)(mPos.x/tileW),(int)((mPos.y+amount)/tileH)) != null){
+                return false;
         }
-/*
-        if(collisionLayer.getCell((int)mPos.x,
-                (int)(mPos.y+amount)).getTile().getProperties().containsKey("blocked"))
-            return false; */
 
        mPos.y = mPos.y + amount;
        return true;
