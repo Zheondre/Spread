@@ -7,53 +7,25 @@ they also explain how to modify the tiles in a map during game play, we wont add
  */
 
 package com.mygdx.world;
-
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.entities.entity;
-import com.mygdx.entities.entityInfo;
-import com.mygdx.entities.person;
-import com.mygdx.entities.zombie;
-
-
-import java.util.ArrayList;
+import com.badlogic.gdx.maps.MapLayers;
 
 public abstract class gameMap {
 
-    protected ArrayList<entity> people;
-
     public gameMap(){
-        people = new ArrayList<entity>();
-        people.add(new zombie(entityInfo.ZPLAYER,this));
-        //people.add(new person(entityInfo.PERSON,this));
     }
 
-    public void render(OrthographicCamera camera, SpriteBatch batch){
-        people.get(0).render(batch);
-    }
+    public abstract void render(SpriteBatch batch);
+    public abstract void update(float deltaT);
+    public abstract void disposeTileMap();
 
-    public void update(float deltaT){
-        people.get(0).update(deltaT);
-    }
-
-  //  public abstract int getPixelWidth();
-   // public abstract int getPixelHeight();
-    public abstract int getMapLayers();
+    public abstract int getPixelWidth();
+    public abstract int getPixelHeight();
     public abstract int getMapWidth();
     public abstract int getMapHeight();
 
-/*
-    public boolean doesPersonCollideWithMap(float x, float y, int col, int row) {
-    }
+    public abstract MapLayers getMapLayers();
 
-    public boolean doesPersonCollideWithPerson(float x, float y, int w, int h)
-    {
-        if(x < 0 || y < 0 || ((x + w ) > getPixelWth()) || ((y + h ) > getPixelWth()))
-            return true;
-    }
-*/
-    public abstract void disposeTileMap();
-
-    //abstract TileType getTileTypeByLocation(int layer, float x , float y);
+    public abstract boolean doesPersonCollideWithMap(float x, float y, int col, int row);
 
 }

@@ -3,21 +3,22 @@ package com.mygdx.entities;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ParticleControllerInfluencer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.mygdx.world.gameMap;
+
+import org.w3c.dom.Entity;
 
 import java.util.*;
 import java.util.Random;
 
 public class zombie extends entity {
 
-   private static final int speed = 80;
-
+    protected int peopleConverted;
     protected int infections;
     protected int attackPt;
     protected int health;
@@ -26,28 +27,32 @@ public class zombie extends entity {
     Texture image;
 
     private int mWidth = 14;
-    private int mHeight = 31;
+    private int mHeight = 15;
+    private int wlkDirection;
     private float mWeight = 40;
 
     private boolean mIsCpu;
+    private boolean doISeeANoneZombie;
 
     public zombie(entityInfo entType, gameMap map) {
         super(entType, map);
-        //random methods dont seem to work
         /*
         we will need to position characters in different locations based on the map and class  id
         we can figure this out later
          */
 
-        image = new Texture("player.png");// need to make this dynamic
-
         this.classID = entType.getId();
+
+        if(classID == classIdEnum.Zombie || classID == classIdEnum.PZombie)
+            image = new Texture("zombie.png");
+
         this.infections = 0;
         this.attackPt = entType.getAttackPt();//
         this.health = entType.getHealth();
         this.weapon = entType.getWeapon();
         this.mIsCpu = entType.isCpu();
 
+        this.doISeeANoneZombie = false;
         //this.randomWalkTime;
 
         if(this.mIsCpu){
@@ -56,53 +61,55 @@ public class zombie extends entity {
         }
     }
 
-    /*
-    public boolean onTouchEvent(MotionEvent e){
+    public boolean biteNonZombie(person victum){
 
-        super.setPosX(e.getX());
-        super.setPosY(e.getY());
-        switch(e.getAction()){
-        }
+        if(victum == null)
+            return false;
+
+        if(!victum.isInfected())
+            victum.setInfected(true);
+
+        victum.decreaseInfectTime(5);
+        victum.decreaseHlth(5);
+
         return true;
     }
-    */
+
   //  @Override
     public void update(float dTime){
 
-        int xtemp = (int)(Math.random()*((40-2)+1))+2;
-        int ytemp = (int)(Math.random()*((40-2)+1))+2;
-        if(xtemp % 2 == 0)
-        {
-            xtemp *= -1;
-        }
-        if(ytemp % 2 == 0)
-        {
-            ytemp *= -1;
-        }
-        moveX(xtemp * dTime);
-        moveY(ytemp * dTime);
-        if(!this.mIsCpu) {
-            //checkfortouchevents
-            //need to also move the camera
-            //mMap.update(dTime);
-            if(Gdx.input.isKeyPressed(Keys.UP))
-                moveX(speed * dTime);
+        if(this.mIsCpu) {
 
-            if(Gdx.input.isKeyPressed(Keys.DOWN))
-                moveX(-speed * dTime);
+            if(this.classID == classIdEnum.Zombie) {
 
-            if(Gdx.input.isKeyPressed(Keys.LEFT))
-                moveY(-speed * dTime);
-
-            if(Gdx.input.isKeyPressed(Keys.RIGHT))
-                moveY(speed * dTime);
+                if (doISeeANoneZombie) {
+                    //goAfterNonZombie
+                    //if we are close enough attack
+                } else {
+                    int xtemp = (int) (Math.random() * ((40 - 2) + 1)) + 2;
+                    int ytemp = (int) (Math.random() * ((40 - 2) + 1)) + 2;
+                    if (xtemp % 2 == 0)
+                        xtemp *= -1;
+                    if (ytemp % 2 == 0)
+                        ytemp *= -1;
+                    moveX(xtemp * dTime);
+                    moveY(ytemp * dTime);
+                }
+            } else {
+                super.update(dTime);
+            }
         } else {
-            //proceedBehavoir
+            //player has control
+            super.update(dTime);
+            //need to also move the camera
         }
        // MotionEvent event;
       //  super.setPosX(event.getX());
     }
 
+    public void setImage(String path){
+        image = new Texture(path);
+    }
    // @Override
     public void render(SpriteBatch batch){
         batch.draw(image,mPos.x, mPos.y, mWidth, mHeight);
@@ -125,6 +132,7 @@ public class zombie extends entity {
     public int getHeight(){
         return mHeight;
     }
+
     public int getInfections() {
         return infections;
     }
@@ -149,6 +157,10 @@ public class zombie extends entity {
         this.weapon = weapon;
     }
 
+    public void decreaseHlth(int amount){
+        this.health -= amount;
+    }
+
     public classIdEnum getClsId() {
         return classID;
     }
@@ -156,5 +168,4 @@ public class zombie extends entity {
     public void setClsId(classIdEnum clsId) {
         this.classID = clsId;
     }
-        //public zombie* instance() {}
 }
