@@ -9,6 +9,7 @@ they also explain how to modify the tiles in a map during game play, we wont add
 package com.mygdx.world;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.physics.box2d.World;
 
 public abstract class gameMap {
 
@@ -25,6 +26,8 @@ public abstract class gameMap {
     public abstract int getMapHeight();
 
     public abstract MapLayers getMapLayers();
+
+    public abstract World getWorld();
 
     public abstract boolean doesPersonCollideWithMap(float x, float y, int col, int row);
 

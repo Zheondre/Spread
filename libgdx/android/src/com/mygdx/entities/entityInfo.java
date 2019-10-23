@@ -79,6 +79,8 @@ public enum entityInfo {
                 this.isCpu = false;
                 break;
             case Zombie:
+                this.xpos = 50;
+                this.ypos = 50;
                 this.infectPts = 3;
                 this.zombie = true;
                 this.infected = true;

@@ -3,12 +3,16 @@ package com.mygdx.entities;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.steer.behaviors.Arrive;
+import com.badlogic.gdx.ai.steer.behaviors.Pursue;
+import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ParticleControllerInfluencer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.world.gameMap;
 
 import org.w3c.dom.Entity;
@@ -34,6 +38,59 @@ public class zombie extends entity {
     private boolean mIsCpu;
     private boolean doISeeANoneZombie;
 
+    Box2dSteering steerEnt;
+
+    public Box2dSteering getSteerEnt() {
+        return steerEnt;
+    }
+
+    protected Pursue<Vector2>  pursueSB;
+    protected Wander<Vector2>  wanderSB;
+    protected Arrive<Vector2>  arriveSB;
+
+//changeSb();
+    public Arrive<Vector2> getArriveSB() {
+        return arriveSB;
+    }
+
+    public void setArriveSB(Arrive<Vector2> arriveSB) {
+        this.arriveSB = arriveSB;
+    }
+
+    public void setArriveSB(Box2dSteering prey) {
+        if(!(prey == null))
+            arriveSB = new Arrive<Vector2>(steerEnt,prey)
+                    .setTimeToTarget(.5f)
+                    .setArrivalTolerance(2f)
+                    .setDecelerationRadius(4);
+        steerEnt.setBehavior(arriveSB);//might put this as its own function
+    }
+
+    public void setArrivePrey(Box2dSteering prey) {
+        if(!(prey == null) && !(arriveSB == null))
+            arriveSB.setTarget(prey);
+
+    }
+
+    public Pursue<Vector2> getPursueSB() {
+        return pursueSB;
+    }
+
+    public void setPursueSB(Pursue<Vector2> pursueSB) {
+        if(!(pursueSB == null))
+          this.pursueSB = pursueSB;
+    }
+
+    public void setPursueSB(Box2dSteering prey) {
+        if(!(prey == null))
+             pursueSB = new Pursue<Vector2>(steerEnt,prey,0.3f);
+    }
+
+    public void setPursuePrey(Box2dSteering prey){
+        if(!(prey == null) && !(pursueSB == null))
+            pursueSB.setTarget(prey);
+    }
+
     public zombie(entityInfo entType, gameMap map) {
         super(entType, map);
         /*
@@ -55,9 +112,13 @@ public class zombie extends entity {
         this.doISeeANoneZombie = false;
         //this.randomWalkTime;
 
+        this.steerEnt = new Box2dSteering(super.getBody(),10);
+
         if(this.mIsCpu){
             //put player towards the beginning of map if its not a new game
             //if its a new game dont draw the spite yet we got to set a bomb before hand
+
+            // Wander<Vector2> wanderSB = new Wander<Vector2>(this.steerEnt);
         }
     }
 
@@ -78,6 +139,8 @@ public class zombie extends entity {
   //  @Override
     public void update(float dTime){
 
+        steerEnt.update(dTime);
+
         if(this.mIsCpu) {
 
             if(this.classID == classIdEnum.Zombie) {
@@ -85,6 +148,7 @@ public class zombie extends entity {
                 if (doISeeANoneZombie) {
                     //goAfterNonZombie
                     //if we are close enough attack
+                    // or follow the leader if instructed on oding so
                 } else {
                     int xtemp = (int) (Math.random() * ((40 - 2) + 1)) + 2;
                     int ytemp = (int) (Math.random() * ((40 - 2) + 1)) + 2;
@@ -92,8 +156,8 @@ public class zombie extends entity {
                         xtemp *= -1;
                     if (ytemp % 2 == 0)
                         ytemp *= -1;
-                    moveX(xtemp * dTime);
-                    moveY(ytemp * dTime);
+                    //moveX(xtemp * dTime);
+                    //moveY(ytemp * dTime);
                 }
             } else {
                 super.update(dTime);

@@ -16,6 +16,7 @@ public class person extends zombie {
     private float wlkTime;
     private int wlkDirection;
 
+    //seek or flee evad, face
     public person(entityInfo entityType, gameMap map) {
 
         super(entityType, map);

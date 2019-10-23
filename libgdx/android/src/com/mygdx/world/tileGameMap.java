@@ -9,14 +9,15 @@ they also explain how to modify the tiles in a map during game play, we wont add
 
 package com.mygdx.world;
 
-import android.util.Log;
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 import com.mygdx.entities.person;
@@ -35,6 +36,9 @@ public class tileGameMap extends gameMap {
     private int tileWidth;
     private int tileHeight;
 
+    private World world;
+    private Box2DDebugRenderer b2dr;
+
     protected ArrayList<entity> people;
     protected ArrayList<zombie> zombies;
 
@@ -49,11 +53,18 @@ public class tileGameMap extends gameMap {
         mapWidth =  MapProp.get("width", Integer.class)* MapProp.get("tilewidth", Integer.class);
         mapHeight =  MapProp.get("height", Integer.class)* MapProp.get("tileheight", Integer.class);
 
+        world = new World(new Vector2(0,0),true);// make sure to dispose of this when needed
+        b2dr = new Box2DDebugRenderer();
+
         people = new ArrayList<entity>();
 
         playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
         people.add(playerOne.getHost());
         people.add(new person(entityInfo.PERSON,this));
+        people.add(new person(entityInfo.ZOMBIE,this));
+
+        // testing ai behavoirs
+       people.get(2).setArriveSB(people.get(0).getSteerEnt());
 
         playerOne.setPeopleRef(people);
 
@@ -69,14 +80,22 @@ public class tileGameMap extends gameMap {
        batch.begin();
 
        people.get(0).render(batch);//z player
-        // people.get(1).render(batch);//person
+        //people.get(1).render(batch);//person
+        people.get(2).render(batch);//zombie
+
+        //box2d Debug
+        b2dr.render(world,playerOne.getPlayCam().combined);
        batch.end();
     }
 
     @Override
     public void update(float deltaT){ //update what the method name should say what we are updating
+
+       world.step(1/60f,6,2);// need to read docs on this
         playerOne.update(deltaT); // zombie player
         //people.get(1).update(deltaT);//person
+        people.get(2).update(deltaT);//zombie
+
     }
 
     @Override
@@ -85,8 +104,9 @@ public class tileGameMap extends gameMap {
     }
 
     @Override
-    public int getMapWidth(){
-       return mapWidth; }
+    public int getMapWidth(){ return mapWidth; }
+
+    public World getWorld(){return world;}
 
     @Override
     public int getMapHeight(){ return mapHeight; }
