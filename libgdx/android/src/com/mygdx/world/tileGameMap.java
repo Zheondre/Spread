@@ -26,6 +26,8 @@ import com.mygdx.entities.zombie;
 
 import java.util.ArrayList;
 
+import static com.mygdx.entities.entityInfo.CPlAYER;
+
 public class tileGameMap extends gameMap {
 
     private TiledMap m_TileMap;
@@ -39,9 +41,16 @@ public class tileGameMap extends gameMap {
     private World world;
     private Box2DDebugRenderer b2dr;
 
-    protected ArrayList<entity> people;
-    protected ArrayList<zombie> zombies;
+    private ArrayList<entity> people;
+    private ArrayList<entity> zombies;
 
+    public ArrayList<entity> getPeople() {
+        return people;
+    }
+
+    public ArrayList<entity> getZombies() {
+        return zombies;
+    }
     private player playerOne;
 
     public tileGameMap() {
@@ -57,18 +66,32 @@ public class tileGameMap extends gameMap {
         b2dr = new Box2DDebugRenderer();
 
         people = new ArrayList<entity>();
+        zombies = new ArrayList<entity>();
 
         playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
-        people.add(playerOne.getHost());
+        //playerOne = new player(new person(CPlAYER,this));
+
+        playerOne.setPeopleRef(zombies);
+
+        zombies.add(playerOne.getHost());
+        zombies.add(new zombie(entityInfo.ZOMBIE,this));
+        zombies.add(new zombie(entityInfo.ZOMBIE,this));
+
         people.add(new person(entityInfo.PERSON,this));
-        people.add(new person(entityInfo.ZOMBIE,this));
+        people.add(new person(entityInfo.PERSON,this));
+        people.add(new person(entityInfo.PERSON,this));
 
-        // testing ai behavoirs
-       people.get(2).setArriveSB(people.get(0).getSteerEnt());
 
-        playerOne.setPeopleRef(people);
+        // testing ai behaviors
+        people.get(2).setPursueSB(people.get(0));//
+       // people.get(2).setPursueSB(people.get(0).getSteerEnt());//
+        people.get(2).getSteerEnt().setMaxLinearSpeed(50);
+        people.get(2).getSteerEnt().setMaxLinearAcceleration(4000);
+        people.get(2).getSteerEnt().setMaxAngularSpeed(20f);
+        people.get(2).getSteerEnt().setMaxAngularAcceleration(10f);
 
-        //m_TileMap.getLayers()
+        //people.get(2).setArriveSB(people.get(0).getSteerEnt());// over shoots
+
     }
 
     @Override
@@ -79,8 +102,9 @@ public class tileGameMap extends gameMap {
        batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
        batch.begin();
 
+       //for (int i = 0 : i < people.get )
        people.get(0).render(batch);//z player
-        //people.get(1).render(batch);//person
+        people.get(1).render(batch);//person
         people.get(2).render(batch);//zombie
 
         //box2d Debug
@@ -93,9 +117,10 @@ public class tileGameMap extends gameMap {
 
        world.step(1/60f,6,2);// need to read docs on this
         playerOne.update(deltaT); // zombie player
-        //people.get(1).update(deltaT);//person
+        people.get(1).update(deltaT);//person
         people.get(2).update(deltaT);//zombie
-
+// check for new zombies and put them in the array
+        // check to see who has died and clean them off the map ?
     }
 
     @Override
@@ -121,12 +146,5 @@ public class tileGameMap extends gameMap {
     public player getPlayerOne() {
         return playerOne;
     }
-
-    public boolean doesPersonCollideWithMap(float x, float y, int w, int h)
-    {
-        //if(x < 0 || y < 0 || ((x + w ) > getPixelWth()) || ((y + h ) > getPixelWth()))
-            return false;
-    }
-
 
 }

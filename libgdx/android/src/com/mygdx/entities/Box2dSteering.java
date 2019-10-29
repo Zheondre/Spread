@@ -18,18 +18,34 @@ public class Box2dSteering implements Steerable<Vector2> {
     float maxLinearSpeed, maxLinearAcc;
     float maxaAngleSpeed, maxAngleAcc;
 
-    SteeringBehavior<Vector2> behavior; //might have to put these in the entitiy class
-    SteeringAcceleration steeringOutput;
+    public boolean isIndependentFacing() {
+        return independentFacing;
+    }
 
-    public Box2dSteering(Body body, float boundRadius ){
-     this.body = body;
-     this.boundRadius = boundRadius;
+    public void setIndependentFacing(boolean independentFacing) {
+        this.independentFacing = independentFacing;
+    }
+
+    boolean independentFacing;
+
+
+    SteeringBehavior<Vector2> behavior; //might have to put these in the entitiy class
+    private static final SteeringAcceleration<Vector2> steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
+
+
+    public Box2dSteering(Body body, float boundRadius){
+        this.body = body;
+        this.boundRadius = boundRadius;
 
         this.tagged = false;
-        this.maxLinearSpeed = 500;
-        this.maxLinearAcc = 5000;
-        this.maxaAngleSpeed = 30;
-        this.maxAngleAcc = 5;
+        this.maxLinearSpeed = 50;
+        this.maxLinearAcc = 7300;
+        this.maxaAngleSpeed = 50;
+        this.maxAngleAcc = 30;
+
+        this.independentFacing = true; // will change later
+        //this.independentFacing = independentFacing;
+     this.body.setUserData(this);
     }
 
 
@@ -42,13 +58,41 @@ public class Box2dSteering implements Steerable<Vector2> {
             anyAcc = true;
         }
 
-        if(anyAcc){
-            float currentSpeed = body.getLinearVelocity().len2();
-            if(currentSpeed > maxLinearSpeed * maxLinearSpeed)
-               body.setLinearVelocity(body.getLinearVelocity().scl(maxLinearSpeed/(float)Math.sqrt(currentSpeed)));
-
+        // Update orientation and angular velocity
+        if (isIndependentFacing()) {
+            if (steeringOutput.angular != 0) {
+                // this method internally scales the torque by deltaTime
+                body.applyTorque(steeringOutput.angular, true);
+                anyAcc = true;
+            }
+        } else {
+            // If we haven't got any velocity, then we can do nothing.
+            Vector2 linVel = getLinearVelocity();
+            if (!linVel.isZero(getZeroLinearSpeedThreshold())) {
+                float newOrientation = vectorToAngle(linVel);
+                body.setAngularVelocity((newOrientation - getAngularVelocity()) * dt); // this is superfluous if independentFacing is always true
+                body.setTransform(body.getPosition(), newOrientation);
+            }
         }
 
+        if(anyAcc){
+           /*float currentSpeed = body.getLinearVelocity().len2();
+            if(currentSpeed > maxLinearSpeed * maxLinearSpeed)
+               body.setLinearVelocity(body.getLinearVelocity().scl(maxLinearSpeed/(float)Math.sqrt(currentSpeed)));
+*/
+            Vector2 velocity = body.getLinearVelocity();
+            float currentSpeedSquare = velocity.len2();
+            float maxLinearSpeed = getMaxLinearSpeed();
+            if (currentSpeedSquare > maxLinearSpeed * maxLinearSpeed) {
+                body.setLinearVelocity(velocity.scl(maxLinearSpeed / (float)Math.sqrt(currentSpeedSquare)));
+            }
+
+            // Cap the angular speed
+            float maxAngVelocity = getMaxAngularSpeed();
+            if (body.getAngularVelocity() > maxAngVelocity) {
+                body.setAngularVelocity(maxAngVelocity);
+            }
+        }
     }
 
     public void update(float dt){
@@ -56,7 +100,6 @@ public class Box2dSteering implements Steerable<Vector2> {
             behavior.calculateSteering(steeringOutput);
             applySteering(dt);
         }
-
     }
     @Override
     public Vector2 getPosition() {
@@ -70,7 +113,7 @@ public class Box2dSteering implements Steerable<Vector2> {
 
     @Override
     public void setOrientation(float orientation) {
-
+        body.setTransform(getPosition(), orientation);
     }
 
     @Override
@@ -90,7 +133,7 @@ public class Box2dSteering implements Steerable<Vector2> {
 
     @Override
     public Vector2 getLinearVelocity() {
-        return null;
+        return body.getLinearVelocity();
     }
 
     @Override
@@ -100,7 +143,7 @@ public class Box2dSteering implements Steerable<Vector2> {
 
     @Override
     public float getBoundingRadius() {
-        return 0;
+        return boundRadius;
     }
 
     @Override
@@ -115,17 +158,17 @@ public class Box2dSteering implements Steerable<Vector2> {
 
     @Override
     public float getZeroLinearSpeedThreshold() {
-        return 0;
+        return 0.001f;
     }
 
     @Override
     public void setZeroLinearSpeedThreshold(float value) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public float getMaxLinearSpeed() {
-        return 0;
+        return maxLinearSpeed;
     }
 
     @Override
@@ -145,7 +188,7 @@ public class Box2dSteering implements Steerable<Vector2> {
 
     @Override
     public float getMaxAngularSpeed() {
-        return 0;
+        return maxaAngleSpeed;
     }
 
     @Override

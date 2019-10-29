@@ -22,10 +22,7 @@ public abstract class entity  {
 
     protected float mVelocityY;
     protected gameMap mMap;
-
-    public Vector3 getmPos() {
-        return mPos;
-    }
+    protected boolean badPath;
 
     protected Vector3 mPos;
 
@@ -34,7 +31,6 @@ public abstract class entity  {
     protected classIdEnum classID;
 
     private Body body;
-    private Box2dSteering b2dEntity;
 
     private boolean amIOnTheGound;
     private boolean moveLeft;
@@ -42,7 +38,7 @@ public abstract class entity  {
     private boolean moveUp;
     private boolean moveDown;
 
-    private boolean validPath;
+    protected boolean validPath;
 
     private int mapXMax;
     private int mapYMax;
@@ -89,10 +85,13 @@ public abstract class entity  {
 
         FixtureDef fd = new FixtureDef();
         CircleShape cs = new CircleShape();
-        cs.setRadius(4);
+        cs.setRadius(7);
+        fd.density = .01f;
         fd.shape = cs;
+        //fd.filter.groupIndex = 0;
         this.body.createFixture(fd);
         this.StopVec = new Vector2(0,0);
+        badPath = false;
     }
 
     public abstract void render(SpriteBatch batch);
@@ -104,6 +103,8 @@ public abstract class entity  {
     public abstract void setArriveSB(Box2dSteering prey);
     public abstract void setArrivePrey(Box2dSteering prey);
 
+    public abstract void setPursueSB(entity prey);
+
     public abstract Pursue<Vector2> getPursueSB();
 
     public abstract Box2dSteering getSteerEnt();
@@ -113,9 +114,10 @@ public abstract class entity  {
         if(moveRight)
             validPath = moveX(speed * dTime);
 
-        if(!validPath)
+        if(!validPath) {
             body.setLinearVelocity(StopVec);
 
+        }
         if(moveLeft)
             validPath = moveX(-speed * dTime);
 
@@ -134,14 +136,13 @@ public abstract class entity  {
         if(!validPath)
             body.setLinearVelocity(StopVec);
 
-        mPos.x = body.getPosition().x;
-        mPos.y = body.getPosition().y;
+        mPos.x = body.getPosition().x - 7;
+        mPos.y = body.getPosition().y - 7.5f;
 
     }
 
-    public Vector3 getPos() {
-        return mPos;
-    }
+    public Vector3 getPos() { return mPos; }
+
 //i think these controls should be moved to the player class
     protected boolean moveX(float amount){
         // Every moving entity will check for collisions
@@ -169,11 +170,11 @@ public abstract class entity  {
             return false;
 
         if(amount > 0) {
-            if (body.getLinearVelocity().x <= 20)
-                body.applyLinearImpulse(new Vector2(13.8f, 0), body.getWorldCenter(), true);
+            if (body.getLinearVelocity().x <= 60)
+                body.applyLinearImpulse(new Vector2(25.8f, 0), body.getWorldCenter(), true);
         }else{
-            if (body.getLinearVelocity().x >= -20)
-                body.applyLinearImpulse(new Vector2(-13.8f, 0), body.getWorldCenter(), true);
+            if (body.getLinearVelocity().x >= -60)
+                body.applyLinearImpulse(new Vector2(-25.8f, 0), body.getWorldCenter(), true);
         }
 
        // mPos.x = mPos.x + amount;
@@ -200,12 +201,12 @@ public abstract class entity  {
             return false;
 
         if(amount > 0) {
-            if (body.getLinearVelocity().y <= 15)
-                body.applyLinearImpulse(new Vector2(0, 7.8f), body.getWorldCenter(), true);
+            if (body.getLinearVelocity().y <= 30)
+                body.applyLinearImpulse(new Vector2(0, 15.8f), body.getWorldCenter(), true);
 
         }else{
-            if (body.getLinearVelocity().y >= -15)
-                body.applyLinearImpulse(new Vector2(0, -7.8f), body.getWorldCenter(), true);
+            if (body.getLinearVelocity().y >= -30)
+                body.applyLinearImpulse(new Vector2(0, -15.8f), body.getWorldCenter(), true);
         }
 
       // mPos.y = mPos.y + amount;
@@ -221,39 +222,25 @@ public abstract class entity  {
     public float getPosY(){ return mPos.y; }
     public float getVelocityY(){ return mVelocityY; }
 
+    public Vector3 getmPos() { return mPos; }
+
     public gameMap getMap(){ return mMap; }
 
     public boolean isOnGround(){ return amIOnTheGound; }
 
-    public boolean isMoveLeft() {
-        return moveLeft;
-    }
+    public boolean isMoveLeft() { return moveLeft; }
 
-    public void setMoveLeft(boolean moveLeft) {
-        this.moveLeft = moveLeft;
-    }
+    public void setMoveLeft(boolean moveLeft) { this.moveLeft = moveLeft; }
 
-    public boolean isMoveRight() {
-        return moveRight;
-    }
+    public boolean isMoveRight() { return moveRight; }
 
-    public void setMoveRight(boolean moveRight) {
-        this.moveRight = moveRight;
-    }
+    public void setMoveRight(boolean moveRight) { this.moveRight = moveRight; }
 
-    public boolean isMoveUp() {
-        return moveUp;
-    }
+    public boolean isMoveUp() { return moveUp; }
 
-    public void setMoveUp(boolean moveUp) {
-        this.moveUp = moveUp;
-    }
+    public void setMoveUp(boolean moveUp) { this.moveUp = moveUp; }
 
-    public boolean isMoveDown() {
-        return moveDown;
-    }
+    public boolean isMoveDown() { return moveDown; }
 
-    public void setMoveDown(boolean moveDown) {
-        this.moveDown = moveDown;
-    }
+    public void setMoveDown(boolean moveDown) { this.moveDown = moveDown; }
 }

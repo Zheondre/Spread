@@ -52,9 +52,11 @@ public enum entityInfo {
         this.id = id;
         this.weapon = classIdEnum.NOWEAPON;
 
-        this.xpos = (float)Math.random();
-        this.ypos = (float)Math.random();
+        //this.xpos = (float)Math.random();
+        //this.ypos = (float)Math.random();
 
+        this.xpos = (float) (Math.random()*((150-20)+20))+1;
+        this.ypos = (float) (Math.random()*((150-20)+20))+1;
         this.walkSpeed = 80;
 
         this.armor = 0;
@@ -74,22 +76,22 @@ public enum entityInfo {
                 this.isCpu = false;
                 break;
             case PPerson:
-                this.xpos = 0;
-                this.ypos = 0;
+                this.xpos = 250;
+                this.ypos = 50;
                 this.isCpu = false;
                 break;
             case Zombie:
-                this.xpos = 50;
-                this.ypos = 50;
-                this.infectPts = 3;
+               // this.xpos = 30;
+                //this.ypos = 50;
+                //this.infectPts = 3;
                 this.zombie = true;
                 this.infected = true;
                 this.walkSpeed = 40;
                 break;
             case Person:
                 //temp dont commit
-                this.xpos = 75;
-                this.ypos = 75;
+                //this.xpos = 75;
+                //this.ypos = 25;
                 break;
             case Security:
                 this.armor = 40;

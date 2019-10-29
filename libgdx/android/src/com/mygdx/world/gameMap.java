@@ -10,11 +10,17 @@ package com.mygdx.world;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.entities.entity;
+
+import java.util.ArrayList;
 
 public abstract class gameMap {
 
     public gameMap(){
     }
+
+    public abstract ArrayList<entity> getPeople();
+    public abstract ArrayList<entity> getZombies();
 
     public abstract void render(SpriteBatch batch);
     public abstract void update(float deltaT);
@@ -28,7 +34,5 @@ public abstract class gameMap {
     public abstract MapLayers getMapLayers();
 
     public abstract World getWorld();
-
-    public abstract boolean doesPersonCollideWithMap(float x, float y, int col, int row);
 
 }
