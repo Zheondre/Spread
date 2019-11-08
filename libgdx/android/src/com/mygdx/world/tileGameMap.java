@@ -76,8 +76,9 @@ public class tileGameMap extends gameMap {
 
         for(MapObject object : m_TileMap.getLayers().get(7).getObjects().getByType(RectangleMapObject.class))
         {
-            Rectangle rec = ((RectangleMapObject)object ).getRectangle();
-            gameBlocks.add(new gameBlocks(entityInfo.STATIC_OBJECT, this, rec.getX() + rec.getWidth()/2, rec.getY() + rec.getHeight()/2));
+           // Rectangle rec = ((RectangleMapObject)object ).getRectangle();
+            //rec.getX() + rec.getWidth()/2, rec.getY() + rec.getHeight()/2)
+            gameBlocks.add(new gameBlocks(entityInfo.STATIC_OBJECT, this, ((RectangleMapObject)object).getRectangle()));
         }
 
         people = new ArrayList<entity>();

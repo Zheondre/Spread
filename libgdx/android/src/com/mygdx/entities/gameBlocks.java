@@ -3,15 +3,14 @@ package com.mygdx.entities;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.world.gameMap;
 
 public class gameBlocks extends entity {
 
-   public gameBlocks(entityInfo entType, gameMap Map, float posX, float posY) {
-        super( entType,Map);
-        super.setPosX(posX);
-        super.setPosY(posY);
+   public gameBlocks(entityInfo entType, gameMap Map, Rectangle rec) {
+        super(entType, Map, rec);
     }
 
     public void update(float dTime) {

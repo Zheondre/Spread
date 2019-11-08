@@ -4,6 +4,7 @@ import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -66,7 +67,7 @@ public abstract class entity  {
     }
 
     public entity(entityInfo entType, gameMap Map) {
-        //this.mPos = new Vector3(entType.getXpos(), entType.getYpos(),0);
+
         this.mVelocityY = 0;
         this.mMap = Map;
         this.amIOnTheGound = true; // every thing will be on the ground for now
@@ -82,33 +83,51 @@ public abstract class entity  {
         BodyDef entBody = new BodyDef();
         FixtureDef fd = new FixtureDef();
 
-        if(this.classID != STATIC_OBJECT) {
-            this.StopVec = new Vector2(0,0);
-            entBody.position.set(mPos.x, mPos.y);
-            //the ent might not be a person so make this dynamic later
-            entBody.type = BodyDef.BodyType.DynamicBody;
+        this.StopVec = new Vector2(0,0);
 
-            CircleShape cs = new CircleShape();
-            cs.setRadius(7);
-            fd.density = .01f;
-            fd.friction = .5f;
-            fd.shape = cs;
+        this.mPos = new Vector3((float) (Math.random()*((150-10)+10))+1,
+                (float) (Math.random()*((150-10)+10))+1,
+                0);
+        entBody.position.set(mPos.x, mPos.y);
+        entBody.type = BodyDef.BodyType.DynamicBody;
 
-            this.mPos = new Vector3((float) (Math.random()*((150-10)+10))+1,
-                    (float) (Math.random()*((150-10)+10))+1,
-                    0);
-        }
-        else {
-            entBody.type = BodyDef.BodyType.StaticBody;
-            entBody.position.set(0, 0);
-            fd.shape = new PolygonShape();
-            this.mPos = new Vector3(0,
-                    0,
-                    0);
-        }
+        CircleShape cs = new CircleShape();
+        cs.setRadius(7);
+        fd.density = .01f;
+        fd.friction = .5f;
+        fd.shape = cs;
 
         this.body = mMap.getWorld().createBody(entBody);
         //fd.filter.groupIndex = 0;
+        this.body.createFixture(fd);
+        badPath = false;
+    }
+
+
+    public entity(entityInfo entType, gameMap Map, Rectangle rec) {
+
+        this.mPos = new Vector3(rec.getX() + rec.getWidth()/2, rec.getY() + rec.getHeight()/2,0);
+        this.mVelocityY = 0;
+        this.mMap = Map;
+        this.amIOnTheGound = true; // every thing will be on the ground for now
+
+        this.classID = entType.getId();
+        this.moveLeft = false;
+        this.moveRight = false;
+        this.moveUp = false;
+        this.moveDown = false;
+        this.validPath = false;
+
+        BodyDef entBody = new BodyDef();
+        FixtureDef fd = new FixtureDef();
+        PolygonShape shape = new PolygonShape();
+
+        shape.setAsBox(rec.getWidth()/2,rec.getHeight()/2);
+
+        entBody.type = BodyDef.BodyType.StaticBody;
+        entBody.position.set(mPos.x, mPos.y);
+        fd.shape =shape;
+        this.body = mMap.getWorld().createBody(entBody);
         this.body.createFixture(fd);
         badPath = false;
     }

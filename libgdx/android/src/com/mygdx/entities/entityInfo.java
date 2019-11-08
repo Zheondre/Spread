@@ -13,6 +13,7 @@ If something is missing update file please
 //should we include file path's in here or in side actual class ?
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector3;
 
 public enum entityInfo {
 
@@ -129,9 +130,6 @@ public enum entityInfo {
         return this.id;
     }
 
-    public void setXpos(float xpos) { this.xpos = xpos; }
-
-    public void setYpos(float ypos) { this.ypos = ypos; }
 
     public float getXpos() {
         return this.xpos;
