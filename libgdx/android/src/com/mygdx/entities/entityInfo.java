@@ -21,7 +21,8 @@ public enum entityInfo {
     PERSON(classIdEnum.Person),
     COP(classIdEnum.Cop),
     SECURITY(classIdEnum.Security),
-    ZOMBIE(classIdEnum.Zombie);
+    ZOMBIE(classIdEnum.Zombie),
+    STATIC_OBJECT(classIdEnum.STATIC_OBJECT);
 
     private classIdEnum weapon;
     private classIdEnum id;
@@ -55,8 +56,9 @@ public enum entityInfo {
         //this.xpos = (float)Math.random();
         //this.ypos = (float)Math.random();
 
-        this.xpos = (float) (Math.random()*((150-20)+20))+1;
-        this.ypos = (float) (Math.random()*((150-20)+20))+1;
+        // need to make sure we dont generate on a blocked position
+        //this.xpos = (float) (Math.random()*((150-10)+10))+1;
+        //this.ypos = (float) (Math.random()*((150-10)+10))+1;
         this.walkSpeed = 80;
 
         this.armor = 0;
@@ -81,8 +83,8 @@ public enum entityInfo {
                 this.isCpu = false;
                 break;
             case Zombie:
-               // this.xpos = 30;
-                //this.ypos = 50;
+                this.xpos = 30;
+                this.ypos = 50;
                 //this.infectPts = 3;
                 this.zombie = true;
                 this.infected = true;
@@ -101,6 +103,15 @@ public enum entityInfo {
                 this.armor = 70;
                 this.weapon = classIdEnum.PISTOL;
                 break;
+            case STATIC_OBJECT:
+                this.walkSpeed = 0;
+                this.armor = 0;
+                this.health = 0;
+                this.attackPt = 0;
+                this.zombie = false;
+                this.infected = false;
+                this.isCpu = true;
+                break;
             default:
                 //throw an error, unknown type
         }
@@ -117,6 +128,10 @@ public enum entityInfo {
     public classIdEnum getId() {
         return this.id;
     }
+
+    public void setXpos(float xpos) { this.xpos = xpos; }
+
+    public void setYpos(float ypos) { this.ypos = ypos; }
 
     public float getXpos() {
         return this.xpos;

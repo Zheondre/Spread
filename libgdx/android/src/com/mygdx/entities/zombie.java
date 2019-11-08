@@ -38,9 +38,9 @@ public class zombie extends entity {
 
    protected Box2dSteering steerEnt;
 
-    protected Pursue<Vector2>  pursueSB ;
-    protected Wander<Vector2>  wanderSB ;
-    protected Arrive<Vector2>  arriveSB ;
+    protected Pursue<Vector2>  pursueSB;
+    protected Wander<Vector2>  wanderSB;
+    protected Arrive<Vector2>  arriveSB;
 
     public Box2dSteering getSteerEnt() {
         return steerEnt;
@@ -56,6 +56,7 @@ public class zombie extends entity {
     }
 
     //changeSb();
+
     public void setWonderSB(Box2dSteering entSb) {
         if((entSb != null)) {
            // wanderSB = new Wander<Vector2>(entSb).;
@@ -209,7 +210,7 @@ public class zombie extends entity {
             //temp code
 
             if(this.classID == classIdEnum.Zombie) {
-                float tempd2 ;
+                float tempd2;
                 //loop through noinfected vitems
                 //also need to see if they are in out view but for now we will base this off of ditance
                 //if close enough chase, if too close stop and attack
@@ -217,11 +218,23 @@ public class zombie extends entity {
                 if (doISeeANoneZombie) {
 
                     float tempD = getEntDistance();
-                    if(tempD < 12){
+                    if(tempD < 25){
                         //steerEnt.setMaxLinearAcceleration(0);
                         //steerEnt.body.setLinearVelocity(0,0);
                         // steerEnt.setMaxLinearSpeed(0);
-                        steerEnt.body.applyLinearImpulse(new Vector2(0, 0), steerEnt.body.getWorldCenter(), false);
+                        if(steerEnt.getLinearVelocity().x > 0 )
+                            steerEnt.body.applyLinearImpulse(new Vector2(-50f, 0), steerEnt.body.getWorldCenter(), true);
+
+                        if(steerEnt.getLinearVelocity().x <  0 )
+                            steerEnt.body.applyLinearImpulse(new Vector2(50f, 0), steerEnt.body.getWorldCenter(), true);
+
+                        if(steerEnt.getLinearVelocity().y > 0 )
+                            steerEnt.body.applyLinearImpulse(new Vector2(-50f, 0), steerEnt.body.getWorldCenter(), true);
+
+                        if(steerEnt.getLinearVelocity().y <  0 )
+                            steerEnt.body.applyLinearImpulse(new Vector2(50f, 0), steerEnt.body.getWorldCenter(), true);
+
+                       // steerEnt.body.applyLinearImpulse(new Vector2(0, 0), steerEnt.body.getWorldCenter(), true);
                         biteNonZombie((person)this.getPrey());
                     } else {
                         steerEnt.update(dTime);
@@ -230,7 +243,7 @@ public class zombie extends entity {
                     // or follow the leader if instructed on oding so
                 } else {
                     entity shortEnt = null;
-                    float tth = 50;
+                    float tth = 80;
                     for(entity nonzombie : mMap.getPeople()){
                         tempd2 = getEntDistance(nonzombie);
                         if(tempd2 < tth) {

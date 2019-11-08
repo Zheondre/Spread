@@ -3,9 +3,6 @@ package com.mygdx.entities;
 import com.badlogic.gdx.ai.steer.behaviors.Evade;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.Hide;
-import com.badlogic.gdx.ai.steer.behaviors.Wander;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.world.gameMap;
 
@@ -17,7 +14,7 @@ public class person extends zombie {
     private boolean mZombie;
 
     protected int mAlerted;
-    private int mInfctTime;
+    private float mInfctTime;
 
     private float wlkTime;
     private int wlkDirection;
@@ -37,7 +34,7 @@ public class person extends zombie {
         this.mZombie =  entityType.isZombie();
         this.mInfected = entityType.isInfected();
         this.mAlerted = 0;
-        this.mInfctTime = 0;
+        this.mInfctTime = 100;
         this.wlkDirection = 0;
         this.wlkTime = -1;
     }
@@ -57,6 +54,13 @@ public class person extends zombie {
     {//virtual function
         //check alertness
         //check if hurt or if infected
+
+        if(mInfected) {
+            mInfctTime -= .005;
+            if(mInfctTime < 0 )
+                turnIntoAZombie();
+            mInfected = false;
+        }
 
         switch(mAlerted) {// we might want to change these into enums
             case 5:
@@ -90,6 +94,7 @@ public class person extends zombie {
 
     public void turnIntoAZombie() {
         this.mZombie = true;
+       // this.setImage("zombie.png");
     }
 
     public boolean isInfected() {
@@ -109,11 +114,11 @@ public class person extends zombie {
         this.mAlerted = Alerted;
     }
 
-    public int getInfctTime() {
+    public float getInfctTime() {
         return mInfctTime;
     }
 
-    public void setmInfctTime(int InfctTime) {
+    public void setmInfctTime(float InfctTime) {
         this.mInfctTime = InfctTime;
     }
 

@@ -10,7 +10,10 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.mygdx.world.gameMap;
+
+import static com.mygdx.entities.classIdEnum.STATIC_OBJECT;
 
 
 //public interface movements {
@@ -63,39 +66,55 @@ public abstract class entity  {
     }
 
     public entity(entityInfo entType, gameMap Map) {
-        this.mPos = new Vector3(entType.getXpos(), entType.getYpos(),0);
+        //this.mPos = new Vector3(entType.getXpos(), entType.getYpos(),0);
         this.mVelocityY = 0;
         this.mMap = Map;
         this.amIOnTheGound = true; // every thing will be on the ground for now
         this.classID = entType.getId();
-        this.moveLeft= false;
-        this.moveRight= false;
-        this.moveUp= false;
-        this.moveDown= false;
-        this.validPath= false;
+        this.moveLeft = false;
+        this.moveRight = false;
+        this.moveUp = false;
+        this.moveDown = false;
+        this.validPath = false;
 
         //mario tutorial youtube libgdx box2d
         //box2d
-        BodyDef entBody;
-        entBody = new BodyDef();//why didnt they make different constructors for this lol...
-        entBody.position.set(mPos.x,mPos.y);
-        //the ent might not be a person so make this dynamic later
-        entBody.type = BodyDef.BodyType.DynamicBody;
-        this.body = mMap.getWorld().createBody(entBody);
-
+        BodyDef entBody = new BodyDef();
         FixtureDef fd = new FixtureDef();
-        CircleShape cs = new CircleShape();
-        cs.setRadius(7);
-        fd.density = .01f;
-        fd.shape = cs;
+
+        if(this.classID != STATIC_OBJECT) {
+            this.StopVec = new Vector2(0,0);
+            entBody.position.set(mPos.x, mPos.y);
+            //the ent might not be a person so make this dynamic later
+            entBody.type = BodyDef.BodyType.DynamicBody;
+
+            CircleShape cs = new CircleShape();
+            cs.setRadius(7);
+            fd.density = .01f;
+            fd.friction = .5f;
+            fd.shape = cs;
+
+            this.mPos = new Vector3((float) (Math.random()*((150-10)+10))+1,
+                    (float) (Math.random()*((150-10)+10))+1,
+                    0);
+        }
+        else {
+            entBody.type = BodyDef.BodyType.StaticBody;
+            entBody.position.set(0, 0);
+            fd.shape = new PolygonShape();
+            this.mPos = new Vector3(0,
+                    0,
+                    0);
+        }
+
+        this.body = mMap.getWorld().createBody(entBody);
         //fd.filter.groupIndex = 0;
         this.body.createFixture(fd);
-        this.StopVec = new Vector2(0,0);
         badPath = false;
     }
 
     public abstract void render(SpriteBatch batch);
-    public abstract void setImage(String path);
+   // public abstract void setImage(String path);
 
     public abstract Arrive<Vector2> getArriveSB();
 
@@ -170,10 +189,10 @@ public abstract class entity  {
             return false;
 
         if(amount > 0) {
-            if (body.getLinearVelocity().x <= 60)
+            if (body.getLinearVelocity().x <= 55)
                 body.applyLinearImpulse(new Vector2(25.8f, 0), body.getWorldCenter(), true);
         }else{
-            if (body.getLinearVelocity().x >= -60)
+            if (body.getLinearVelocity().x >= -55)
                 body.applyLinearImpulse(new Vector2(-25.8f, 0), body.getWorldCenter(), true);
         }
 
@@ -201,11 +220,11 @@ public abstract class entity  {
             return false;
 
         if(amount > 0) {
-            if (body.getLinearVelocity().y <= 30)
+            if (body.getLinearVelocity().y <= 20)
                 body.applyLinearImpulse(new Vector2(0, 15.8f), body.getWorldCenter(), true);
 
         }else{
-            if (body.getLinearVelocity().y >= -30)
+            if (body.getLinearVelocity().y >= -20)
                 body.applyLinearImpulse(new Vector2(0, -15.8f), body.getWorldCenter(), true);
         }
 

@@ -39,9 +39,9 @@ public class Box2dSteering implements Steerable<Vector2> {
 
         this.tagged = false;
         this.maxLinearSpeed = 50;
-        this.maxLinearAcc = 7300;
-        this.maxaAngleSpeed = 50;
-        this.maxAngleAcc = 30;
+        this.maxLinearAcc = 5000;
+        this.maxaAngleSpeed = 10;
+        this.maxAngleAcc = 10;
 
         this.independentFacing = true; // will change later
         //this.independentFacing = independentFacing;

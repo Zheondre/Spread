@@ -11,21 +11,27 @@ package com.mygdx.world;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
+import com.mygdx.entities.gameBlocks;
 import com.mygdx.entities.person;
 import com.mygdx.entities.player;
 import com.mygdx.entities.zombie;
+import com.mygdx.entities.gameBlocks;
 
 import java.util.ArrayList;
 
+import static com.badlogic.gdx.utils.JsonValue.ValueType.object;
 import static com.mygdx.entities.entityInfo.CPlAYER;
 
 public class tileGameMap extends gameMap {
@@ -43,6 +49,7 @@ public class tileGameMap extends gameMap {
 
     private ArrayList<entity> people;
     private ArrayList<entity> zombies;
+    private ArrayList<gameBlocks> gameBlocks;
 
     public ArrayList<entity> getPeople() {
         return people;
@@ -65,31 +72,39 @@ public class tileGameMap extends gameMap {
         world = new World(new Vector2(0,0),true);// make sure to dispose of this when needed
         b2dr = new Box2DDebugRenderer();
 
+        gameBlocks = new ArrayList<gameBlocks>();
+
+        for(MapObject object : m_TileMap.getLayers().get(7).getObjects().getByType(RectangleMapObject.class))
+        {
+            Rectangle rec = ((RectangleMapObject)object ).getRectangle();
+            gameBlocks.add(new gameBlocks(entityInfo.STATIC_OBJECT, this, rec.getX() + rec.getWidth()/2, rec.getY() + rec.getHeight()/2));
+        }
+
         people = new ArrayList<entity>();
         zombies = new ArrayList<entity>();
 
-        playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
-        //playerOne = new player(new person(CPlAYER,this));
+        //playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
+        playerOne = new player(new person(CPlAYER,this));
 
         playerOne.setPeopleRef(zombies);
 
-        zombies.add(playerOne.getHost());
-        zombies.add(new zombie(entityInfo.ZOMBIE,this));
+        //zombies.add(playerOne.getHost());
+        //zombies.add(new zombie(entityInfo.ZOMBIE,this));
         zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
-        people.add(new person(entityInfo.PERSON,this));
-        people.add(new person(entityInfo.PERSON,this));
-        people.add(new person(entityInfo.PERSON,this));
-
+        people.add(playerOne.getHost());
+        for(int i = 0; i < 0; i++)
+            people.add(new person(entityInfo.PERSON,this));
 
         // testing ai behaviors
+        /*
         people.get(2).setPursueSB(people.get(0));//
        // people.get(2).setPursueSB(people.get(0).getSteerEnt());//
         people.get(2).getSteerEnt().setMaxLinearSpeed(50);
         people.get(2).getSteerEnt().setMaxLinearAcceleration(4000);
         people.get(2).getSteerEnt().setMaxAngularSpeed(20f);
         people.get(2).getSteerEnt().setMaxAngularAcceleration(10f);
-
+*/
         //people.get(2).setArriveSB(people.get(0).getSteerEnt());// over shoots
 
     }
@@ -102,10 +117,17 @@ public class tileGameMap extends gameMap {
        batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
        batch.begin();
 
-       //for (int i = 0 : i < people.get )
-       people.get(0).render(batch);//z player
+       for(entity ent: zombies)
+           ent.render(batch);
+        for(entity ent: people)
+            ent.render(batch);
+
+
+        people.get(0).render(batch);//z player
+       /*
         people.get(1).render(batch);//person
         people.get(2).render(batch);//zombie
+        */
 
         //box2d Debug
         b2dr.render(world,playerOne.getPlayCam().combined);
@@ -116,11 +138,18 @@ public class tileGameMap extends gameMap {
     public void update(float deltaT){ //update what the method name should say what we are updating
 
        world.step(1/60f,6,2);// need to read docs on this
+
+        for(entity ent: zombies)
+            ent.update(deltaT);
+        for(entity ent: people)
+            ent.update(deltaT);
+
         playerOne.update(deltaT); // zombie player
-        people.get(1).update(deltaT);//person
-        people.get(2).update(deltaT);//zombie
-// check for new zombies and put them in the array
-        // check to see who has died and clean them off the map ?
+        //people.get(1).update(deltaT);//person
+        //people.get(2).update(deltaT);//zombie
+
+        //check for new zombies and put them in the array
+        //check to see who has died and clean them off the map ?
     }
 
     @Override
@@ -143,8 +172,6 @@ public class tileGameMap extends gameMap {
 
     public int getPixelHeight(){ return 0; }
 
-    public player getPlayerOne() {
-        return playerOne;
-    }
+    public player getPlayerOne() { return playerOne; }
 
 }
