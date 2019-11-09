@@ -1,6 +1,9 @@
 package com.mygdx.entities;
 
-import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.ai.steer.behaviors.Evade;
+import com.badlogic.gdx.ai.steer.behaviors.Flee;
+import com.badlogic.gdx.ai.steer.behaviors.Hide;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.world.gameMap;
 
 import static com.badlogic.gdx.Input.Keys.UP;
@@ -10,30 +13,38 @@ public class person extends zombie {
     private boolean mInfected;
     private boolean mZombie;
 
-    private int mAlerted;
-    private int mInfctTime;
+    protected int mAlerted;
+    private float mInfctTime;
 
     private float wlkTime;
     private int wlkDirection;
 
+    protected Evade<Vector2> evadeSB;
+    protected Flee<Vector2>  fleeSB;
+    protected Hide<Vector2>  hideSB;
+
+    //seek or flee evad, face
     public person(entityInfo entityType, gameMap map) {
 
         super(entityType, map);
 
-        if(entityType.getId() == classIdEnum.Person)
+        if(entityType.getId() == classIdEnum.Person || entityType.getId() == classIdEnum.PPerson)
             this.setImage("player.png");// we can call this person.png
 
         this.mZombie =  entityType.isZombie();
         this.mInfected = entityType.isInfected();
         this.mAlerted = 0;
-        this.mInfctTime = 0;
+        this.mInfctTime = 100;
         this.wlkDirection = 0;
         this.wlkTime = -1;
     }
 
    // @Override
     public void update(float dTime){
+
         if(mZombie)
+            super.update(dTime);
+        else if(classID == classIdEnum.PPerson)
             super.update(dTime);
         else
             processMoves(dTime);
@@ -44,35 +55,22 @@ public class person extends zombie {
         //check alertness
         //check if hurt or if infected
 
-        switch(mAlerted) {// we might want to change these into enums
-            case 0:
-                //if the next move in our current direction is invalid
-                // change direction if there is an invalid path
-                if(wlkTime < 0) {
-                    wlkTime =  (float)(Math.random()*((8-3)+3))+1;
-                    wlkDirection = (int)(Math.random()*((4-1)+1))+1;
-                }else {
-                    wlkTime -= dTime;
+        if(mInfected) {
+            mInfctTime -= .005;
+            if(mInfctTime < 0 )
+                turnIntoAZombie();
+            mInfected = false;
+        }
 
-                    this.setMoveUp(false);
-                    this.setMoveRight(false);
-                    this.setMoveDown(false);
-                    this.setMoveLeft(false);
-                    switch (wlkDirection) {
-                        case 1:
-                            this.setMoveUp(true);
-                            break;
-                        case 2:
-                            this.setMoveRight(true);
-                            break;
-                        case 3:
-                            this.setMoveDown(true);
-                            break;
-                        case 4:
-                            this.setMoveLeft(true);
-                            break;
-                    }
+        switch(mAlerted) {// we might want to change these into enums
+            case 5:
+                // test wander steering ent
+                if(getSteerEnt().getBehavior() != getWanderSB()){
+                   getSteerEnt().setBehavior(getWanderSB());
                 }
+                break;
+            case 0:
+                walkRandomly(dTime);
                 break;
             case 1:
                 // you're hurt look for cover
@@ -96,6 +94,7 @@ public class person extends zombie {
 
     public void turnIntoAZombie() {
         this.mZombie = true;
+       // this.setImage("zombie.png");
     }
 
     public boolean isInfected() {
@@ -115,11 +114,11 @@ public class person extends zombie {
         this.mAlerted = Alerted;
     }
 
-    public int getInfctTime() {
+    public float getInfctTime() {
         return mInfctTime;
     }
 
-    public void setmInfctTime(int InfctTime) {
+    public void setmInfctTime(float InfctTime) {
         this.mInfctTime = InfctTime;
     }
 

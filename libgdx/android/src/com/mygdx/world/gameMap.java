@@ -9,11 +9,20 @@ they also explain how to modify the tiles in a map during game play, we wont add
 package com.mygdx.world;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.entities.person;
+import com.mygdx.entities.zombie;
+import com.mygdx.entities.entity;
+
+import java.util.ArrayList;
 
 public abstract class gameMap {
 
     public gameMap(){
     }
+
+    public abstract ArrayList<person> getPeople();
+    public abstract ArrayList<zombie> getZombies();
 
     public abstract void render(SpriteBatch batch);
     public abstract void update(float deltaT);
@@ -26,6 +35,6 @@ public abstract class gameMap {
 
     public abstract MapLayers getMapLayers();
 
-    public abstract boolean doesPersonCollideWithMap(float x, float y, int col, int row);
+    public abstract World getWorld();
 
 }

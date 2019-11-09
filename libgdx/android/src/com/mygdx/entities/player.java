@@ -4,7 +4,9 @@ import android.util.Log;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
@@ -23,12 +25,12 @@ public class player implements InputProcessor {
 
     private OrthographicCamera playCam;
 
-    private entity host;
-    private entity tHost;
+    private zombie host;
+    private zombie tHost;
 
-    private ArrayList<entity> peopleRef;
+    private ArrayList<person> peopleRef;
 
-    private boolean switchZombie(entity host){
+    private boolean switchZombie(zombie host){
         return  false ; // something got fucked up
     }
 
@@ -38,11 +40,11 @@ public class player implements InputProcessor {
         return ourInstance;
     }*/
 
-    public player(entity host) {
+    public player(zombie host) {
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
         playCam = new OrthographicCamera();
-        playCam.setToOrtho(false, wdth - 1000, hght - 950);
+        playCam.setToOrtho(false, wdth - 1300, hght - 975);
         playCam.update();
 
         this.points = 0;
@@ -51,9 +53,12 @@ public class player implements InputProcessor {
         this.converts = 0;
         Gdx.input.setInputProcessor(this);
         this.host = host;
+
+        //Wander<Vector2> wanderSB = new Wander<>()
+
     }
 
-    public player(int points, int infects, int kills, int converts, entity host) {
+    public player(int points, int infects, int kills, int converts, zombie host) {
 
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
@@ -102,22 +107,25 @@ public class player implements InputProcessor {
         this.converts = converts;
     }
 
-    public entity getHost() {
+    public zombie getHost() {
         return host;
     }
 
-    public void setHost(entity host) {
+    public void setHost(zombie host) {
         this.host = host;
     }
 
-    public void setPeopleRef(ArrayList<entity> peopleRef) {
+    public void setPeopleRef(ArrayList<person> peopleRef) {
         this.peopleRef = peopleRef;
     }
 
     public void update(float dTime){
         host.update(dTime);
-        playCam.position.x = host.getPosX();
-        playCam.position.y = host.getPosY();
+        //playCam.position.x = host.getPosX();
+        //playCam.position.y = host.getPosY();
+        playCam.position.x = host.getBody().getPosition().x;
+        playCam.position.y = host.getBody().getPosition().y;
+
         playCam.update();
     }
     public OrthographicCamera getPlayCam() {
@@ -166,17 +174,27 @@ public class player implements InputProcessor {
 
         //Log.d("degs", "The angle is " +degs);
         Log.d("TouchDown", "Screen Touched In X " + this.screenX+ " Y "+ this.screenY);
-        if((this.screenX - host.getPosX()) < -25)
-           host.setMoveLeft(true);
+        if((this.screenX - host.getPosX()) < -20) {
+            host.setMoveLeft(true);
+            //host.getBody().applyLinearImpulse(new Vector2(-0.5f,0),host.getBody().getWorldCenter(),true);
+        }
 
-        if((this.screenX - host.getPosX())> 25)
+        if((this.screenX - host.getPosX())> 20) {
             host.setMoveRight(true);
-        //*/
-        if((this.screenY - host.getPosY()) < -25)
-            host.setMoveDown(true);
+            //host.getBody().applyLinearImpulse(new Vector2(0.5f,0),host.getBody().getWorldCenter(),true);
 
-        if((this.screenY - host.getPosY())> 25)
+        }
+        //*/
+        if((this.screenY - host.getPosY()) < -20) {
+            host.setMoveDown(true);
+            //host.getBody().applyLinearImpulse(new Vector2(0,-0.5f),host.getBody().getWorldCenter(),true);
+
+        }
+        if((this.screenY - host.getPosY())> 20) {
             host.setMoveUp(true);
+            //host.getBody().applyLinearImpulse(new Vector2(0,0.5f),host.getBody().getWorldCenter(),true);
+
+        }
 
         //if longpressed then we are trying to get the zombie
 /*
@@ -265,20 +283,8 @@ public class player implements InputProcessor {
         host.setMoveUp(false);
         host.setMoveDown(false);
 
-        /*
-        if((this.screenX - host.getPosX()) < 0)
-            host.setMoveLeft(false);
+        host.getBody().setLinearVelocity(new Vector2(0,0));
 
-        if((this.screenX - host.getPosX())> 0)
-            host.setMoveRight(false);
-
-        if((this.screenY - host.getPosY()) < 0)
-            host.setMoveUp(false);
-
-        if((this.screenY - host.getPosY())> 0)
-            host.setMoveDown(false);
-*/
-        //playCam.translate(host.getPosX(),host.getPosY());
         return true;
     }
 

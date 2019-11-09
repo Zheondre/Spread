@@ -23,5 +23,6 @@ public enum classIdEnum {
         BATON,
         MAZE,
         NOWEAPON,
+        STATIC_OBJECT,
 
 }
