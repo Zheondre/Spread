@@ -47,15 +47,15 @@ public class tileGameMap extends gameMap {
     private World world;
     private Box2DDebugRenderer b2dr;
 
-    private ArrayList<entity> people;
-    private ArrayList<entity> zombies;
+    private ArrayList<person> people;
+    private ArrayList<zombie> zombies;
     private ArrayList<gameBlocks> gameBlocks;
 
-    public ArrayList<entity> getPeople() {
+    public ArrayList<person> getPeople() {
         return people;
     }
 
-    public ArrayList<entity> getZombies() {
+    public ArrayList<zombie> getZombies() {
         return zombies;
     }
     private player playerOne;
@@ -81,19 +81,20 @@ public class tileGameMap extends gameMap {
             gameBlocks.add(new gameBlocks(entityInfo.STATIC_OBJECT, this, ((RectangleMapObject)object).getRectangle()));
         }
 
-        people = new ArrayList<entity>();
-        zombies = new ArrayList<entity>();
+        people = new ArrayList<person>();
+        zombies = new ArrayList<zombie>();
 
         //playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
         playerOne = new player(new person(CPlAYER,this));
 
-        playerOne.setPeopleRef(zombies);
+        playerOne.setPeopleRef(people);
 
         //zombies.add(playerOne.getHost());
         //zombies.add(new zombie(entityInfo.ZOMBIE,this));
         zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
-        people.add(playerOne.getHost());
+        //debug
+        people.add((person)playerOne.getHost());
         for(int i = 0; i < 0; i++)
             people.add(new person(entityInfo.PERSON,this));
 
@@ -146,8 +147,6 @@ public class tileGameMap extends gameMap {
             ent.update(deltaT);
 
         playerOne.update(deltaT); // zombie player
-        //people.get(1).update(deltaT);//person
-        //people.get(2).update(deltaT);//zombie
 
         //check for new zombies and put them in the array
         //check to see who has died and clean them off the map ?

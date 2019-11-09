@@ -135,18 +135,6 @@ public abstract class entity  {
     public abstract void render(SpriteBatch batch);
    // public abstract void setImage(String path);
 
-    public abstract Arrive<Vector2> getArriveSB();
-
-    public abstract void setArriveSB(Arrive<Vector2> arriveSB);
-    public abstract void setArriveSB(Box2dSteering prey);
-    public abstract void setArrivePrey(Box2dSteering prey);
-
-    public abstract void setPursueSB(entity prey);
-
-    public abstract Pursue<Vector2> getPursueSB();
-
-    public abstract Box2dSteering getSteerEnt();
-
     public void update(float dTime){
 
         if(moveRight)

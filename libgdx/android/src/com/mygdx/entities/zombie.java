@@ -88,7 +88,7 @@ public class zombie extends entity {
           this.pursueSB = pursueSB;
     }
 
-    public void setPursueSB(entity prey) {
+    public void setPursueSB(person prey) {
         if((prey != null)) {
             pursueSB = new Pursue<Vector2>(steerEnt, prey.getSteerEnt(),.5f);
             steerEnt.setBehavior(pursueSB);//might put this as its own function
@@ -218,7 +218,7 @@ public class zombie extends entity {
                 if (doISeeANoneZombie) {
 
                     float tempD = getEntDistance();
-                    if(tempD < 25){
+                    if(tempD < 20){
                         //steerEnt.setMaxLinearAcceleration(0);
                         //steerEnt.body.setLinearVelocity(0,0);
                         // steerEnt.setMaxLinearSpeed(0);
@@ -242,9 +242,9 @@ public class zombie extends entity {
                     //goAfterNonZombie if we are close enough attack
                     // or follow the leader if instructed on oding so
                 } else {
-                    entity shortEnt = null;
+                    person shortEnt = null;
                     float tth = 80;
-                    for(entity nonzombie : mMap.getPeople()){
+                    for(person nonzombie : mMap.getPeople()){
                         tempd2 = getEntDistance(nonzombie);
                         if(tempd2 < tth) {
                             tth = tempd2;

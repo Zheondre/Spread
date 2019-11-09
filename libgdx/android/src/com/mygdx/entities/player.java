@@ -25,12 +25,12 @@ public class player implements InputProcessor {
 
     private OrthographicCamera playCam;
 
-    private entity host;
-    private entity tHost;
+    private zombie host;
+    private zombie tHost;
 
-    private ArrayList<entity> peopleRef;
+    private ArrayList<person> peopleRef;
 
-    private boolean switchZombie(entity host){
+    private boolean switchZombie(zombie host){
         return  false ; // something got fucked up
     }
 
@@ -40,7 +40,7 @@ public class player implements InputProcessor {
         return ourInstance;
     }*/
 
-    public player(entity host) {
+    public player(zombie host) {
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
         playCam = new OrthographicCamera();
@@ -58,7 +58,7 @@ public class player implements InputProcessor {
 
     }
 
-    public player(int points, int infects, int kills, int converts, entity host) {
+    public player(int points, int infects, int kills, int converts, zombie host) {
 
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
@@ -107,15 +107,15 @@ public class player implements InputProcessor {
         this.converts = converts;
     }
 
-    public entity getHost() {
+    public zombie getHost() {
         return host;
     }
 
-    public void setHost(entity host) {
+    public void setHost(zombie host) {
         this.host = host;
     }
 
-    public void setPeopleRef(ArrayList<entity> peopleRef) {
+    public void setPeopleRef(ArrayList<person> peopleRef) {
         this.peopleRef = peopleRef;
     }
 
