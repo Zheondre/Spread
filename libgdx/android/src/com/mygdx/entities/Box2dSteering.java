@@ -38,8 +38,9 @@ public class Box2dSteering implements Steerable<Vector2> {
         this.boundRadius = boundRadius;
 
         this.tagged = false;
-        this.maxLinearSpeed = 50;
-        this.maxLinearAcc = 5000;
+        //this.maxLinearSpeed = (float) (Math.random()*((55-47)+47))+1;
+        this.maxLinearSpeed = 45;
+        this.maxLinearAcc = 4200;
         this.maxaAngleSpeed = 10;
         this.maxAngleAcc = 10;
 

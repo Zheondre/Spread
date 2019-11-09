@@ -56,8 +56,8 @@ public class person extends zombie {
         //check if hurt or if infected
 
         if(mInfected) {
-            mInfctTime -= .005;
-            if(mInfctTime < 0 )
+            mInfctTime -= .008;
+            if(mInfctTime < 0)
                 turnIntoAZombie();
             mInfected = false;
         }
@@ -94,7 +94,7 @@ public class person extends zombie {
 
     public void turnIntoAZombie() {
         this.mZombie = true;
-       // this.setImage("zombie.png");
+        this.setImage("zombie.png");
     }
 
     public boolean isInfected() {

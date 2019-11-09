@@ -84,18 +84,20 @@ public class tileGameMap extends gameMap {
         people = new ArrayList<person>();
         zombies = new ArrayList<zombie>();
 
-        //playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
-        playerOne = new player(new person(CPlAYER,this));
+        playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
+        zombies.add(playerOne.getHost());
 
+       // playerOne = new player(new person(CPlAYER,this));
+        //people.add((person)playerOne.getHost());
+        //people.add
         playerOne.setPeopleRef(people);
 
-        //zombies.add(playerOne.getHost());
-        //zombies.add(new zombie(entityInfo.ZOMBIE,this));
-        zombies.add(new zombie(entityInfo.ZOMBIE,this));
+
+        for(int i = 0; i < 2; i++)
+            zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
         //debug
-        people.add((person)playerOne.getHost());
-        for(int i = 0; i < 0; i++)
+        for(int i = 0; i < 10; i++)
             people.add(new person(entityInfo.PERSON,this));
 
         // testing ai behaviors
@@ -119,6 +121,7 @@ public class tileGameMap extends gameMap {
        batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
        batch.begin();
 
+        playerOne.getHost().render(batch);
        for(entity ent: zombies)
            ent.render(batch);
         for(entity ent: people)

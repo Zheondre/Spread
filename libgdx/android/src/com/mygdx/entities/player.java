@@ -33,6 +33,7 @@ public class player implements InputProcessor {
     private boolean switchZombie(zombie host){
         return  false ; // something got fucked up
     }
+    private boolean touchUp;
 
     //private static final player ourInstance = new player();
 /*
@@ -54,8 +55,6 @@ public class player implements InputProcessor {
         Gdx.input.setInputProcessor(this);
         this.host = host;
 
-        //Wander<Vector2> wanderSB = new Wander<>()
-
     }
 
     public player(int points, int infects, int kills, int converts, zombie host) {
@@ -72,7 +71,6 @@ public class player implements InputProcessor {
         this.converts = converts;
         this.host = host;
         Gdx.input.setInputProcessor(this);
-
     }
 
     public int getPoints() {
@@ -123,6 +121,9 @@ public class player implements InputProcessor {
         host.update(dTime);
         //playCam.position.x = host.getPosX();
         //playCam.position.y = host.getPosY();
+        if(touchUp)
+            host.getBody().setLinearVelocity(new Vector2(0,0));
+
         playCam.position.x = host.getBody().getPosition().x;
         playCam.position.y = host.getBody().getPosition().y;
 
@@ -157,7 +158,7 @@ public class player implements InputProcessor {
         //Log.d("TouchDown", "Screen Touched In X " + screenX+ " Y "+ screenY);
         // Log.d("Player Position", "X "+host.getPosX()+ " Y "+host.getPosY());
         int entSize;
-
+        touchUp = false;
         Vector3 pos = new Vector3(screenX, screenY, 0);
 
         playCam.unproject(pos);
@@ -277,14 +278,14 @@ public class player implements InputProcessor {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         //need to convert the screen coordinates to world coordinates
-
+        touchUp = true;
         host.setMoveLeft(false);
         host.setMoveRight(false);
         host.setMoveUp(false);
         host.setMoveDown(false);
 
         host.getBody().setLinearVelocity(new Vector2(0,0));
-
+        touchUp = true;
         return true;
     }
 
