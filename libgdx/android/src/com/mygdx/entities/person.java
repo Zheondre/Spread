@@ -10,6 +10,8 @@ import static com.badlogic.gdx.Input.Keys.UP;
 
 public class person extends zombie {
 
+    //public boolean moved = false;
+
     private boolean mInfected;
     private boolean mZombie;
 
@@ -37,6 +39,8 @@ public class person extends zombie {
         this.mInfctTime = 100;
         this.wlkDirection = 0;
         this.wlkTime = -1;
+
+
     }
 
    // @Override
@@ -54,14 +58,13 @@ public class person extends zombie {
     {//virtual function
         //check alertness
         //check if hurt or if infected
-
-        if(mInfected) {
-            mInfctTime -= .008;
-            if(mInfctTime < 0)
-                turnIntoAZombie();
-            mInfected = false;
+        if(!mZombie) {
+            if (mInfected) {
+                mInfctTime -= .05;
+                if (mInfctTime < 0)
+                    turnIntoAZombie();
+            }
         }
-
         switch(mAlerted) {// we might want to change these into enums
             case 5:
                 // test wander steering ent
@@ -73,16 +76,15 @@ public class person extends zombie {
                 walkRandomly(dTime);
                 break;
             case 1:
-                // you're hurt look for cover
+                //oo shit i see a zombie, run or attack at a safe distance
+                // you're hurt look for cover, find hospital or cop ect
             break;
             case 2:
-                //oo shit i see a zombie, run or attack at a safe distance
+                // you're hurt/infected
+                // look for help, find hospital, cop, emt, or healthpacts
                 break;
             case 3:
-                // you're infected look for a place to heal
-                // hospital med or anti infect packs
-                break;
-            case 4:
+                // turned into a zombie so act as such.
                 break;
         }
         super.update(dTime);
@@ -93,8 +95,17 @@ public class person extends zombie {
     }
 
     public void turnIntoAZombie() {
+        this.moved = true;
+        this.mInfctTime= 0;
+        this.mInfected = false;
+        this.mAlerted = 3;
         this.mZombie = true;
+        this.setClsId(classIdEnum.Zombie);
         this.setImage("zombie.png");
+
+       // mMap.getPeople().remove(this);
+        mMap.getZombies().add(this); // if we multi thread use a semiphore
+        mMap.setMoveReady(true);//temp code
     }
 
     public boolean isInfected() {
@@ -103,7 +114,7 @@ public class person extends zombie {
 
     public void setInfected(boolean Infected) {
         this.mInfected = Infected;
-        this.mAlerted = 3;
+        this.mAlerted = 2;
     }
 
     public int getAlerted() {

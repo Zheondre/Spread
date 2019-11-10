@@ -51,14 +51,19 @@ public class tileGameMap extends gameMap {
     private ArrayList<zombie> zombies;
     private ArrayList<gameBlocks> gameBlocks;
 
-    public ArrayList<person> getPeople() {
-        return people;
+    private zombie convertedEnt;
+
+    private player playerOne;
+
+    public void setMoveReady(boolean moveReady) {
+        this.moveReady = moveReady;
     }
 
-    public ArrayList<zombie> getZombies() {
-        return zombies;
+    public boolean isMoveReady() {
+        return moveReady;
     }
-    private player playerOne;
+
+    private boolean moveReady = false;
 
     public tileGameMap() {
 
@@ -76,8 +81,6 @@ public class tileGameMap extends gameMap {
 
         for(MapObject object : m_TileMap.getLayers().get(7).getObjects().getByType(RectangleMapObject.class))
         {
-           // Rectangle rec = ((RectangleMapObject)object ).getRectangle();
-            //rec.getX() + rec.getWidth()/2, rec.getY() + rec.getHeight()/2)
             gameBlocks.add(new gameBlocks(entityInfo.STATIC_OBJECT, this, ((RectangleMapObject)object).getRectangle()));
         }
 
@@ -92,12 +95,11 @@ public class tileGameMap extends gameMap {
         //people.add
         playerOne.setPeopleRef(people);
 
-
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < 3; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
         //debug
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < 5; i++)
             people.add(new person(entityInfo.PERSON,this));
 
         // testing ai behaviors
@@ -117,16 +119,17 @@ public class tileGameMap extends gameMap {
     public void render(SpriteBatch batch){
        m_TileMapRender.setView(this.playerOne.getPlayCam());
        m_TileMapRender.render();
-
+        entity tent;
        batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
        batch.begin();
 
         playerOne.getHost().render(batch);
-       for(entity ent: zombies)
-           ent.render(batch);
-        for(entity ent: people)
-            ent.render(batch);
 
+       for(zombie ent: zombies)
+           ent.render(batch);
+
+        for(person ent: people)
+            ent.render(batch);
 
         people.get(0).render(batch);//z player
        /*
@@ -144,21 +147,37 @@ public class tileGameMap extends gameMap {
 
        world.step(1/60f,6,2);// need to read docs on this
 
-        for(entity ent: zombies)
-            ent.update(deltaT);
-        for(entity ent: people)
-            ent.update(deltaT);
-
+        for(zombie ent: zombies) {
+                ent.update(deltaT);
+        }
+        for(person ent: people) {
+                ent.update(deltaT);
+        }
         playerOne.update(deltaT); // zombie player
 
+        if(false) {// only run loop if a person object needs to be moved to the zombie list
+            for (person ent : people)
+                if (ent.areYouAZombie()) {
+                    people.remove(ent);
+                    moveReady = false;
+                    break;
+
+                }
+        }
         //check for new zombies and put them in the array
         //check to see who has died and clean them off the map ?
     }
 
+    public zombie getConvertedEnt() { return convertedEnt; }
+
+    public void setConvertedEnt(zombie convertedEnt) { this.convertedEnt = convertedEnt; }
+
+    public ArrayList<person> getPeople() {return people; }
+
+    public ArrayList<zombie> getZombies() { return zombies; }
+
     @Override
-    public void disposeTileMap(){
-        m_TileMap.dispose();
-    }
+    public void disposeTileMap(){ m_TileMap.dispose(); }
 
     @Override
     public int getMapWidth(){ return mapWidth; }

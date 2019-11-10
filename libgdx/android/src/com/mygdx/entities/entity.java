@@ -30,6 +30,10 @@ public abstract class entity  {
 
     private Vector2 StopVec; // we dont need multiple instances of this so move it from the class later
 
+    public classIdEnum getClassID() {
+        return classID;
+    }
+
     protected classIdEnum classID;
 
     private Body body;
@@ -98,9 +102,27 @@ public abstract class entity  {
 
             goodposition = true;
             TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int)((tx)/tileW),(int)(ty/tileH));
-
-            if(collisionLayer.getCell((int)((tx)/tileW),(int)(ty/tileH)) != null)
+int tscale = 40;
+/*
+            if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty)/tileH)) != null)
                 goodposition = false;
+            if(collisionLayer.getCell((int)((tx + tscale)/tileW),(int)((ty + tscale)/tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx - tscale)/tileW),(int)((ty - tscale)/tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx - tscale)/tileW),(int)((ty + tscale)/tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx + tscale)/tileW),(int)((ty - tscale)/tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx + tscale)/tileW),(int)((ty) /tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty+tscale)/tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx - tscale)/tileW),(int)((ty) /tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty-tscale)/tileH)) != null)
+                goodposition = false;
+            */
 
             //find a better way than this
         }
@@ -159,10 +181,9 @@ public abstract class entity  {
         if(moveRight)
             validPath = moveX(speed * dTime);
 
-        if(!validPath) {
+        if(!validPath)
             body.setLinearVelocity(StopVec);
 
-        }
         if(moveLeft)
             validPath = moveX(-speed * dTime);
 

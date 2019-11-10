@@ -34,6 +34,7 @@ public class player implements InputProcessor {
         return  false ; // something got fucked up
     }
     private boolean touchUp;
+    private boolean attackButton;
 
     //private static final player ourInstance = new player();
 /*
@@ -54,6 +55,7 @@ public class player implements InputProcessor {
         this.converts = 0;
         Gdx.input.setInputProcessor(this);
         this.host = host;
+        this.attackButton = false;
 
     }
 
@@ -197,6 +199,11 @@ public class player implements InputProcessor {
 
         }
 
+        if(attackButton){
+            //place anamation
+            //getHost().biteNonZombie();
+        }
+
         //if longpressed then we are trying to get the zombie
 /*
             if(leftButtonPressed)
@@ -285,7 +292,6 @@ public class player implements InputProcessor {
         host.setMoveDown(false);
 
         host.getBody().setLinearVelocity(new Vector2(0,0));
-        touchUp = true;
         return true;
     }
 

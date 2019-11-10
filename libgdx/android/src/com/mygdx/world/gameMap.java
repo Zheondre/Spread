@@ -21,6 +21,9 @@ public abstract class gameMap {
     public gameMap(){
     }
 
+    public abstract void setMoveReady(boolean b);
+    public abstract boolean isMoveReady();
+
     public abstract ArrayList<person> getPeople();
     public abstract ArrayList<zombie> getZombies();
 

@@ -14,6 +14,8 @@ import static java.lang.StrictMath.abs;
 
 public class zombie extends entity {
 
+    public boolean moved = false;
+
     protected int peopleConverted;
     protected int infections;
     protected int attackPt;
@@ -26,7 +28,8 @@ public class zombie extends entity {
     private int mWidth = 14;
     private int mHeight = 15;
     private float mWeight = 40;
-    private float bitetime = 10;
+    private static final int biteTimeSetting  = 5;
+    private float bitetime = biteTimeSetting;
     private float wlkTime;
     private int wlkDirection;
 
@@ -93,7 +96,6 @@ public class zombie extends entity {
             pursueSB = new Pursue<Vector2>(steerEnt, prey.getSteerEnt(),.5f);
             steerEnt.setBehavior(pursueSB);//might put this as its own function
             this.prey = prey;
-
         }
     }
 
@@ -191,7 +193,7 @@ public class zombie extends entity {
             victum.setInfected(true);
 
         victum.decreaseInfectTime(5);
-        victum.decreaseHlth(5);
+        victum.decreaseHlth(1);
 
         return true;
     }
@@ -219,19 +221,20 @@ public class zombie extends entity {
                     if (doISeeANoneZombie) {
 
                         float tempD = getEntDistance();
-                        if(tempD < 19 && tempD > -1){
+                        if(tempD < 10 && tempD > -1){
+                            // what if two zombies are pointing at the same converted person
                             //steerEnt.setMaxLinearAcceleration(0);
                             //steerEnt.body.setLinearVelocity(0,0);
                             // steerEnt.setMaxLinearSpeed(0);
-                            if(((person)this.getPrey()).areYouAZombie()) {
-                                mMap.getZombies().add((zombie)this.getPrey());
-                                mMap.getPeople().remove(this.getPrey());
+                            if(((person)this.getPrey()).areYouAZombie() && mMap.isMoveReady()) {
+
+                                 mMap.getPeople().remove(this.getPrey()); // if we multi thread use a semiphore
+                                mMap.setMoveReady(false);
                                 this.setPrey(null);
                                 this.setPursuePrey(null);
                                 doISeeANoneZombie = false;
                                 //increment score count
-                            }
-                            else {
+                            } else {
                                 if (steerEnt.getLinearVelocity().x > 0)
                                     steerEnt.body.applyLinearImpulse(new Vector2(-40f, 0), steerEnt.body.getWorldCenter(), true);
 
@@ -244,12 +247,12 @@ public class zombie extends entity {
                                 if (steerEnt.getLinearVelocity().y < 0)
                                     steerEnt.body.applyLinearImpulse(new Vector2(40f, 0), steerEnt.body.getWorldCenter(), true);
 
-                                if (bitetime == 10)
+                                if (bitetime == biteTimeSetting)
                                     biteNonZombie((person) this.getPrey());
                                 else {
-                                    bitetime -= .04;
+                                    bitetime -= .05;
                                     if (bitetime < 0)
-                                        bitetime = 10;
+                                        bitetime = biteTimeSetting;
                                 }
                             }
                         } else {
@@ -288,18 +291,21 @@ public class zombie extends entity {
             //player has control
             super.update(dTime);
         }
-        //updates picture position
+        //Update Picture position to box2d position
         mPos.x = this.getBody().getPosition().x - 7;
         mPos.y = this.getBody().getPosition().y - 7.5f;
     }
 
     public void setImage(String path){
+        if(image != null)
+            image.dispose();
         image = new Texture(path);
     }
    // @Override
     public void render(SpriteBatch batch){
         //batch.draw(image,steerEnt.getPosition().x,steerEnt.getPosition().y, mWidth, mHeight);
-       batch.draw(image,mPos.x, mPos.y, mWidth, mHeight);
+        if(image != null)
+            batch.draw(image,mPos.x, mPos.y, mWidth, mHeight);
     }
 
     public float getEntDistance(entity target) {
