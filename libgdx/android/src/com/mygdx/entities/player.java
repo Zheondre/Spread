@@ -25,7 +25,7 @@ public class player implements InputProcessor {
 
     private OrthographicCamera playCam;
 
-    private zombie host;
+    private entity host;
     private zombie tHost;
 
     private ArrayList<person> peopleRef;
@@ -42,7 +42,7 @@ public class player implements InputProcessor {
         return ourInstance;
     }*/
 
-    public player(zombie host) {
+    public player(entity host) {
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
         playCam = new OrthographicCamera();
@@ -56,7 +56,6 @@ public class player implements InputProcessor {
         Gdx.input.setInputProcessor(this);
         this.host = host;
         this.attackButton = false;
-
     }
 
     public player(int points, int infects, int kills, int converts, zombie host) {
@@ -107,7 +106,7 @@ public class player implements InputProcessor {
         this.converts = converts;
     }
 
-    public zombie getHost() {
+    public entity getHost() {
         return host;
     }
 
@@ -201,7 +200,7 @@ public class player implements InputProcessor {
 
         if(attackButton){
             //TODO place anamation
-            getHost().biteNonZombie();
+            //getHost().attack();
         }
 
         //if longpressed then we are trying to get the zombie

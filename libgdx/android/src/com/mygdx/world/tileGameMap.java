@@ -79,8 +79,8 @@ public class tileGameMap extends gameMap {
         CnvrtdEntRdy = new ArrayList<person>();
         zombies = new ArrayList<zombie>();
 
-        playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
-        zombies.add(playerOne.getHost());
+        playerOne = new player(new zombie(entityInfo.ZPLAYER,this)); // temp
+        //zombies.add(playerOne.getHost());
 
        // playerOne = new player(new person(CPlAYER,this));
         //people.add((person)playerOne.getHost());

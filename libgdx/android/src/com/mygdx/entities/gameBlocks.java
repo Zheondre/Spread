@@ -11,6 +11,7 @@ public class gameBlocks extends entity {
         super(entType, Map, rec);
     }
 
+    public boolean attack(){return true;}
     public void update(float dTime) {
         ;
     }

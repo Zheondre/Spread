@@ -1,0 +1,63 @@
+package com.mygdx.entities;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.world.gameMap;
+
+import static java.lang.StrictMath.abs;
+
+public class bomb extends entity {
+
+    float blastRadius;
+
+    int infecRatio;
+    int healthRatio;
+    bomb(entityInfo entType, gameMap Map){
+        setImage("bomb.png");
+        infecRatio = 350;
+        healthRatio = 300;
+        //what should the size be ?
+    }
+
+    public boolean attack(){
+
+        //set infection based on the distance,
+        // anything around 1 is a zombie
+        int entDist;
+
+        if(mMap.getPeople().size() == 0)
+            return false;
+
+        for(person victum : mMap.getPeople()) {
+            entDist = (int)getEntDistance(victum);
+            if(entDist < 1)
+                victum.turnIntoAZombie();
+            else {
+                //the closer you are to the bomb the higher your infection is
+                // we can put in deaths later
+                victum.decreaseInfectTime((1 / entDist * infecRatio));
+                victum.decreaseHlth((1 / entDist * healthRatio));
+            }
+        }
+        return true;
+
+    }
+    public void update(float dTime) {
+        ;
+    }
+    public void render(SpriteBatch batch){
+        Texture image = getImage();
+        if(image != null)
+            batch.draw(image,mPos.x, mPos.y, getWidth(), getHeight());
+    }
+
+    //bellow is duplicate code, ill place this in the ent class later
+    public float getEntDistance(entity target) {
+        mPos.x = super.getBody().getPosition().x;
+        mPos.y = super.getBody().getPosition().y;
+        float tempx = abs(target.getPosX() - this.mPos.x);
+        float tempy = abs(target.getPosY() - this.mPos.y);
+        return (float)Math.sqrt(tempx * tempx + tempy * tempy);
+    }
+
+}

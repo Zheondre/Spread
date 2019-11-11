@@ -1,5 +1,6 @@
 package com.mygdx.entities;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
@@ -12,15 +13,19 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.mygdx.world.gameMap;
 
-public abstract class entity  {
+import static java.lang.StrictMath.abs;
 
-    public void setSpeed(int speed) {
-        this.speed = speed;
-    }
+public abstract class entity  {
 
     private  int speed = 80;
    // private static int xspeed = 80;
     //private static int yspeed = 80;
+
+    private Texture image;
+
+    private int mWidth = 14;
+    private int mHeight = 15;
+    private float mWeight = 40;
 
     protected float mVelocityY;
     protected gameMap mMap;
@@ -29,10 +34,6 @@ public abstract class entity  {
     protected Vector3 mPos;
 
     private Vector2 StopVec; // we dont need multiple instances of this so move it from the class later
-
-    public classIdEnum getClassID() {
-        return classID;
-    }
 
     protected classIdEnum classID;
 
@@ -54,30 +55,26 @@ public abstract class entity  {
 
     private TiledMapTileLayer collisionLayer;
 
+    public abstract boolean attack();
+    public abstract void render(SpriteBatch batch);
+
     public entity() {
         //mMap = NULL;
         this.mVelocityY = 0;
         this.mPos.x =0;
         this.mPos.y =0;
         this.amIOnTheGound = true;
-        this.moveLeft= false;
-        this.moveRight= false;
-        this.moveUp= false;
-        this.moveDown= false;
+        this.moveLeft= false; this.moveRight= false; this.moveUp= false; this.moveDown= false;
         this.validPath= false;
         this.StopVec = new Vector2(0,0);
     }
-
     public entity(entityInfo entType, gameMap Map) {
 
         this.mVelocityY = 0;
         this.mMap = Map;
         this.amIOnTheGound = true; // every thing will be on the ground for now
         this.classID = entType.getId();
-        this.moveLeft = false;
-        this.moveRight = false;
-        this.moveUp = false;
-        this.moveDown = false;
+        this.moveLeft = false; this.moveRight = false; this.moveUp = false; this.moveDown = false;
         this.validPath = false;
 
         float tileW, tileH, tx = 0, ty = 0;
@@ -102,7 +99,7 @@ public abstract class entity  {
 
             goodposition = true;
             TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int)((tx)/tileW),(int)(ty/tileH));
-int tscale = 40;
+            int tscale = 40;
 /*
             if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty)/tileH)) != null)
                 goodposition = false;
@@ -143,8 +140,6 @@ int tscale = 40;
         this.body.createFixture(fd);
         badPath = false;
     }
-
-
     public entity(entityInfo entType, gameMap Map, Rectangle rec) {
 
         this.mPos = new Vector3(rec.getX() + rec.getWidth()/2, rec.getY() + rec.getHeight()/2,0);
@@ -173,8 +168,22 @@ int tscale = 40;
         badPath = false;
     }
 
-    public abstract void render(SpriteBatch batch);
-   // public abstract void setImage(String path);
+    public classIdEnum getClassID() {
+        return classID;
+    }
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public Texture getImage() {
+        return image;
+    }
+
+    public void setImage(String path){
+        if(image != null)
+            image.dispose();
+        image = new Texture(path);
+    }
 
     public void update(float dTime){
 
@@ -203,7 +212,6 @@ int tscale = 40;
             body.setLinearVelocity(StopVec);
     }
 
-//i think these controls should be moved to the player class
     protected boolean moveX(float amount){
 
          if((mPos.x + amount) < 0)
@@ -245,6 +253,9 @@ int tscale = 40;
        return true;
     }
 
+    public int getWidth(){ return mWidth; }
+    public int getHeight(){ return mHeight; }
+
     public Vector3 getPos() { return mPos; }
 
     public Body getBody(){ return body; };
@@ -262,19 +273,21 @@ int tscale = 40;
 
     public boolean isOnGround(){ return amIOnTheGound; }
 
-    public boolean isMoveLeft() { return moveLeft; }
-
     public void setMoveLeft(boolean moveLeft) { this.moveLeft = moveLeft; }
-
-    public boolean isMoveRight() { return moveRight; }
-
     public void setMoveRight(boolean moveRight) { this.moveRight = moveRight; }
-
-    public boolean isMoveUp() { return moveUp; }
-
     public void setMoveUp(boolean moveUp) { this.moveUp = moveUp; }
+    public void setMoveDown(boolean moveDown) { this.moveDown = moveDown; }
 
+    public boolean isMoveLeft() { return moveLeft; }
+    public boolean isMoveRight() { return moveRight; }
+    public boolean isMoveUp() { return moveUp; }
     public boolean isMoveDown() { return moveDown; }
 
-    public void setMoveDown(boolean moveDown) { this.moveDown = moveDown; }
+    public float getEntDistance(entity target) {
+        mPos.x = getBody().getPosition().x;
+        mPos.y = getBody().getPosition().y;
+        float tempx = abs(target.getPosX() - this.mPos.x);
+        float tempy = abs(target.getPosY() - this.mPos.y);
+        return (float)Math.sqrt(tempx * tempx + tempy * tempy);
+    }
 }

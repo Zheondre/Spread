@@ -21,11 +21,6 @@ public class zombie extends entity {
 
     protected classIdEnum weapon;
 
-    private Texture image;
-
-    private int mWidth = 14;
-    private int mHeight = 15;
-    private float mWeight = 40;
     private static final int biteTimeSetting = 5;
     private float bitetime = biteTimeSetting;
     private float wlkTime;
@@ -115,7 +110,7 @@ public class zombie extends entity {
         this.classID = entType.getId();
 
         if(classID == classIdEnum.Zombie || classID == classIdEnum.PZombie)
-            image = new Texture("zombie.png");
+            setImage("zombie.png");
 
         this.infections = 0;
         this.attackPt = entType.getAttackPt();//
@@ -183,7 +178,7 @@ public class zombie extends entity {
         }
     }
 
-    public boolean biteNonZombie(){
+    public boolean attack(){
         // TODO make sure the person we are attacking is in the direction we are looking
         person per = findSomeOneToChase();
         if(getEntDistance(per) < 15) {
@@ -308,24 +303,11 @@ public class zombie extends entity {
         mPos.y = this.getBody().getPosition().y - 7.5f;
     }
 
-    public void setImage(String path){
-        if(image != null)
-            image.dispose();
-        image = new Texture(path);
-    }
    // @Override
     public void render(SpriteBatch batch){
-        //batch.draw(image,steerEnt.getPosition().x,steerEnt.getPosition().y, mWidth, mHeight);
+        Texture image = getImage();
         if(image != null)
-            batch.draw(image,mPos.x, mPos.y, mWidth, mHeight);
-    }
-
-    public float getEntDistance(entity target) {
-        mPos.x = super.getBody().getPosition().x;
-        mPos.y = super.getBody().getPosition().y;
-        float tempx = abs(target.getPosX() - this.mPos.x);
-        float tempy = abs(target.getPosY() - this.mPos.y);
-       return (float)Math.sqrt(tempx * tempx + tempy * tempy);
+            batch.draw(image,mPos.x, mPos.y, getWidth(), getHeight());
     }
 
     public float getEntDistance() {
@@ -356,15 +338,10 @@ public class zombie extends entity {
         }
         return shortEnt;
     }
-    public void attack(){}
 
     public boolean iscpu() { return mIsCpu; }
 
     public void setCpuStatus(boolean IsCpu) { this.mIsCpu = IsCpu; }
-
-    public int getWidth(){ return mWidth; }
-
-    public int getHeight(){ return mHeight; }
 
     public int getInfections() { return infections; }
 
