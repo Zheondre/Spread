@@ -28,7 +28,7 @@ public class zombie extends entity {
     private int mWidth = 14;
     private int mHeight = 15;
     private float mWeight = 40;
-    private static final int biteTimeSetting  = 5;
+    private static final int biteTimeSetting = 5;
     private float bitetime = biteTimeSetting;
     private float wlkTime;
     private int wlkDirection;
@@ -104,12 +104,8 @@ public class zombie extends entity {
             pursueSB.setTarget(prey);
     }
 
-    public void setPrey(entity prey){
-        this.prey = prey;
-    }
-    public entity getPrey(){
-       return this.prey;
-    }
+    public void setPrey(entity prey){ this.prey = prey; }
+    public entity getPrey(){ return this.prey; }
 
     public zombie(entityInfo entType, gameMap map) {
         super(entType, map);
@@ -153,11 +149,16 @@ public class zombie extends entity {
     protected void walkRandomly(float dt){
         //if the next move in our current direction is invalid
         // change direction if there is an invalid path
+        int debugbreakpoint;
+        if(this.classID == classIdEnum.ConvertedPer)
+            debugbreakpoint = 0;
+
+
         if(!this.validPath)
             wlkDirection = (int)(Math.random()*((5-1)+1))+1;
 
         if(wlkTime < 0) {
-            wlkTime =  (float)(Math.random()*((8-2)+2))+1;
+            wlkTime =  (float)(Math.random()*((5-2)+2))+1;
             wlkDirection = (int)(Math.random()*((5-1)+1))+1;
         }else {
             wlkTime -= dt;
@@ -211,8 +212,15 @@ public class zombie extends entity {
                     else
                         super.update(dTime);
                     break;
+
+                case ConvertedPer: // debug
+                    int xxx = 0;
                 case Zombie:
-                    float tempd2;
+
+                    if(this.getPrey() == null)
+                        doISeeANoneZombie = false;
+                    else if(((person)this.getPrey()).areYouAZombie())
+                        doISeeANoneZombie = false;
 
                     //loop through noinfected victums
                     //also need to see if they are in out view but for now we will base this off of ditance
@@ -221,20 +229,18 @@ public class zombie extends entity {
                     if (doISeeANoneZombie) {
 
                         float tempD = getEntDistance();
-                        if(tempD < 10 && tempD > -1){
-                            // what if two zombies are pointing at the same converted person
-                            //steerEnt.setMaxLinearAcceleration(0);
-                            //steerEnt.body.setLinearVelocity(0,0);
-                            // steerEnt.setMaxLinearSpeed(0);
-                            if(((person)this.getPrey()).areYouAZombie() && mMap.isMoveReady()) {
+                        if(tempD < 13 && tempD > -1){
+                            // what if two zombies are pointing at the same converted person/////
+                            // to do, just send a message to all zombie listeners hunting for prey to stop when prey is a zombie
 
-                                 mMap.getPeople().remove(this.getPrey()); // if we multi thread use a semiphore
-                                mMap.setMoveReady(false);
+                          //  if(((person)this.getPrey()).areYouAZombie() && mMap.isMoveReady()) {
+                            if(((person)this.getPrey()).areYouAZombie()){
+                                //mMap.getPeople().remove(this.getPrey()); // if we multi thread use a semiphore // i dont think this should be handled here
+                                //mMap.setMoveReady(false);
                                 this.setPrey(null);
-                                this.setPursuePrey(null);
                                 doISeeANoneZombie = false;
                                 //increment score count
-                            } else {
+                            }  else {
                                 if (steerEnt.getLinearVelocity().x > 0)
                                     steerEnt.body.applyLinearImpulse(new Vector2(-40f, 0), steerEnt.body.getWorldCenter(), true);
 
@@ -256,13 +262,16 @@ public class zombie extends entity {
                                 }
                             }
                         } else {
-                            steerEnt.update(dTime);
+
+                            if(this.getPrey() != null)
+                                steerEnt.update(dTime);
                         }
                         //goAfterNonZombie if we are close enough attack
                         // or follow the leader if instructed on oding so
                     } else {
                         person shortEnt = null;
                         float tth = 80;
+                        float tempd2;
                         for(person nonzombie : mMap.getPeople()){
                             if(!nonzombie.areYouAZombie()) {
                                 tempd2 = getEntDistance(nonzombie);
@@ -280,6 +289,8 @@ public class zombie extends entity {
                                 setPursuePrey(shortEnt.getSteerEnt());
                         } else {
                             walkRandomly(dTime);
+                            super.update(dTime);
+
                         }
                     }
                     break;
@@ -319,9 +330,10 @@ public class zombie extends entity {
     public float getEntDistance() {
         mPos.x = super.getBody().getPosition().x;
         mPos.y = super.getBody().getPosition().y;
-        if(this.prey == null)
+        if(this.prey == null) {
+            doISeeANoneZombie = false;
             return -1;
-
+        }
         float tempx = abs(this.prey.getPosX() - this.mPos.x);
         float tempy = abs(this.prey.getPosY() - this.mPos.y);
         return (float)Math.sqrt(tempx * tempx + tempy * tempy);

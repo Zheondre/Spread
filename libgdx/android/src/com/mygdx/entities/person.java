@@ -100,12 +100,12 @@ public class person extends zombie {
         this.mInfected = false;
         this.mAlerted = 3;
         this.mZombie = true;
-        this.setClsId(classIdEnum.Zombie);
+        //this.setClsId(classIdEnum.Zombie);
+        this.setClsId(classIdEnum.ConvertedPer);
         this.setImage("zombie.png");
 
-       // mMap.getPeople().remove(this);
         mMap.getZombies().add(this); // if we multi thread use a semiphore
-        mMap.setMoveReady(true);//temp code
+        mMap.setCnvrtdEntRdy(this);//temp code
     }
 
     public boolean isInfected() {

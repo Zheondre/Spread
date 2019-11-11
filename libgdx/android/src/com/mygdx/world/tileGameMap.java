@@ -50,20 +50,11 @@ public class tileGameMap extends gameMap {
     private ArrayList<person> people;
     private ArrayList<zombie> zombies;
     private ArrayList<gameBlocks> gameBlocks;
+    private ArrayList<person> CnvrtdEntRdy;
 
     private zombie convertedEnt;
 
     private player playerOne;
-
-    public void setMoveReady(boolean moveReady) {
-        this.moveReady = moveReady;
-    }
-
-    public boolean isMoveReady() {
-        return moveReady;
-    }
-
-    private boolean moveReady = false;
 
     public tileGameMap() {
 
@@ -85,6 +76,7 @@ public class tileGameMap extends gameMap {
         }
 
         people = new ArrayList<person>();
+        CnvrtdEntRdy = new ArrayList<person>();
         zombies = new ArrayList<zombie>();
 
         playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
@@ -143,30 +135,30 @@ public class tileGameMap extends gameMap {
     }
 
     @Override
-    public void update(float deltaT){ //update what the method name should say what we are updating
+    public void update(float deltaT){
 
        world.step(1/60f,6,2);// need to read docs on this
 
-        for(zombie ent: zombies) {
-                ent.update(deltaT);
-        }
-        for(person ent: people) {
-                ent.update(deltaT);
-        }
-        playerOne.update(deltaT); // zombie player
+        for(zombie ent: zombies)
+            ent.update(deltaT);
 
-        if(false) {// only run loop if a person object needs to be moved to the zombie list
-            for (person ent : people)
-                if (ent.areYouAZombie()) {
-                    people.remove(ent);
-                    moveReady = false;
-                    break;
+        for(person ent: people)
+            ent.update(deltaT);
 
-                }
+        playerOne.update(deltaT);
+
+        int lastEntPos = CnvrtdEntRdy.size() - 1;
+        // becarefull bellow here
+        // safetly remove civilian turned zombies from civilian array
+        while(lastEntPos > -1){
+            getPeople().remove(CnvrtdEntRdy.get(lastEntPos));
+            CnvrtdEntRdy.remove(lastEntPos);
+            lastEntPos--;
         }
-        //check for new zombies and put them in the array
+
         //check to see who has died and clean them off the map ?
     }
+    public void setCnvrtdEntRdy(person moveReady) { this.CnvrtdEntRdy.add(moveReady); }
 
     public zombie getConvertedEnt() { return convertedEnt; }
 
