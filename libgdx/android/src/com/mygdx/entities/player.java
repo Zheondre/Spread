@@ -200,8 +200,8 @@ public class player implements InputProcessor {
         }
 
         if(attackButton){
-            //place anamation
-            //getHost().biteNonZombie();
+            //TODO place anamation
+            getHost().biteNonZombie();
         }
 
         //if longpressed then we are trying to get the zombie
@@ -310,3 +310,6 @@ public class player implements InputProcessor {
         return false;
     }
 }
+
+
+

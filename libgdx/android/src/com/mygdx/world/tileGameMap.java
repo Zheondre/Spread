@@ -87,11 +87,11 @@ public class tileGameMap extends gameMap {
         //people.add
         playerOne.setPeopleRef(people);
 
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < 2; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
         //debug
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 7; i++)
             people.add(new person(entityInfo.PERSON,this));
 
         // testing ai behaviors

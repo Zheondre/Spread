@@ -14,8 +14,6 @@ import static java.lang.StrictMath.abs;
 
 public class zombie extends entity {
 
-    public boolean moved = false;
-
     protected int peopleConverted;
     protected int infections;
     protected int attackPt;
@@ -81,7 +79,7 @@ public class zombie extends entity {
         }
     }
 
-    public void setArrivePrey(Box2dSteering prey) {
+    public void setArrivePrey(Box2dSteering prey) { // redundant ?
         if(!(prey == null) && !(arriveSB == null))
             arriveSB.setTarget(prey);
     }
@@ -185,13 +183,28 @@ public class zombie extends entity {
         }
     }
 
+    public boolean biteNonZombie(){
+        // TODO make sure the person we are attacking is in the direction we are looking
+        person per = findSomeOneToChase();
+        if(getEntDistance(per) < 15) {
+            biteNonZombie(per);
+            return true;
+        }
+        return false;
+    }
+
     public boolean biteNonZombie(person victum){
 
         if(victum == null)
             return false;
 
         if(!victum.isInfected())
-            victum.setInfected(true);
+            victum.setInfected(true, this);
+        else
+            if(victum.getPrey() != this) {
+                // change or add to the behaviors
+                victum.changeEvadeTarget(this);
+            }
 
         victum.decreaseInfectTime(5);
         victum.decreaseHlth(1);
@@ -233,10 +246,8 @@ public class zombie extends entity {
                             // what if two zombies are pointing at the same converted person/////
                             // to do, just send a message to all zombie listeners hunting for prey to stop when prey is a zombie
 
-                          //  if(((person)this.getPrey()).areYouAZombie() && mMap.isMoveReady()) {
                             if(((person)this.getPrey()).areYouAZombie()){
-                                //mMap.getPeople().remove(this.getPrey()); // if we multi thread use a semiphore // i dont think this should be handled here
-                                //mMap.setMoveReady(false);
+                                // if we multi thread use a semiphore // i dont think this should be handled here
                                 this.setPrey(null);
                                 doISeeANoneZombie = false;
                                 //increment score count
@@ -269,18 +280,8 @@ public class zombie extends entity {
                         //goAfterNonZombie if we are close enough attack
                         // or follow the leader if instructed on oding so
                     } else {
-                        person shortEnt = null;
-                        float tth = 80;
-                        float tempd2;
-                        for(person nonzombie : mMap.getPeople()){
-                            if(!nonzombie.areYouAZombie()) {
-                                tempd2 = getEntDistance(nonzombie);
-                                if (tempd2 < tth) {
-                                    tth = tempd2;
-                                    shortEnt = nonzombie;
-                                }
-                            }
-                        }
+                        person shortEnt = findSomeOneToChase();
+
                         if(shortEnt!= null) {
                             doISeeANoneZombie = true;
                             if(getPursueSB()== null)
@@ -339,6 +340,22 @@ public class zombie extends entity {
         return (float)Math.sqrt(tempx * tempx + tempy * tempy);
     }
 
+    public person findSomeOneToChase(){
+        person shortEnt = null;
+        float tth = 80;
+        float tempd2;
+
+        for(person nonzombie : mMap.getPeople()){
+            if(!nonzombie.areYouAZombie()) {
+                tempd2 = getEntDistance(nonzombie);
+                if (tempd2 < tth) {
+                    tth = tempd2;
+                    shortEnt = nonzombie;
+                }
+            }
+        }
+        return shortEnt;
+    }
     public void attack(){}
 
     public boolean iscpu() { return mIsCpu; }

@@ -133,7 +133,7 @@ int tscale = 40;
         entBody.type = BodyDef.BodyType.DynamicBody;
 
         CircleShape cs = new CircleShape();
-        cs.setRadius(7);
+        cs.setRadius(5);
         fd.density = .01f;
         fd.friction = .5f;
         fd.shape = cs;
