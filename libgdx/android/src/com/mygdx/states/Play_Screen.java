@@ -1,22 +1,26 @@
 package com.mygdx.states;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.mygdx.managers.GameStateManager;
+import com.mygdx.world.gameMap;
+import com.mygdx.world.tileGameMap;
 
 public class Play_Screen extends GameState {
 
 
     TiledMap m_TileMap;
     OrthogonalTiledMapRenderer m_TileMapRender;
+    gameMap m_GameMap;
 
     public Play_Screen(GameStateManager gsm)
     {
         super(gsm);
-        m_TileMap = new TmxMapLoader().load("house_road.tmx");
-        m_TileMapRender = new OrthogonalTiledMapRenderer(m_TileMap);
+        m_GameMap = new tileGameMap();
     }
 
 
@@ -28,7 +32,14 @@ public class Play_Screen extends GameState {
 
     @Override
     public void render(SpriteBatch batch) {
+        batch = new SpriteBatch();
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        m_GameMap.render(batch);
+        m_GameMap.update(Gdx.graphics.getDeltaTime());
         //people.get(0).render(batch);
+        /*
         m_TileMapRender.setView(camera);
         m_TileMapRender.render();
 
@@ -36,6 +47,10 @@ public class Play_Screen extends GameState {
         batch.begin();
         //render(batch);
         batch.end();
+        */
+
+
+
     }
 
     @Override

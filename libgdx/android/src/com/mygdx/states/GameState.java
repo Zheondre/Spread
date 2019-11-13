@@ -3,13 +3,10 @@ package com.mygdx.states;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.entities.entity;
+import com.mygdx.entities.player;
 import com.mygdx.game.Application;
 import com.mygdx.managers.GameStateManager;
-import com.mygdx.entities.entity;
-import com.mygdx.entities.entityInfo;
-import com.mygdx.entities.person;
-import com.mygdx.entities.player;
-import com.mygdx.entities.zombie;
 
 import java.util.ArrayList;
 
@@ -24,21 +21,21 @@ public abstract class GameState {
     protected ArrayList<entity> people;
     private player playerOne;
 
-    protected  GameState(GameStateManager gsm)
+    protected GameState(GameStateManager gsm)
     {
         people = new ArrayList<entity>();
         //playerOne = new player(new zombie(entityInfo.ZPLAYER, this));
         //people.add( playerOne.getHost());
         this.gsm = gsm;
         this.app = gsm.application();
-        batch = app.getBatch();
-        camera = app.getCamera();
+        //batch = app.getBatch();
+        //camera = app.getCamera();
 
     }
 
     public void resize(int w, int h)
     {
-        camera.setToOrtho(false, w, h);
+        //camera.setToOrtho(false, w, h);
     }
 
     public abstract void update(float delta);

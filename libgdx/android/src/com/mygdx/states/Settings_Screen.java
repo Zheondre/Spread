@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.managers.GameStateManager;
 
-public class Settings_Screen extends GameState{
+public class Settings_Screen extends GameState {
 
     float count = 0f;
     private Texture main_menu_button;
