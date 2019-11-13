@@ -12,7 +12,7 @@ import com.mygdx.utils.SteeringUtils;
 
 public class Box2dSteering implements Steerable<Vector2> {
 
-    Body body;
+   public Body body;
     boolean tagged;
     float boundRadius;
     float maxLinearSpeed, maxLinearAcc;

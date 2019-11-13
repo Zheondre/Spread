@@ -13,27 +13,32 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.mygdx.world.gameMap;
 
+import static com.mygdx.utils.entUtils.getMoveDownVec;
+import static com.mygdx.utils.entUtils.getMoveLeftVec;
+import static com.mygdx.utils.entUtils.getMoveRightVec;
+import static com.mygdx.utils.entUtils.getMoveUpVec;
+import static com.mygdx.utils.entUtils.getStopVec;
 import static java.lang.StrictMath.abs;
 
 public abstract class entity  {
 
-    private  int speed = 80;
+    private int speed = 80;
    // private static int xspeed = 80;
     //private static int yspeed = 80;
 
     private Texture image;
 
-    private int mWidth = 14;
-    private int mHeight = 15;
-    private float mWeight = 40;
+    private final static int mWidth = 14;
+    private final static int mHeight = 15;
+    private static final float mWeight = 40;
 
     protected float mVelocityY;
-    protected gameMap mMap;
+    protected static gameMap mMap;
     protected boolean badPath;
 
     protected Vector3 mPos;
 
-    private Vector2 StopVec; // we dont need multiple instances of this so move it from the class later
+   // private Vector2 StopVec; // we dont need multiple instances of this so move it from the class later
 
     protected classIdEnum classID;
 
@@ -50,8 +55,8 @@ public abstract class entity  {
     private int mapXMax;
     private int mapYMax;
 
-    private TiledMapTileLayer.Cell cellx;
-    private TiledMapTileLayer.Cell celly;
+    private static TiledMapTileLayer.Cell cellx;
+    private static TiledMapTileLayer.Cell celly;
 
     private TiledMapTileLayer collisionLayer;
 
@@ -66,7 +71,7 @@ public abstract class entity  {
         this.amIOnTheGound = true;
         this.moveLeft= false; this.moveRight= false; this.moveUp= false; this.moveDown= false;
         this.validPath= false;
-        this.StopVec = new Vector2(0,0);
+       // this.StopVec = new Vector2(0,0);
     }
     public entity(entityInfo entType, gameMap Map) {
 
@@ -84,7 +89,7 @@ public abstract class entity  {
         BodyDef entBody = new BodyDef();
         FixtureDef fd = new FixtureDef();
 
-        this.StopVec = new Vector2(0,0);
+        //this.StopVec = new Vector2(0,0);
 
         boolean goodposition = false;
 
@@ -191,25 +196,25 @@ public abstract class entity  {
             validPath = moveX(speed * dTime);
 
         if(!validPath)
-            body.setLinearVelocity(StopVec);
+            body.setLinearVelocity(getStopVec()); // this might crash...
 
         if(moveLeft)
             validPath = moveX(-speed * dTime);
 
         if(!validPath)
-            body.setLinearVelocity(StopVec);
+            body.setLinearVelocity(getStopVec());
 
         if(moveUp)
             validPath = moveY(speed * dTime);
 
         if(!validPath)
-            body.setLinearVelocity(StopVec);
+            body.setLinearVelocity(getStopVec());
 
         if(moveDown)
             validPath = moveY(-speed * dTime);
 
         if(!validPath)
-            body.setLinearVelocity(StopVec);
+            body.setLinearVelocity(getStopVec());
     }
 
     protected boolean moveX(float amount){
@@ -223,10 +228,10 @@ public abstract class entity  {
         // if we use a steering behavior --- wont this make it over shoot ?
         if(amount > 0) {
             if (body.getLinearVelocity().x <= 55)
-                body.applyLinearImpulse(new Vector2(25.8f, 0), body.getWorldCenter(), true);
+                body.applyLinearImpulse(getMoveLeftVec(), body.getWorldCenter(), true);
         }else{
             if (body.getLinearVelocity().x >= -55)
-                body.applyLinearImpulse(new Vector2(-25.8f, 0), body.getWorldCenter(), true);
+                body.applyLinearImpulse(getMoveRightVec(), body.getWorldCenter(), true);
         }
 
         return true;
@@ -243,11 +248,11 @@ public abstract class entity  {
 
         if(amount > 0) {
             if (body.getLinearVelocity().y <= 25)
-                body.applyLinearImpulse(new Vector2(0, 15.8f), body.getWorldCenter(), true);
+                body.applyLinearImpulse(getMoveUpVec(), body.getWorldCenter(), true);
 
         }else{
             if (body.getLinearVelocity().y >= -25)
-                body.applyLinearImpulse(new Vector2(0, -15.8f), body.getWorldCenter(), true);
+                body.applyLinearImpulse(getMoveDownVec(), body.getWorldCenter(), true);
         }
 
        return true;

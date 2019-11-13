@@ -1,13 +1,14 @@
-package com.mygdx.entities;
+package com.mygdx.entities.humans;
 
 import com.badlogic.gdx.ai.steer.behaviors.Evade;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.Hide;
-import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.entities.Box2dSteering;
+import com.mygdx.entities.classIdEnum;
+import com.mygdx.entities.entity;
+import com.mygdx.entities.entityInfo;
 import com.mygdx.world.gameMap;
-
-import static com.badlogic.gdx.Input.Keys.UP;
 
 public class person extends zombie {
 
@@ -65,6 +66,8 @@ public class person extends zombie {
         if(entityType.getId() == classIdEnum.Person || entityType.getId() == classIdEnum.PPerson)
             this.setImage("player.png");
 
+
+        this.weapon = entityType.getWeapon();
         this.mZombie =  entityType.isZombie();
         this.mInfected = entityType.isInfected();
         this.mAlerted = 0;

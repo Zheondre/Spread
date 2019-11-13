@@ -17,24 +17,28 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
-import com.mygdx.entities.gameBlocks;
-import com.mygdx.entities.person;
-import com.mygdx.entities.player;
-import com.mygdx.entities.zombie;
-import com.mygdx.entities.gameBlocks;
+import com.mygdx.entities.objects.gameBlocks;
+import com.mygdx.entities.humans.person;
+import com.mygdx.entities.humans.player;
+import com.mygdx.entities.humans.zombie;
 
 import java.util.ArrayList;
 
-import static com.badlogic.gdx.utils.JsonValue.ValueType.object;
-import static com.mygdx.entities.entityInfo.CPlAYER;
+import static com.mygdx.utils.entUtils.getStopVec;
 
 public class tileGameMap extends gameMap {
+
+    public static final int STATSCREEN_WIDTH = 400;
+    public static final int STATSCREEN_HEIGHT = 208;
+
+    private static libgdxSreen statsScreen;
+
+    private static SpriteBatch batch;
 
     private TiledMap m_TileMap;
     private OrthogonalTiledMapRenderer m_TileMapRender;
@@ -44,7 +48,7 @@ public class tileGameMap extends gameMap {
     private int tileWidth;
     private int tileHeight;
 
-    private World world;
+    private static World world;
     private Box2DDebugRenderer b2dr;
 
     private ArrayList<person> people;
@@ -65,7 +69,7 @@ public class tileGameMap extends gameMap {
         mapWidth =  MapProp.get("width", Integer.class)* MapProp.get("tilewidth", Integer.class);
         mapHeight =  MapProp.get("height", Integer.class)* MapProp.get("tileheight", Integer.class);
 
-        world = new World(new Vector2(0,0),true);// make sure to dispose of this when needed
+        world = new World(getStopVec(),true);// make sure to dispose of this when needed
         b2dr = new Box2DDebugRenderer();
 
         gameBlocks = new ArrayList<gameBlocks>();
@@ -94,6 +98,8 @@ public class tileGameMap extends gameMap {
         for(int i = 0; i < 7; i++)
             people.add(new person(entityInfo.PERSON,this));
 
+        statsScreen = new libgdxSreen(batch, people.size());
+
         // testing ai behaviors
         /*
         people.get(2).setPursueSB(people.get(0));//
@@ -113,6 +119,8 @@ public class tileGameMap extends gameMap {
        m_TileMapRender.render();
         entity tent;
        batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
+
+        //statsScreen.stage.draw(); crashes
        batch.begin();
 
         playerOne.getHost().render(batch);
@@ -158,6 +166,11 @@ public class tileGameMap extends gameMap {
 
         //check to see who has died and clean them off the map ?
     }
+
+    public void setBatch(SpriteBatch batch) {
+        tileGameMap.batch = batch;
+    }
+
     public void setCnvrtdEntRdy(person moveReady) { this.CnvrtdEntRdy.add(moveReady); }
 
     public zombie getConvertedEnt() { return convertedEnt; }

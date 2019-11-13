@@ -1,15 +1,22 @@
-package com.mygdx.entities;
+package com.mygdx.entities.humans;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
-import com.badlogic.gdx.ai.steer.behaviors.Flee;
-import com.badlogic.gdx.ai.steer.behaviors.Hide;
 import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.entities.Box2dSteering;
+import com.mygdx.entities.classIdEnum;
+import com.mygdx.entities.entity;
+import com.mygdx.entities.entityInfo;
+import com.mygdx.entities.humans.person;
 import com.mygdx.world.gameMap;
 
+import static com.mygdx.utils.entUtils.stopDownVec;
+import static com.mygdx.utils.entUtils.stopLeftVec;
+import static com.mygdx.utils.entUtils.stopRightVec;
+import static com.mygdx.utils.entUtils.stopUpVec;
 import static java.lang.StrictMath.abs;
 
 public class zombie extends entity {
@@ -248,16 +255,16 @@ public class zombie extends entity {
                                 //increment score count
                             }  else {
                                 if (steerEnt.getLinearVelocity().x > 0)
-                                    steerEnt.body.applyLinearImpulse(new Vector2(-40f, 0), steerEnt.body.getWorldCenter(), true);
+                                    steerEnt.body.applyLinearImpulse(stopLeftVec(), steerEnt.body.getWorldCenter(), true);
 
                                 if (steerEnt.getLinearVelocity().x < 0)
-                                    steerEnt.body.applyLinearImpulse(new Vector2(40f, 0), steerEnt.body.getWorldCenter(), true);
+                                    steerEnt.body.applyLinearImpulse(stopRightVec(), steerEnt.body.getWorldCenter(), true);
 
                                 if (steerEnt.getLinearVelocity().y > 0)
-                                    steerEnt.body.applyLinearImpulse(new Vector2(-40f, 0), steerEnt.body.getWorldCenter(), true);
+                                    steerEnt.body.applyLinearImpulse(stopDownVec(), steerEnt.body.getWorldCenter(), true);
 
                                 if (steerEnt.getLinearVelocity().y < 0)
-                                    steerEnt.body.applyLinearImpulse(new Vector2(40f, 0), steerEnt.body.getWorldCenter(), true);
+                                    steerEnt.body.applyLinearImpulse(stopUpVec(), steerEnt.body.getWorldCenter(), true);
 
                                 if (bitetime == biteTimeSetting)
                                     biteNonZombie((person) this.getPrey());

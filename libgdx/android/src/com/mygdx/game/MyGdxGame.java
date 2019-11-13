@@ -21,8 +21,7 @@ import com.mygdx.world.tileGameMap;
 //entry point to game
 public class MyGdxGame extends ApplicationAdapter {
 
-	SpriteBatch batch;
-	Texture img;
+	SpriteBatch batch;// i think this should be in the game map object
 
 	gameMap m_GameMap;
 
@@ -30,12 +29,14 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		m_GameMap = new tileGameMap();
+		batch = new SpriteBatch();
+		m_GameMap.setBatch(batch);
 	}
 
 	@Override
 	public void render () {
 
-		batch = new SpriteBatch();
+		//batch = new SpriteBatch();
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

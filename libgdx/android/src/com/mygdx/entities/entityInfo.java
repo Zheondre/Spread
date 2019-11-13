@@ -13,7 +13,6 @@ If something is missing update file please
 //should we include file path's in here or in side actual class ?
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector3;
 
 public enum entityInfo {
 
@@ -48,18 +47,9 @@ public enum entityInfo {
 
     entityInfo(classIdEnum id) {
 
-        //this.width = width;
-        //this.hieght = hieght;
-
         this.id = id;
         this.weapon = classIdEnum.NOWEAPON;
 
-        //this.xpos = (float)Math.random();
-        //this.ypos = (float)Math.random();
-
-        // need to make sure we dont generate on a blocked position
-        //this.xpos = (float) (Math.random()*((150-10)+10))+1;
-        //this.ypos = (float) (Math.random()*((150-10)+10))+1;
         this.walkSpeed = 80;
 
         this.armor = 0;
@@ -97,7 +87,7 @@ public enum entityInfo {
                 //this.ypos = 25;
                 break;
             case Security:
-                this.armor = 40;
+                this.armor = 50;
                 this.weapon = classIdEnum.BATON;
                 break;
             case Cop:

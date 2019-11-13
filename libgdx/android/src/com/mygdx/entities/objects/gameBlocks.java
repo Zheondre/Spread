@@ -1,8 +1,10 @@
-package com.mygdx.entities;
+package com.mygdx.entities.objects;
 
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.entities.entity;
+import com.mygdx.entities.entityInfo;
 import com.mygdx.world.gameMap;
 
 public class gameBlocks extends entity {

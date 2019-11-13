@@ -1,7 +1,10 @@
-package com.mygdx.entities;
+package com.mygdx.entities.objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.entities.entity;
+import com.mygdx.entities.entityInfo;
+import com.mygdx.entities.humans.person;
 import com.mygdx.world.gameMap;
 
 import static java.lang.StrictMath.abs;
