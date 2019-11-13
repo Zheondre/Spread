@@ -7,51 +7,32 @@ they also explain how to modify the tiles in a map during game play, we wont add
  */
 
 package com.mygdx.world;
-
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.entities.entity;
-import com.mygdx.entities.person;
-
 
 import java.util.ArrayList;
 
 public abstract class gameMap {
 
-    protected ArrayList<entity> people;
-
     public gameMap(){
-        people = new ArrayList<entity>();
-        people.add(new person(false,0,this));
-        people.add(new person(true,1,this));
     }
 
-    public void render(OrthographicCamera camera, SpriteBatch batch){
-        people.get(0).render(batch);
-    }
+    public abstract ArrayList<entity> getPeople();
+    public abstract ArrayList<entity> getZombies();
 
-    public void update(float deltaT){
-        people.get(0).update(deltaT);
-    }
-
-    public abstract int getWidth();
-    public abstract int getHeight();
-    public abstract int getLayers();
-    //public int getPixelWth();
-    //public int getPixelWth();
-
-/*
-    public boolean doesPersonCollideWithMap(float x, float y, int col, int row) {
-    }
-
-    public boolean doesPersonCollideWithPerson(float x, float y, int w, int h)
-    {
-        if(x < 0 || y < 0 || ((x + w ) > getPixelWth()) || ((y + h ) > getPixelWth()))
-            return true;
-    }
-*/
+    public abstract void render(SpriteBatch batch);
+    public abstract void update(float deltaT);
     public abstract void disposeTileMap();
 
-    //abstract TileType()
+    public abstract int getPixelWidth();
+    public abstract int getPixelHeight();
+    public abstract int getMapWidth();
+    public abstract int getMapHeight();
+
+    public abstract MapLayers getMapLayers();
+
+    public abstract World getWorld();
 
 }
