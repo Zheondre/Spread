@@ -10,7 +10,9 @@ package com.mygdx.world;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.entities.entity;
+
+import com.mygdx.entities.humans.person;
+import com.mygdx.entities.humans.zombie;
 
 import java.util.ArrayList;
 
@@ -19,10 +21,12 @@ public abstract class gameMap {
     public gameMap(){
     }
 
-    public abstract ArrayList<entity> getPeople();
-    public abstract ArrayList<entity> getZombies();
+    public abstract void setCnvrtdEntRdy(person b);
 
-    public abstract void render(SpriteBatch batch);
+    public abstract ArrayList<person> getPeople();
+    public abstract ArrayList<zombie> getZombies();
+
+    public abstract void render();
     public abstract void update(float deltaT);
     public abstract void disposeTileMap();
 

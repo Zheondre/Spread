@@ -21,7 +21,8 @@ public enum entityInfo {
     PERSON(classIdEnum.Person),
     COP(classIdEnum.Cop),
     SECURITY(classIdEnum.Security),
-    ZOMBIE(classIdEnum.Zombie);
+    ZOMBIE(classIdEnum.Zombie),
+    STATIC_OBJECT(classIdEnum.STATIC_OBJECT);
 
     private classIdEnum weapon;
     private classIdEnum id;
@@ -46,18 +47,10 @@ public enum entityInfo {
 
     entityInfo(classIdEnum id) {
 
-        //this.width = width;
-        //this.hieght = hieght;
-
         this.id = id;
         this.weapon = classIdEnum.NOWEAPON;
 
-        //this.xpos = (float)Math.random();
-        //this.ypos = (float)Math.random();
-
-        this.xpos = (float) (Math.random()*((150-20)+20))+1;
-        this.ypos = (float) (Math.random()*((150-20)+20))+1;
-        this.walkSpeed = 80;
+       this.walkSpeed = 80;
 
         this.armor = 0;
         this.health = 100;
@@ -81,8 +74,10 @@ public enum entityInfo {
                 this.isCpu = false;
                 break;
             case Zombie:
-               // this.xpos = 30;
-                //this.ypos = 50;
+
+                this.xpos = 30;
+                this.ypos = 50;
+
                 //this.infectPts = 3;
                 this.zombie = true;
                 this.infected = true;
@@ -94,14 +89,24 @@ public enum entityInfo {
                 //this.ypos = 25;
                 break;
             case Security:
-                this.armor = 40;
-                this.weapon = classIdEnum.BATON;
+            this.armor = 50;
+               this.weapon = classIdEnum.BATON;
                 break;
             case Cop:
                 this.armor = 70;
                 this.weapon = classIdEnum.PISTOL;
                 break;
-            default:
+
+            case STATIC_OBJECT:
+                this.walkSpeed = 0;
+                this.armor = 0;
+                this.health = 0;
+                this.attackPt = 0;
+                this.zombie = false;
+                this.infected = false;
+                this.isCpu = true;
+                break;
+				default:
                 //throw an error, unknown type
         }
     }
@@ -117,8 +122,7 @@ public enum entityInfo {
     public classIdEnum getId() {
         return this.id;
     }
-
-    public float getXpos() {
+   public float getXpos() {
         return this.xpos;
     }
 
