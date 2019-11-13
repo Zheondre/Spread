@@ -6,7 +6,8 @@ public final class entUtils {
 
     static final float yforce = 25.8f;
     static final float xforce = 25.8f;
-
+ //15.8f move up Move Y
+    //-15.6f move down MoveY
     static final float yStoppingforce = 40f;
     static final float xStoppingforce = 40f;
 

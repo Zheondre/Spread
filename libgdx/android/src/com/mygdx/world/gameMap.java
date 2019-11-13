@@ -25,9 +25,7 @@ public abstract class gameMap {
     public abstract ArrayList<person> getPeople();
     public abstract ArrayList<zombie> getZombies();
 
-    public abstract void setBatch(SpriteBatch batch);
-
-    public abstract void render(SpriteBatch batch);
+    public abstract void render();
     public abstract void update(float deltaT);
     public abstract void disposeTileMap();
 

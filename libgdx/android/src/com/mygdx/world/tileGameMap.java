@@ -62,6 +62,8 @@ public class tileGameMap extends gameMap {
 
     public tileGameMap() {
 
+        batch = new SpriteBatch();
+
         m_TileMap = new TmxMapLoader().load("house_road.tmx"); // we will have to make this dynamic based on user map selection
         m_TileMapRender = new OrthogonalTiledMapRenderer(m_TileMap);
         MapProperties MapProp = m_TileMap.getProperties();
@@ -114,14 +116,19 @@ public class tileGameMap extends gameMap {
     }
 
     @Override
-    public void render(SpriteBatch batch){
-       m_TileMapRender.setView(this.playerOne.getPlayCam());
-       m_TileMapRender.render();
-        entity tent;
-       batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
+    public void render(){
 
-        //statsScreen.stage.draw(); crashes
-       batch.begin();
+        m_TileMapRender.setView(this.playerOne.getPlayCam());
+        m_TileMapRender.render();
+
+        batch.setProjectionMatrix(statsScreen.stage.getCamera().combined);
+        statsScreen.setNonZombies(people.size());
+        //statsScreen.setCurrentLevel();
+        //statsScreen.setPlayerScore(this.playerOne.getPoints());
+        statsScreen.stage.draw(); // calling statsScreen.stage.draw() after batch.begin() will crash the program
+
+        batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
+        batch.begin();
 
         playerOne.getHost().render(batch);
 

@@ -34,6 +34,22 @@ public class libgdxSreen {
     Label peopleLabelValue;
     Label levelLabelValue;
 
+    public void setLevelTime(float levelTime) {
+        this.levelTime = levelTime;
+    }
+
+    public void setPlayerScore(int playerScore) {
+        this.playerScore = playerScore;
+    }
+
+    public void setNonZombies(int nonZombies) {
+        this.nonZombies = nonZombies;
+    }
+
+    public void setCurrentLevel(byte currentLevel) {
+        this.currentLevel = currentLevel;
+    }
+
     public libgdxSreen(SpriteBatch batch, int nonZombies){
 
         this.playerScore = 0;
@@ -41,33 +57,36 @@ public class libgdxSreen {
         this.levelTime = 120;
         this.currentLevel = 1;
 
-        viewport = new FillViewport(tileGameMap.STATSCREEN_WIDTH, tileGameMap.STATSCREEN_HEIGHT,new OrthographicCamera());
+        viewport = new FillViewport(tileGameMap.STATSCREEN_WIDTH, tileGameMap.STATSCREEN_HEIGHT, new OrthographicCamera());
+        stage = new Stage(viewport, batch);
 
         Table table = new Table();
         table.top();
         table.setFillParent(true);
 
-        //cntDwnLabel = new Label(String.format("Time",levelTime), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
-        scoreLabel = new Label(String.format("Score",playerScore), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
-        peopleLabel = new Label(String.format("Prey",levelTime), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
-        levelLabel = new Label(String.format("Level",playerScore), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
+        //cntDwnLabel = new Label("Time", new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
+        scoreLabel = new Label("Score", new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
+        peopleLabel = new Label("Prey", new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
+        levelLabel = new Label("Level", new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
 
 
         //cntDwnLabelValue = new Label(String.format("%03d",levelTime), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
         scoreLabelValue = new Label(String.format("%06d",playerScore), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
-        peopleLabelValue = new Label(String.format("%02d",playerScore), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
-        levelLabelValue = new Label(String.format("%01d",playerScore), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
+        peopleLabelValue = new Label(String.format("%02d",this.nonZombies), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
+        levelLabelValue = new Label(String.format("%01d",currentLevel), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
 
         //table.add(cntDwnLabel).expandX().pad(10); // should we even do a countdown ?
-        table.add(scoreLabel).expandX().pad(10);
-        table.add(peopleLabel).expandX().pad(10);
-        table.add(levelLabel).expandX().pad(10);
+        table.add(scoreLabel).expandX().pad(2);
+        table.add(peopleLabel).expandX().pad(2);
+        table.add(levelLabel).expandX().pad(2);
         //not sure where to put the score so ill add later;
         table.row();
         //table.add(cntDwnLabelValue).expandX();
-        table.add(scoreLabel).expandX();
+        table.add(scoreLabelValue).expandX();
         table.add(peopleLabelValue).expandX();
         table.add(levelLabelValue).expandX();
+
+        stage.addActor(table);
 
     }
     //display health

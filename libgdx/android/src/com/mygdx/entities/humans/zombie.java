@@ -229,7 +229,7 @@ public class zombie extends entity {
                     break;
 
                 case ConvertedPer: // debug
-                    int xxx = 0;
+                    int xxx = 0; // debug
                 case Zombie:
 
                     if(this.getPrey() == null)
