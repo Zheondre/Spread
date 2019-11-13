@@ -23,7 +23,6 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	gameMap m_GameMap;
 
-	//we shouldnt load the game here we will have to do so in an activity
 	@Override
 	public void create () {
 		m_GameMap = new tileGameMap();
@@ -36,4 +35,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		m_GameMap.render();
 		m_GameMap.update(Gdx.graphics.getDeltaTime());
 	}
+
+
 }
