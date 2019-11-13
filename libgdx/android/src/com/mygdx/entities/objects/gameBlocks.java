@@ -1,8 +1,10 @@
-package com.mygdx.entities;
+package com.mygdx.entities.objects;
 
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.entities.entity;
+import com.mygdx.entities.entityInfo;
 import com.mygdx.world.gameMap;
 
 public class gameBlocks extends entity {
@@ -11,6 +13,7 @@ public class gameBlocks extends entity {
         super(entType, Map, rec);
     }
 
+    public boolean attack(){return true;}
     public void update(float dTime) {
         ;
     }

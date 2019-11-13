@@ -1,7 +1,6 @@
 package com.mygdx.entities;
 
-import com.badlogic.gdx.ai.steer.behaviors.Arrive;
-import com.badlogic.gdx.ai.steer.behaviors.Pursue;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
@@ -14,23 +13,32 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.mygdx.world.gameMap;
 
-import static com.mygdx.entities.classIdEnum.STATIC_OBJECT;
+import static com.mygdx.utils.entUtils.getMoveDownVec;
+import static com.mygdx.utils.entUtils.getMoveLeftVec;
+import static com.mygdx.utils.entUtils.getMoveRightVec;
+import static com.mygdx.utils.entUtils.getMoveUpVec;
+import static com.mygdx.utils.entUtils.getStopVec;
+import static java.lang.StrictMath.abs;
 
-
-//public interface movements {
-   //  final Vector2 StopVec = new Vector2(0, 0);
-//}
 public abstract class entity  {
 
-    private static final int speed = 80;
+    private int speed = 80;
+   // private static int xspeed = 80;
+    //private static int yspeed = 80;
+
+    private Texture image;
+
+    private final static int mWidth = 14;
+    private final static int mHeight = 15;
+    private static final float mWeight = 40;
 
     protected float mVelocityY;
-    protected gameMap mMap;
+    protected static gameMap mMap;
     protected boolean badPath;
 
     protected Vector3 mPos;
 
-    private Vector2 StopVec; // we dont need multiple instances of this so move it from the class later
+   // private Vector2 StopVec; // we dont need multiple instances of this so move it from the class later
 
     protected classIdEnum classID;
 
@@ -47,10 +55,13 @@ public abstract class entity  {
     private int mapXMax;
     private int mapYMax;
 
-    private TiledMapTileLayer.Cell cellx;
-    private TiledMapTileLayer.Cell celly;
+    private static TiledMapTileLayer.Cell cellx;
+    private static TiledMapTileLayer.Cell celly;
 
     private TiledMapTileLayer collisionLayer;
+
+    public abstract boolean attack();
+    public abstract void render(SpriteBatch batch);
 
     public entity() {
         //mMap = NULL;
@@ -58,41 +69,73 @@ public abstract class entity  {
         this.mPos.x =0;
         this.mPos.y =0;
         this.amIOnTheGound = true;
-        this.moveLeft= false;
-        this.moveRight= false;
-        this.moveUp= false;
-        this.moveDown= false;
+        this.moveLeft= false; this.moveRight= false; this.moveUp= false; this.moveDown= false;
         this.validPath= false;
-        this.StopVec = new Vector2(0,0);
+       // this.StopVec = new Vector2(0,0);
     }
-
     public entity(entityInfo entType, gameMap Map) {
 
         this.mVelocityY = 0;
         this.mMap = Map;
         this.amIOnTheGound = true; // every thing will be on the ground for now
         this.classID = entType.getId();
-        this.moveLeft = false;
-        this.moveRight = false;
-        this.moveUp = false;
-        this.moveDown = false;
+        this.moveLeft = false; this.moveRight = false; this.moveUp = false; this.moveDown = false;
         this.validPath = false;
+
+        float tileW, tileH, tx = 0, ty = 0;
 
         //mario tutorial youtube libgdx box2d
         //box2d
         BodyDef entBody = new BodyDef();
         FixtureDef fd = new FixtureDef();
 
-        this.StopVec = new Vector2(0,0);
+        //this.StopVec = new Vector2(0,0);
 
-        this.mPos = new Vector3((float) (Math.random()*((150-10)+10))+1,
-                (float) (Math.random()*((150-10)+10))+1,
-                0);
+        boolean goodposition = false;
+
+        collisionLayer = (TiledMapTileLayer) mMap.getMapLayers().get("Buildings");
+
+        tileW = collisionLayer.getTileWidth();
+        tileH = collisionLayer.getTileHeight();
+
+        while(!goodposition){
+            tx = (float) (Math.random()*((150-40)+40))+1;
+            ty = (float) (Math.random()*((150-30)+30))+1;
+
+            goodposition = true;
+            TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int)((tx)/tileW),(int)(ty/tileH));
+            int tscale = 40;
+/*
+            if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty)/tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx + tscale)/tileW),(int)((ty + tscale)/tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx - tscale)/tileW),(int)((ty - tscale)/tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx - tscale)/tileW),(int)((ty + tscale)/tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx + tscale)/tileW),(int)((ty - tscale)/tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx + tscale)/tileW),(int)((ty) /tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty+tscale)/tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx - tscale)/tileW),(int)((ty) /tileH)) != null)
+                goodposition = false;
+            if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty-tscale)/tileH)) != null)
+                goodposition = false;
+            */
+
+            //find a better way than this
+        }
+
+        this.mPos = new Vector3(tx,ty,0);
+
         entBody.position.set(mPos.x, mPos.y);
         entBody.type = BodyDef.BodyType.DynamicBody;
 
         CircleShape cs = new CircleShape();
-        cs.setRadius(7);
+        cs.setRadius(5);
         fd.density = .01f;
         fd.friction = .5f;
         fd.shape = cs;
@@ -102,8 +145,6 @@ public abstract class entity  {
         this.body.createFixture(fd);
         badPath = false;
     }
-
-
     public entity(entityInfo entType, gameMap Map, Rectangle rec) {
 
         this.mPos = new Vector3(rec.getX() + rec.getWidth()/2, rec.getY() + rec.getHeight()/2,0);
@@ -126,118 +167,101 @@ public abstract class entity  {
 
         entBody.type = BodyDef.BodyType.StaticBody;
         entBody.position.set(mPos.x, mPos.y);
-        fd.shape =shape;
+        fd.shape = shape;
         this.body = mMap.getWorld().createBody(entBody);
         this.body.createFixture(fd);
         badPath = false;
     }
 
-    public abstract void render(SpriteBatch batch);
-   // public abstract void setImage(String path);
+    public classIdEnum getClassID() {
+        return classID;
+    }
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public Texture getImage() {
+        return image;
+    }
+
+    public void setImage(String path){
+        if(image != null)
+            image.dispose();
+        image = new Texture(path);
+    }
 
     public void update(float dTime){
 
         if(moveRight)
             validPath = moveX(speed * dTime);
 
-        if(!validPath) {
-            body.setLinearVelocity(StopVec);
+        if(!validPath)
+            body.setLinearVelocity(getStopVec()); // this might crash...
 
-        }
         if(moveLeft)
             validPath = moveX(-speed * dTime);
 
         if(!validPath)
-            body.setLinearVelocity(StopVec);
+            body.setLinearVelocity(getStopVec());
 
         if(moveUp)
             validPath = moveY(speed * dTime);
 
         if(!validPath)
-            body.setLinearVelocity(StopVec);
+            body.setLinearVelocity(getStopVec());
 
         if(moveDown)
             validPath = moveY(-speed * dTime);
 
         if(!validPath)
-            body.setLinearVelocity(StopVec);
-
-        mPos.x = body.getPosition().x - 7;
-        mPos.y = body.getPosition().y - 7.5f;
-
+            body.setLinearVelocity(getStopVec());
     }
 
-    public Vector3 getPos() { return mPos; }
-
-//i think these controls should be moved to the player class
     protected boolean moveX(float amount){
-        // Every moving entity will check for collisions
 
-        float tileW, tileH;
          if((mPos.x + amount) < 0)
                 return false;
 
         if((mPos.x + amount) > mMap.getMapWidth())
                 return false;
 
-        //we have to either loop through all the layers that contain blocked objects or merge them into one.
-        collisionLayer = (TiledMapTileLayer) mMap.getMapLayers().get("Buildings");
-
-        tileW = collisionLayer.getTileWidth();
-        tileH = collisionLayer.getTileHeight();
-
-        TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int)((mPos.x +amount)/tileW),(int)(mPos.y/tileH));
-
-        if(collisionLayer.getCell((int)((mPos.x +amount)/tileW),(int)(mPos.y/tileH)) != null)
-            return false;
-
-        //hard coding picture width, will need to change later
-        if(collisionLayer.getCell((int)((mPos.x +amount +14)/tileW),(int)(mPos.y/tileH)) != null)
-            return false;
-
+        // if we use a steering behavior --- wont this make it over shoot ?
         if(amount > 0) {
             if (body.getLinearVelocity().x <= 55)
-                body.applyLinearImpulse(new Vector2(25.8f, 0), body.getWorldCenter(), true);
+                body.applyLinearImpulse(getMoveLeftVec(), body.getWorldCenter(), true);
         }else{
             if (body.getLinearVelocity().x >= -55)
-                body.applyLinearImpulse(new Vector2(-25.8f, 0), body.getWorldCenter(), true);
+                body.applyLinearImpulse(getMoveRightVec(), body.getWorldCenter(), true);
         }
 
-       // mPos.x = mPos.x + amount;
         return true;
     }
 
     protected boolean moveY(float amount){
-//basing coordinates to real world instead of screen coordinates
-        float tileW, tileH;
+        //basing coordinates to real world instead of screen coordinate
+
         if((mPos.y + amount) > mMap.getMapHeight())
             return false;
 
         if((mPos.y + amount) < 0)
             return false;
 
-        collisionLayer = (TiledMapTileLayer) mMap.getMapLayers().get("Buildings");
-
-        tileW = collisionLayer.getTileWidth();
-        tileH = collisionLayer.getTileHeight();
-
-        TiledMapTileLayer.Cell celly = collisionLayer.getCell((int)mPos.x,(int)(mPos.y+amount));
-
-        if(collisionLayer.getCell((int)(mPos.x/tileW),(int)((mPos.y+amount)/tileH)) != null)
-            return false;
-
         if(amount > 0) {
-            if (body.getLinearVelocity().y <= 20)
-                body.applyLinearImpulse(new Vector2(0, 15.8f), body.getWorldCenter(), true);
+            if (body.getLinearVelocity().y <= 25)
+                body.applyLinearImpulse(getMoveUpVec(), body.getWorldCenter(), true);
 
         }else{
-            if (body.getLinearVelocity().y >= -20)
-                body.applyLinearImpulse(new Vector2(0, -15.8f), body.getWorldCenter(), true);
+            if (body.getLinearVelocity().y >= -25)
+                body.applyLinearImpulse(getMoveDownVec(), body.getWorldCenter(), true);
         }
 
-      // mPos.y = mPos.y + amount;
        return true;
     }
+
+    public int getWidth(){ return mWidth; }
+    public int getHeight(){ return mHeight; }
+
+    public Vector3 getPos() { return mPos; }
 
     public Body getBody(){ return body; };
 
@@ -254,19 +278,21 @@ public abstract class entity  {
 
     public boolean isOnGround(){ return amIOnTheGound; }
 
-    public boolean isMoveLeft() { return moveLeft; }
-
     public void setMoveLeft(boolean moveLeft) { this.moveLeft = moveLeft; }
-
-    public boolean isMoveRight() { return moveRight; }
-
     public void setMoveRight(boolean moveRight) { this.moveRight = moveRight; }
-
-    public boolean isMoveUp() { return moveUp; }
-
     public void setMoveUp(boolean moveUp) { this.moveUp = moveUp; }
+    public void setMoveDown(boolean moveDown) { this.moveDown = moveDown; }
 
+    public boolean isMoveLeft() { return moveLeft; }
+    public boolean isMoveRight() { return moveRight; }
+    public boolean isMoveUp() { return moveUp; }
     public boolean isMoveDown() { return moveDown; }
 
-    public void setMoveDown(boolean moveDown) { this.moveDown = moveDown; }
+    public float getEntDistance(entity target) {
+        mPos.x = getBody().getPosition().x;
+        mPos.y = getBody().getPosition().y;
+        float tempx = abs(target.getPosX() - this.mPos.x);
+        float tempy = abs(target.getPosY() - this.mPos.y);
+        return (float)Math.sqrt(tempx * tempx + tempy * tempy);
+    }
 }

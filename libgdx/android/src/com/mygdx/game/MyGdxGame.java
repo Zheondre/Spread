@@ -21,9 +21,6 @@ import com.mygdx.world.tileGameMap;
 //entry point to game
 public class MyGdxGame extends ApplicationAdapter {
 
-	SpriteBatch batch;
-	Texture img;
-
 	gameMap m_GameMap;
 
 	//we shouldnt load the game here we will have to do so in an activity
@@ -34,12 +31,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-
-		batch = new SpriteBatch();
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		m_GameMap.render(batch);
+		m_GameMap.render();
 		m_GameMap.update(Gdx.graphics.getDeltaTime());
 	}
 }

@@ -6,6 +6,7 @@ public enum classIdEnum {
         PPerson,
         CPU,
         Zombie,
+        ConvertedPer,
         Person,
         Security,
         Cop,

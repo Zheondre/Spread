@@ -1,12 +1,14 @@
-package com.mygdx.entities;
+package com.mygdx.entities.humans;
 
 import com.badlogic.gdx.ai.steer.behaviors.Evade;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.Hide;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.entities.Box2dSteering;
+import com.mygdx.entities.classIdEnum;
+import com.mygdx.entities.entity;
+import com.mygdx.entities.entityInfo;
 import com.mygdx.world.gameMap;
-
-import static com.badlogic.gdx.Input.Keys.UP;
 
 public class person extends zombie {
 
@@ -19,6 +21,39 @@ public class person extends zombie {
     private float wlkTime;
     private int wlkDirection;
 
+    public Evade<Vector2> getEvadeSB() {
+        return evadeSB;
+    }
+
+    public void setEvadeSB(Evade<Vector2> evadeSB) {
+        if(evadeSB!= null)
+            this.evadeSB = evadeSB;
+    }
+
+    public void setEvadeSB(zombie target) {
+        if(target!= null) {
+            //this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt(), .5f);
+            this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt());
+            this.setPrey(target);// temp
+        }
+    }
+
+    public void changeEvadeTarget(Box2dSteering target){
+        if(target != null)
+            this.evadeSB.setTarget(target);
+    }
+
+    public void changeEvadeTarget(zombie target){
+        if(target != null) {
+            this.evadeSB.setTarget(target.getSteerEnt());
+            this.setPrey(target);
+        }
+    }
+
+    public entity whoBitMe(){
+       return this.getPrey();
+    }
+
     protected Evade<Vector2> evadeSB;
     protected Flee<Vector2>  fleeSB;
     protected Hide<Vector2>  hideSB;
@@ -29,8 +64,10 @@ public class person extends zombie {
         super(entityType, map);
 
         if(entityType.getId() == classIdEnum.Person || entityType.getId() == classIdEnum.PPerson)
-            this.setImage("player.png");// we can call this person.png
+            this.setImage("player.png");
 
+
+        this.weapon = entityType.getWeapon();
         this.mZombie =  entityType.isZombie();
         this.mInfected = entityType.isInfected();
         this.mAlerted = 0;
@@ -54,14 +91,13 @@ public class person extends zombie {
     {//virtual function
         //check alertness
         //check if hurt or if infected
-
-        if(mInfected) {
-            mInfctTime -= .005;
-            if(mInfctTime < 0 )
-                turnIntoAZombie();
-            mInfected = false;
+        if(!mZombie) {
+            if (mInfected) {
+                mInfctTime -= .04;
+                if (mInfctTime < 0)
+                    turnIntoAZombie();
+            }
         }
-
         switch(mAlerted) {// we might want to change these into enums
             case 5:
                 // test wander steering ent
@@ -71,18 +107,21 @@ public class person extends zombie {
                 break;
             case 0:
                 walkRandomly(dTime);
+                //avoid object collision
                 break;
             case 1:
-                // you're hurt look for cover
+                //evade
+                // zombie has been spotted but not infected
+                // run or attack at a safe distance
+                // you're hurt look for cover, find hospital or cop ect
             break;
             case 2:
-                //oo shit i see a zombie, run or attack at a safe distance
+                //evade or seek help
+                steerEnt.update(dTime);
+                //zombie has been spotted or you have been attacked
                 break;
             case 3:
-                // you're infected look for a place to heal
-                // hospital med or anti infect packs
-                break;
-            case 4:
+                // turned into a zombie so act as such.
                 break;
         }
         super.update(dTime);
@@ -93,8 +132,18 @@ public class person extends zombie {
     }
 
     public void turnIntoAZombie() {
+
+        this.mInfctTime = 0;
+        this.mInfected = false;
+        this.mAlerted = 3;
         this.mZombie = true;
-       // this.setImage("zombie.png");
+        //this.setClsId(classIdEnum.Zombie);
+        this.setClsId(classIdEnum.ConvertedPer);
+        this.setImage("zombie.png");
+        this.setPrey(null);
+
+        mMap.getZombies().add(this); // if we multi thread use a semiphore
+        mMap.setCnvrtdEntRdy(this);//temp code
     }
 
     public boolean isInfected() {
@@ -103,7 +152,13 @@ public class person extends zombie {
 
     public void setInfected(boolean Infected) {
         this.mInfected = Infected;
-        this.mAlerted = 3;
+        this.mAlerted = 2;
+    }
+
+    public void setInfected(boolean Infected, zombie zom) {
+        this.setEvadeSB(zom);
+        this.mInfected = Infected;
+        this.mAlerted = 2;
     }
 
     public int getAlerted() {

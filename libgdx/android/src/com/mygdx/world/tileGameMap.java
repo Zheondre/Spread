@@ -17,24 +17,28 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
-import com.mygdx.entities.gameBlocks;
-import com.mygdx.entities.person;
-import com.mygdx.entities.player;
-import com.mygdx.entities.zombie;
-import com.mygdx.entities.gameBlocks;
+import com.mygdx.entities.objects.gameBlocks;
+import com.mygdx.entities.humans.person;
+import com.mygdx.entities.humans.player;
+import com.mygdx.entities.humans.zombie;
 
 import java.util.ArrayList;
 
-import static com.badlogic.gdx.utils.JsonValue.ValueType.object;
-import static com.mygdx.entities.entityInfo.CPlAYER;
+import static com.mygdx.utils.entUtils.getStopVec;
 
 public class tileGameMap extends gameMap {
+
+    public static final int STATSCREEN_WIDTH = 400;
+    public static final int STATSCREEN_HEIGHT = 208;
+
+    private static libgdxSreen statsScreen;
+
+    private static SpriteBatch batch;
 
     private TiledMap m_TileMap;
     private OrthogonalTiledMapRenderer m_TileMapRender;
@@ -44,23 +48,21 @@ public class tileGameMap extends gameMap {
     private int tileWidth;
     private int tileHeight;
 
-    private World world;
+    private static World world;
     private Box2DDebugRenderer b2dr;
 
     private ArrayList<person> people;
     private ArrayList<zombie> zombies;
     private ArrayList<gameBlocks> gameBlocks;
+    private ArrayList<person> CnvrtdEntRdy;
 
-    public ArrayList<person> getPeople() {
-        return people;
-    }
+    private zombie convertedEnt;
 
-    public ArrayList<zombie> getZombies() {
-        return zombies;
-    }
     private player playerOne;
 
     public tileGameMap() {
+
+        batch = new SpriteBatch();
 
         m_TileMap = new TmxMapLoader().load("house_road.tmx"); // we will have to make this dynamic based on user map selection
         m_TileMapRender = new OrthogonalTiledMapRenderer(m_TileMap);
@@ -69,34 +71,36 @@ public class tileGameMap extends gameMap {
         mapWidth =  MapProp.get("width", Integer.class)* MapProp.get("tilewidth", Integer.class);
         mapHeight =  MapProp.get("height", Integer.class)* MapProp.get("tileheight", Integer.class);
 
-        world = new World(new Vector2(0,0),true);// make sure to dispose of this when needed
+        world = new World(getStopVec(),true);// make sure to dispose of this when needed
         b2dr = new Box2DDebugRenderer();
 
         gameBlocks = new ArrayList<gameBlocks>();
 
         for(MapObject object : m_TileMap.getLayers().get(7).getObjects().getByType(RectangleMapObject.class))
         {
-           // Rectangle rec = ((RectangleMapObject)object ).getRectangle();
-            //rec.getX() + rec.getWidth()/2, rec.getY() + rec.getHeight()/2)
             gameBlocks.add(new gameBlocks(entityInfo.STATIC_OBJECT, this, ((RectangleMapObject)object).getRectangle()));
         }
 
         people = new ArrayList<person>();
+        CnvrtdEntRdy = new ArrayList<person>();
         zombies = new ArrayList<zombie>();
 
-        //playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
-        playerOne = new player(new person(CPlAYER,this));
+        playerOne = new player(new zombie(entityInfo.ZPLAYER,this)); // temp
+        //zombies.add(playerOne.getHost());
 
+       // playerOne = new player(new person(CPlAYER,this));
+        //people.add((person)playerOne.getHost());
+        //people.add
         playerOne.setPeopleRef(people);
 
-        //zombies.add(playerOne.getHost());
-        //zombies.add(new zombie(entityInfo.ZOMBIE,this));
-        zombies.add(new zombie(entityInfo.ZOMBIE,this));
+        for(int i = 0; i < 2; i++)
+            zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
         //debug
-        people.add((person)playerOne.getHost());
-        for(int i = 0; i < 0; i++)
+        for(int i = 0; i < 7; i++)
             people.add(new person(entityInfo.PERSON,this));
+
+        statsScreen = new libgdxSreen(batch, people.size());
 
         // testing ai behaviors
         /*
@@ -112,18 +116,27 @@ public class tileGameMap extends gameMap {
     }
 
     @Override
-    public void render(SpriteBatch batch){
-       m_TileMapRender.setView(this.playerOne.getPlayCam());
-       m_TileMapRender.render();
+    public void render(){
 
-       batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
-       batch.begin();
+        m_TileMapRender.setView(this.playerOne.getPlayCam());
+        m_TileMapRender.render();
 
-       for(entity ent: zombies)
+        batch.setProjectionMatrix(statsScreen.stage.getCamera().combined);
+        statsScreen.setNonZombies(people.size());
+        //statsScreen.setCurrentLevel();
+        //statsScreen.setPlayerScore(this.playerOne.getPoints());
+        statsScreen.stage.draw(); // calling statsScreen.stage.draw() after batch.begin() will crash the program
+
+        batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
+        batch.begin();
+
+        playerOne.getHost().render(batch);
+
+       for(zombie ent: zombies)
            ent.render(batch);
-        for(entity ent: people)
-            ent.render(batch);
 
+        for(person ent: people)
+            ent.render(batch);
 
         people.get(0).render(batch);//z player
        /*
@@ -137,25 +150,46 @@ public class tileGameMap extends gameMap {
     }
 
     @Override
-    public void update(float deltaT){ //update what the method name should say what we are updating
+    public void update(float deltaT){
 
        world.step(1/60f,6,2);// need to read docs on this
 
-        for(entity ent: zombies)
-            ent.update(deltaT);
-        for(entity ent: people)
+        for(zombie ent: zombies)
             ent.update(deltaT);
 
-        playerOne.update(deltaT); // zombie player
+        for(person ent: people)
+            ent.update(deltaT);
 
-        //check for new zombies and put them in the array
+        playerOne.update(deltaT);
+
+        int lastEntPos = CnvrtdEntRdy.size() - 1;
+        // becarefull bellow here
+        // safetly remove civilian turned zombies from civilian array
+        while(lastEntPos > -1){
+            getPeople().remove(CnvrtdEntRdy.get(lastEntPos));
+            CnvrtdEntRdy.remove(lastEntPos);
+            lastEntPos--;
+        }
+
         //check to see who has died and clean them off the map ?
     }
 
-    @Override
-    public void disposeTileMap(){
-        m_TileMap.dispose();
+    public void setBatch(SpriteBatch batch) {
+        tileGameMap.batch = batch;
     }
+
+    public void setCnvrtdEntRdy(person moveReady) { this.CnvrtdEntRdy.add(moveReady); }
+
+    public zombie getConvertedEnt() { return convertedEnt; }
+
+    public void setConvertedEnt(zombie convertedEnt) { this.convertedEnt = convertedEnt; }
+
+    public ArrayList<person> getPeople() {return people; }
+
+    public ArrayList<zombie> getZombies() { return zombies; }
+
+    @Override
+    public void disposeTileMap(){ m_TileMap.dispose(); }
 
     @Override
     public int getMapWidth(){ return mapWidth; }
