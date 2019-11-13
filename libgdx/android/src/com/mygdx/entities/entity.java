@@ -1,5 +1,6 @@
 package com.mygdx.entities;
 
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -75,10 +76,12 @@ public abstract class entity  {
     }
     public entity(entityInfo entType, gameMap Map) {
 
+
         this.mVelocityY = 0;
         this.mMap = Map;
         this.amIOnTheGound = true; // every thing will be on the ground for now
         this.classID = entType.getId();
+
         this.moveLeft = false; this.moveRight = false; this.moveUp = false; this.moveDown = false;
         this.validPath = false;
 
@@ -272,6 +275,7 @@ public abstract class entity  {
     public float getPosY(){ return mPos.y; }
     public float getVelocityY(){ return mVelocityY; }
 
+
     public Vector3 getmPos() { return mPos; }
 
     public gameMap getMap(){ return mMap; }
@@ -295,4 +299,5 @@ public abstract class entity  {
         float tempy = abs(target.getPosY() - this.mPos.y);
         return (float)Math.sqrt(tempx * tempx + tempy * tempy);
     }
+
 }

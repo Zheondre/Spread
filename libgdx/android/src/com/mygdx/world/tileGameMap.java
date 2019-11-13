@@ -9,11 +9,14 @@ they also explain how to modify the tiles in a map during game play, we wont add
 
 package com.mygdx.world;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
+
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -22,6 +25,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
+
 import com.mygdx.entities.objects.gameBlocks;
 import com.mygdx.entities.humans.person;
 import com.mygdx.entities.humans.player;
@@ -45,6 +49,10 @@ public class tileGameMap extends gameMap {
     private int mapWidth;
     private int mapHeight;
 
+    private Texture up_button;
+    private Texture right_button;
+    private Texture left_button;
+    private Texture down_button;
     private int tileWidth;
     private int tileHeight;
 
@@ -61,6 +69,11 @@ public class tileGameMap extends gameMap {
     private player playerOne;
 
     public tileGameMap() {
+
+        up_button = new Texture("up_button.png");
+        right_button = new Texture("right_button.png");
+        left_button = new Texture("left_button.png");
+        down_button = new Texture("down_button.png");
 
         batch = new SpriteBatch();
 
@@ -104,13 +117,16 @@ public class tileGameMap extends gameMap {
 
         // testing ai behaviors
         /*
+
         people.get(2).setPursueSB(people.get(0));//
        // people.get(2).setPursueSB(people.get(0).getSteerEnt());//
         people.get(2).getSteerEnt().setMaxLinearSpeed(50);
         people.get(2).getSteerEnt().setMaxLinearAcceleration(4000);
         people.get(2).getSteerEnt().setMaxAngularSpeed(20f);
         people.get(2).getSteerEnt().setMaxAngularAcceleration(10f);
+
 */
+
         //people.get(2).setArriveSB(people.get(0).getSteerEnt());// over shoots
 
     }
@@ -131,6 +147,11 @@ public class tileGameMap extends gameMap {
         batch.begin();
 
         playerOne.getHost().render(batch);
+
+        batch.draw(up_button, Gdx.graphics.getWidth() - (up_button.getWidth() * 2), Gdx.graphics.getHeight()/5);
+        batch.draw(right_button, Gdx.graphics.getWidth() - right_button.getWidth(), Gdx.graphics.getHeight()/5 - right_button.getHeight());
+        batch.draw(down_button, Gdx.graphics.getWidth() - (down_button.getWidth() * 2), Gdx.graphics.getHeight()/5 - (down_button.getHeight() * 2));
+        batch.draw(left_button, Gdx.graphics.getWidth() - (left_button.getWidth() * 2), Gdx.graphics.getHeight()/5 - left_button.getHeight());
 
        for(zombie ent: zombies)
            ent.render(batch);
@@ -172,6 +193,7 @@ public class tileGameMap extends gameMap {
         }
 
         //check to see who has died and clean them off the map ?
+
     }
 
     public void setBatch(SpriteBatch batch) {
@@ -189,6 +211,7 @@ public class tileGameMap extends gameMap {
     public ArrayList<zombie> getZombies() { return zombies; }
 
     @Override
+
     public void disposeTileMap(){ m_TileMap.dispose(); }
 
     @Override
@@ -200,6 +223,7 @@ public class tileGameMap extends gameMap {
     public int getMapHeight(){ return mapHeight; }
 
     @Override
+
     public MapLayers getMapLayers(){ return m_TileMap.getLayers(); }
 
     public int getPixelWidth(){ return 0; }

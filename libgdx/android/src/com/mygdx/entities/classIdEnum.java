@@ -25,5 +25,4 @@ public enum classIdEnum {
         MAZE,
         NOWEAPON,
         STATIC_OBJECT,
-
 }

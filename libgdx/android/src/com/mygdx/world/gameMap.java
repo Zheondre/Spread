@@ -10,6 +10,7 @@ package com.mygdx.world;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.physics.box2d.World;
+
 import com.mygdx.entities.humans.person;
 import com.mygdx.entities.humans.zombie;
 

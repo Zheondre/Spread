@@ -50,7 +50,7 @@ public enum entityInfo {
         this.id = id;
         this.weapon = classIdEnum.NOWEAPON;
 
-        this.walkSpeed = 80;
+       this.walkSpeed = 80;
 
         this.armor = 0;
         this.health = 100;
@@ -74,8 +74,10 @@ public enum entityInfo {
                 this.isCpu = false;
                 break;
             case Zombie:
+
                 this.xpos = 30;
                 this.ypos = 50;
+
                 //this.infectPts = 3;
                 this.zombie = true;
                 this.infected = true;
@@ -87,13 +89,14 @@ public enum entityInfo {
                 //this.ypos = 25;
                 break;
             case Security:
-                this.armor = 50;
-                this.weapon = classIdEnum.BATON;
+            this.armor = 50;
+               this.weapon = classIdEnum.BATON;
                 break;
             case Cop:
                 this.armor = 70;
                 this.weapon = classIdEnum.PISTOL;
                 break;
+
             case STATIC_OBJECT:
                 this.walkSpeed = 0;
                 this.armor = 0;
@@ -103,7 +106,7 @@ public enum entityInfo {
                 this.infected = false;
                 this.isCpu = true;
                 break;
-            default:
+				default:
                 //throw an error, unknown type
         }
     }
@@ -119,9 +122,7 @@ public enum entityInfo {
     public classIdEnum getId() {
         return this.id;
     }
-
-
-    public float getXpos() {
+   public float getXpos() {
         return this.xpos;
     }
 
