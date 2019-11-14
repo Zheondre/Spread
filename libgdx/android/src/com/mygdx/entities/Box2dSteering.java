@@ -12,9 +12,7 @@ import com.mygdx.utils.SteeringUtils;
 
 public class Box2dSteering implements Steerable<Vector2> {
 
-
-   public Body body;
-
+    Body body;
     boolean tagged;
     float boundRadius;
     float maxLinearSpeed, maxLinearAcc;
@@ -31,9 +29,7 @@ public class Box2dSteering implements Steerable<Vector2> {
     boolean independentFacing;
 
 
-
-    SteeringBehavior<Vector2> behavior; //might have to put these in the entity class
-
+    SteeringBehavior<Vector2> behavior; //might have to put these in the entitiy class
     private static final SteeringAcceleration<Vector2> steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
 
 
@@ -42,12 +38,10 @@ public class Box2dSteering implements Steerable<Vector2> {
         this.boundRadius = boundRadius;
 
         this.tagged = false;
-
-        //this.maxLinearSpeed = (float) (Math.random()*((55-47)+47))+1;
         this.maxLinearSpeed = 50;
-        this.maxLinearAcc = 4500;
-        this.maxaAngleSpeed = 10;
-        this.maxAngleAcc = 10;
+        this.maxLinearAcc = 7300;
+        this.maxaAngleSpeed = 50;
+        this.maxAngleAcc = 30;
 
         this.independentFacing = true; // will change later
         //this.independentFacing = independentFacing;

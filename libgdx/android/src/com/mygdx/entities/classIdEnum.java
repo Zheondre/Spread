@@ -6,7 +6,6 @@ public enum classIdEnum {
         PPerson,
         CPU,
         Zombie,
-        ConvertedPer,
         Person,
         Security,
         Cop,
@@ -24,5 +23,5 @@ public enum classIdEnum {
         BATON,
         MAZE,
         NOWEAPON,
-        STATIC_OBJECT,
+
 }

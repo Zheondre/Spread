@@ -7,7 +7,6 @@ import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.entities.humans.zombie;
 import com.mygdx.world.gameMap;
 
 import static com.badlogic.gdx.Input.Keys.UP;

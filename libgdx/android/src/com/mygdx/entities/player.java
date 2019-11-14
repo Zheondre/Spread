@@ -153,7 +153,7 @@ public class player implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
+/*
         //Log.d("TouchDown", "Screen Touched In X " + screenX+ " Y "+ screenY);
         // Log.d("Player Position", "X "+host.getPosX()+ " Y "+host.getPosY());
         int entSize;
@@ -184,7 +184,7 @@ public class player implements InputProcessor {
             //host.getBody().applyLinearImpulse(new Vector2(0.5f,0),host.getBody().getWorldCenter(),true);
 
         }
-        //*/
+        //
         if((this.screenY - host.getPosY()) < -20) {
             host.setMoveDown(true);
             //host.getBody().applyLinearImpulse(new Vector2(0,-0.5f),host.getBody().getWorldCenter(),true);
@@ -194,7 +194,7 @@ public class player implements InputProcessor {
             host.setMoveUp(true);
             //host.getBody().applyLinearImpulse(new Vector2(0,0.5f),host.getBody().getWorldCenter(),true);
 
-        }
+        }*/
 
         //if longpressed then we are trying to get the zombie
 /*

@@ -32,12 +32,26 @@ public class Play_Screen extends GameState {
 
     @Override
     public void render(SpriteBatch batch) {
+        batch = new SpriteBatch();
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        m_GameMap.render();
-        m_GameMap.update(Gdx.graphics.getDeltaTime());
-    }
 
+        m_GameMap.render(batch);
+        m_GameMap.update(Gdx.graphics.getDeltaTime());
+        //people.get(0).render(batch);
+        /*
+        m_TileMapRender.setView(camera);
+        m_TileMapRender.render();
+
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        //render(batch);
+        batch.end();
+        */
+
+
+
+    }
 
     @Override
     public void dispose() {
