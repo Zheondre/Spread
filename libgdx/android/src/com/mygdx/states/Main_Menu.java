@@ -33,7 +33,7 @@ public class Main_Menu extends GameState {
 
     @Override
     public void render(SpriteBatch spriteBatch) {
-        Gdx.gl.glClearColor(1,1,1,1);
+        Gdx.gl.glClearColor(5,0,5,0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         spriteBatch.begin();
         spriteBatch.draw(settings_button, Gdx.graphics.getWidth() / 2 - (settings_button.getWidth() / 2), Gdx.graphics.getHeight() / 6 - (settings_button.getHeight()/2));
