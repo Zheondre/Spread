@@ -49,10 +49,10 @@ public class tileGameMap extends gameMap {
     private int mapWidth;
     private int mapHeight;
 
-    private Texture up_button;
-    private Texture right_button;
-    private Texture left_button;
-    private Texture down_button;
+    //private Texture up_button;
+    //private Texture right_button;
+    //private Texture left_button;
+    //private Texture down_button;
     private int tileWidth;
     private int tileHeight;
 
@@ -68,12 +68,14 @@ public class tileGameMap extends gameMap {
 
     private player playerOne;
 
+    Controller controller;
+
     public tileGameMap() {
 
-        up_button = new Texture("up_button.png");
-        right_button = new Texture("right_button.png");
-        left_button = new Texture("left_button.png");
-        down_button = new Texture("down_button.png");
+        //up_button = new Texture("up_button.png");
+        //right_button = new Texture("right_button.png");
+        //left_button = new Texture("left_button.png");
+        //down_button = new Texture("down_button.png");
 
         batch = new SpriteBatch();
 
@@ -115,6 +117,8 @@ public class tileGameMap extends gameMap {
 
         statsScreen = new libgdxSreen(batch, people.size());
 
+        controller = new Controller();
+
         // testing ai behaviors
         /*
 
@@ -147,10 +151,10 @@ public class tileGameMap extends gameMap {
 
         playerOne.getHost().render(batch);
 
-        batch.draw(up_button, Gdx.graphics.getWidth() - (up_button.getWidth() * 2), Gdx.graphics.getHeight()/5);
-        batch.draw(right_button, Gdx.graphics.getWidth() - right_button.getWidth(), Gdx.graphics.getHeight()/5 - right_button.getHeight());
-        batch.draw(down_button, Gdx.graphics.getWidth() - (down_button.getWidth() * 2), Gdx.graphics.getHeight()/5 - (down_button.getHeight() * 2));
-        batch.draw(left_button, Gdx.graphics.getWidth() - (left_button.getWidth() * 2), Gdx.graphics.getHeight()/5 - left_button.getHeight());
+        //batch.draw(up_button, Gdx.graphics.getWidth() - (up_button.getWidth() * 2), Gdx.graphics.getHeight()/5);
+        //batch.draw(right_button, Gdx.graphics.getWidth() - right_button.getWidth(), Gdx.graphics.getHeight()/5 - right_button.getHeight());
+        //batch.draw(down_button, Gdx.graphics.getWidth() - (down_button.getWidth() * 2), Gdx.graphics.getHeight()/5 - (down_button.getHeight() * 2));
+        //batch.draw(left_button, Gdx.graphics.getWidth() - (left_button.getWidth() * 2), Gdx.graphics.getHeight()/5 - left_button.getHeight());
 
        for(zombie ent: zombies)
            ent.render(batch);
@@ -166,6 +170,7 @@ public class tileGameMap extends gameMap {
 
         //box2d Debug
         b2dr.render(world,playerOne.getPlayCam().combined);
+        controller.draw();
        batch.end();
     }
 
@@ -189,6 +194,47 @@ public class tileGameMap extends gameMap {
             getPeople().remove(CnvrtdEntRdy.get(lastEntPos));
             CnvrtdEntRdy.remove(lastEntPos);
             lastEntPos--;
+        }
+
+        if(controller.isDownPressed())
+        {
+            playerOne.getHost().getBody().setLinearVelocity(new Vector2(0, playerOne.getHost().getBody().getLinearVelocity().y));
+            playerOne.getHost().setMoveDown(true);
+            playerOne.getHost().setMoveUp(false);
+            playerOne.getHost().setMoveLeft(false);
+            playerOne.getHost().setMoveRight(false);
+        }
+        if(controller.isUpPressed())
+        {
+            playerOne.getHost().getBody().setLinearVelocity(new Vector2(0, playerOne.getHost().getBody().getLinearVelocity().y));
+            playerOne.getHost().setMoveDown(false);
+            playerOne.getHost().setMoveUp(true);
+            playerOne.getHost().setMoveLeft(false);
+            playerOne.getHost().setMoveRight(false);
+        }
+        if(controller.isRightPressed())
+        {
+            playerOne.getHost().getBody().setLinearVelocity(new Vector2(playerOne.getHost().getBody().getLinearVelocity().x, 0));
+            playerOne.getHost().setMoveDown(false);
+            playerOne.getHost().setMoveUp(false);
+            playerOne.getHost().setMoveLeft(false);
+            playerOne.getHost().setMoveRight(true);
+        }
+        if(controller.isLeftPressed())
+        {
+            playerOne.getHost().getBody().setLinearVelocity(new Vector2(playerOne.getHost().getBody().getLinearVelocity().x, 0));
+            playerOne.getHost().setMoveDown(false);
+            playerOne.getHost().setMoveUp(false);
+            playerOne.getHost().setMoveLeft(true);
+            playerOne.getHost().setMoveRight(false);
+        }
+        if(controller.isAttackPressed())
+        {
+            //Add attack code here
+        }
+        if(!controller.isUpPressed() && !controller.isDownPressed() && !controller.isLeftPressed() && !controller.isRightPressed())
+        {
+            playerOne.getHost().getBody().setLinearVelocity(0, 0);
         }
 
         //check to see who has died and clean them off the map ?
