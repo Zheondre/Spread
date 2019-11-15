@@ -67,8 +67,7 @@ public class tileGameMap extends gameMap {
     private zombie convertedEnt;
 
     private player playerOne;
-
-    Controller controller;
+    private static Controller controller;
 
     public tileGameMap() {
 
@@ -101,11 +100,11 @@ public class tileGameMap extends gameMap {
         zombies = new ArrayList<zombie>();
 
         playerOne = new player(new zombie(entityInfo.ZPLAYER,this)); // temp
-        //zombies.add(playerOne.getHost());
+        zombies.add((zombie) playerOne.getHost()); //debug
 
        // playerOne = new player(new person(CPlAYER,this));
         //people.add((person)playerOne.getHost());
-        //people.add
+
         playerOne.setPeopleRef(people);
 
         for(int i = 0; i < 2; i++)
@@ -116,9 +115,7 @@ public class tileGameMap extends gameMap {
             people.add(new person(entityInfo.PERSON,this));
 
         statsScreen = new libgdxSreen(batch, people.size());
-
-        controller = new Controller();
-
+        controller = new Controller(playerOne);
         // testing ai behaviors
         /*
 
@@ -128,8 +125,7 @@ public class tileGameMap extends gameMap {
         people.get(2).getSteerEnt().setMaxLinearAcceleration(4000);
         people.get(2).getSteerEnt().setMaxAngularSpeed(20f);
         people.get(2).getSteerEnt().setMaxAngularAcceleration(10f);
-
-*/
+        */
 
         //people.get(2).setArriveSB(people.get(0).getSteerEnt());// over shoots
 
@@ -144,13 +140,14 @@ public class tileGameMap extends gameMap {
         batch.setProjectionMatrix(statsScreen.stage.getCamera().combined);
         statsScreen.setNonZombies(people.size());
         //statsScreen.setCurrentLevel();
-        //statsScreen.setPlayerScore(this.playerOne.getPoints());
+        statsScreen.setPlayerScore(this.playerOne.getPoints());
         statsScreen.stage.draw(); // calling statsScreen.stage.draw() after batch.begin() will crash the program
+
 
         batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
         batch.begin();
 
-        playerOne.getHost().render(batch);
+       playerOne.getHost().render(batch);
 
         //batch.draw(up_button, Gdx.graphics.getWidth() - (up_button.getWidth() * 2), Gdx.graphics.getHeight()/5);
         //batch.draw(right_button, Gdx.graphics.getWidth() - right_button.getWidth(), Gdx.graphics.getHeight()/5 - right_button.getHeight());
@@ -163,7 +160,6 @@ public class tileGameMap extends gameMap {
         for(person ent: people)
             ent.render(batch);
 
-        people.get(0).render(batch);//z player
        /*
         people.get(1).render(batch);//person
         people.get(2).render(batch);//zombie
@@ -172,7 +168,7 @@ public class tileGameMap extends gameMap {
         //box2d Debug
         b2dr.render(world,playerOne.getPlayCam().combined);
         controller.draw();
-       batch.end();
+        batch.end();
     }
 
     @Override
@@ -196,50 +192,7 @@ public class tileGameMap extends gameMap {
             CnvrtdEntRdy.remove(lastEntPos);
             lastEntPos--;
         }
-
-        if(controller.isDownPressed())
-        {
-            playerOne.getHost().getBody().setLinearVelocity(new Vector2(0, playerOne.getHost().getBody().getLinearVelocity().y));
-            playerOne.getHost().setMoveDown(true);
-            playerOne.getHost().setMoveUp(false);
-            playerOne.getHost().setMoveLeft(false);
-            playerOne.getHost().setMoveRight(false);
-        }
-        if(controller.isUpPressed())
-        {
-            playerOne.getHost().getBody().setLinearVelocity(new Vector2(0, playerOne.getHost().getBody().getLinearVelocity().y));
-            playerOne.getHost().setMoveDown(false);
-            playerOne.getHost().setMoveUp(true);
-            playerOne.getHost().setMoveLeft(false);
-            playerOne.getHost().setMoveRight(false);
-        }
-        if(controller.isRightPressed())
-        {
-            playerOne.getHost().getBody().setLinearVelocity(new Vector2(playerOne.getHost().getBody().getLinearVelocity().x, 0));
-            playerOne.getHost().setMoveDown(false);
-            playerOne.getHost().setMoveUp(false);
-            playerOne.getHost().setMoveLeft(false);
-            playerOne.getHost().setMoveRight(true);
-        }
-        if(controller.isLeftPressed())
-        {
-            playerOne.getHost().getBody().setLinearVelocity(new Vector2(playerOne.getHost().getBody().getLinearVelocity().x, 0));
-            playerOne.getHost().setMoveDown(false);
-            playerOne.getHost().setMoveUp(false);
-            playerOne.getHost().setMoveLeft(true);
-            playerOne.getHost().setMoveRight(false);
-        }
-        if(controller.isAttackPressed())
-        {
-            //Add attack code here
-        }
-        if(!controller.isUpPressed() && !controller.isDownPressed() && !controller.isLeftPressed() && !controller.isRightPressed())
-        {
-            playerOne.getHost().getBody().setLinearVelocity(0, 0);
-        }
-
         //check to see who has died and clean them off the map ?
-
     }
 
     public void setBatch(SpriteBatch batch) {

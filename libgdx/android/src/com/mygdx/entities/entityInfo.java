@@ -62,8 +62,8 @@ public enum entityInfo {
 
         switch(id){
             case PZombie:
-                this.xpos = 25;
-                this.ypos = 25;
+                this.xpos = 70;
+                this.ypos = 70;
                 this.infected = true;
                 this.zombie = true;
                 this.isCpu = false;

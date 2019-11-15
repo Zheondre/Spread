@@ -1,6 +1,5 @@
 package com.mygdx.entities;
 
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -19,12 +18,16 @@ import static com.mygdx.utils.entUtils.getMoveLeftVec;
 import static com.mygdx.utils.entUtils.getMoveRightVec;
 import static com.mygdx.utils.entUtils.getMoveUpVec;
 import static com.mygdx.utils.entUtils.getStopVec;
+import static com.mygdx.utils.entUtils.stopDownVec;
+import static com.mygdx.utils.entUtils.stopLeftVec;
+import static com.mygdx.utils.entUtils.stopRightVec;
+import static com.mygdx.utils.entUtils.stopUpVec;
 import static java.lang.StrictMath.abs;
 
-public abstract class entity  {
+public abstract class entity {
 
     private int speed = 80;
-   // private static int xspeed = 80;
+    // private static int xspeed = 80;
     //private static int yspeed = 80;
 
     private Texture image;
@@ -39,7 +42,7 @@ public abstract class entity  {
 
     protected Vector3 mPos;
 
-   // private Vector2 StopVec; // we dont need multiple instances of this so move it from the class later
+    // private Vector2 StopVec; // we dont need multiple instances of this so move it from the class later
 
     protected classIdEnum classID;
 
@@ -62,18 +65,23 @@ public abstract class entity  {
     private TiledMapTileLayer collisionLayer;
 
     public abstract boolean attack();
+
     public abstract void render(SpriteBatch batch);
 
     public entity() {
         //mMap = NULL;
         this.mVelocityY = 0;
-        this.mPos.x =0;
-        this.mPos.y =0;
+        this.mPos.x = 0;
+        this.mPos.y = 0;
         this.amIOnTheGound = true;
-        this.moveLeft= false; this.moveRight= false; this.moveUp= false; this.moveDown= false;
-        this.validPath= false;
-       // this.StopVec = new Vector2(0,0);
+        this.moveLeft = false;
+        this.moveRight = false;
+        this.moveUp = false;
+        this.moveDown = false;
+        this.validPath = false;
+        // this.StopVec = new Vector2(0,0);
     }
+
     public entity(entityInfo entType, gameMap Map) {
 
 
@@ -82,7 +90,10 @@ public abstract class entity  {
         this.amIOnTheGound = true; // every thing will be on the ground for now
         this.classID = entType.getId();
 
-        this.moveLeft = false; this.moveRight = false; this.moveUp = false; this.moveDown = false;
+        this.moveLeft = false;
+        this.moveRight = false;
+        this.moveUp = false;
+        this.moveDown = false;
         this.validPath = false;
 
         float tileW, tileH, tx = 0, ty = 0;
@@ -100,14 +111,17 @@ public abstract class entity  {
 
         tileW = collisionLayer.getTileWidth();
         tileH = collisionLayer.getTileHeight();
+        if (classID == classIdEnum.PZombie) {
+            tx = entType.getXpos();
+            ty = entType.getYpos();
+        } else {
+            while (!goodposition) {
+                tx = (float) (Math.random() * ((150 - 40) + 40)) + 1;
+                ty = (float) (Math.random() * ((150 - 30) + 30)) + 1;
 
-        while(!goodposition){
-            tx = (float) (Math.random()*((150-40)+40))+1;
-            ty = (float) (Math.random()*((150-30)+30))+1;
-
-            goodposition = true;
-            TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int)((tx)/tileW),(int)(ty/tileH));
-            int tscale = 40;
+                goodposition = true;
+                TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int) ((tx) / tileW), (int) (ty / tileH));
+                int tscale = 40;
 /*
             if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty)/tileH)) != null)
                 goodposition = false;
@@ -129,10 +143,11 @@ public abstract class entity  {
                 goodposition = false;
             */
 
-            //find a better way than this
-        }
+                //find a better way than this
+            }
 
-        this.mPos = new Vector3(tx,ty,0);
+        }
+        this.mPos = new Vector3(tx, ty, 0);
 
         entBody.position.set(mPos.x, mPos.y);
         entBody.type = BodyDef.BodyType.DynamicBody;
@@ -148,9 +163,10 @@ public abstract class entity  {
         this.body.createFixture(fd);
         badPath = false;
     }
+
     public entity(entityInfo entType, gameMap Map, Rectangle rec) {
 
-        this.mPos = new Vector3(rec.getX() + rec.getWidth()/2, rec.getY() + rec.getHeight()/2,0);
+        this.mPos = new Vector3(rec.getX() + rec.getWidth() / 2, rec.getY() + rec.getHeight() / 2, 0);
         this.mVelocityY = 0;
         this.mMap = Map;
         this.amIOnTheGound = true; // every thing will be on the ground for now
@@ -166,7 +182,7 @@ public abstract class entity  {
         FixtureDef fd = new FixtureDef();
         PolygonShape shape = new PolygonShape();
 
-        shape.setAsBox(rec.getWidth()/2,rec.getHeight()/2);
+        shape.setAsBox(rec.getWidth() / 2, rec.getHeight() / 2);
 
         entBody.type = BodyDef.BodyType.StaticBody;
         entBody.position.set(mPos.x, mPos.y);
@@ -179,6 +195,7 @@ public abstract class entity  {
     public classIdEnum getClassID() {
         return classID;
     }
+
     public void setSpeed(int speed) {
         this.speed = speed;
     }
@@ -187,52 +204,55 @@ public abstract class entity  {
         return image;
     }
 
-    public void setImage(String path){
-        if(image != null)
+    public void setImage(String path) {
+        if (image != null)
             image.dispose();
         image = new Texture(path);
     }
 
-    public void update(float dTime){
+    public void update(float dTime) {
 
-        if(moveRight)
+        if (moveRight)
             validPath = moveX(speed * dTime);
 
-        if(!validPath)
+        if (!validPath)
             body.setLinearVelocity(getStopVec()); // this might crash...
 
-        if(moveLeft)
+        if (moveLeft)
             validPath = moveX(-speed * dTime);
 
-        if(!validPath)
+        if (!validPath)
             body.setLinearVelocity(getStopVec());
 
-        if(moveUp)
+        if (moveUp)
             validPath = moveY(speed * dTime);
 
-        if(!validPath)
+        if (!validPath)
             body.setLinearVelocity(getStopVec());
 
-        if(moveDown)
+        if (moveDown)
             validPath = moveY(-speed * dTime);
 
-        if(!validPath)
+        if(!(moveRight || moveLeft || moveUp || moveDown)) //makes sure we dont move if the buttons arnt pressed
+            body.setLinearVelocity(getStopVec());
+
+        if (!validPath)
             body.setLinearVelocity(getStopVec());
     }
 
-    protected boolean moveX(float amount){
+    protected boolean moveX(float amount) {
 
-         if((mPos.x + amount) < 0)
-                return false;
+        if ((mPos.x + amount) < 0)
+            return false;
 
-        if((mPos.x + amount) > mMap.getMapWidth())
-                return false;
+        if ((mPos.x + amount) > mMap.getMapWidth())
+            return false;
 
         // if we use a steering behavior --- wont this make it over shoot ?
-        if(amount > 0) {
+        if (amount > 0) {
             if (body.getLinearVelocity().x <= 55)
                 body.applyLinearImpulse(getMoveLeftVec(), body.getWorldCenter(), true);
-        }else{
+        } else {
             if (body.getLinearVelocity().x >= -55)
                 body.applyLinearImpulse(getMoveRightVec(), body.getWorldCenter(), true);
         }
@@ -240,64 +260,116 @@ public abstract class entity  {
         return true;
     }
 
-    protected boolean moveY(float amount){
+    protected boolean moveY(float amount) {
         //basing coordinates to real world instead of screen coordinate
 
-        if((mPos.y + amount) > mMap.getMapHeight())
+        if ((mPos.y + amount) > mMap.getMapHeight())
             return false;
 
-        if((mPos.y + amount) < 0)
+        if ((mPos.y + amount) < 0)
             return false;
 
-        if(amount > 0) {
+        if (amount > 0) {
             if (body.getLinearVelocity().y <= 25)
                 body.applyLinearImpulse(getMoveUpVec(), body.getWorldCenter(), true);
 
-        }else{
+        } else {
             if (body.getLinearVelocity().y >= -25)
                 body.applyLinearImpulse(getMoveDownVec(), body.getWorldCenter(), true);
         }
 
-       return true;
+        return true;
     }
 
-    public int getWidth(){ return mWidth; }
-    public int getHeight(){ return mHeight; }
+    public int getWidth() {
+        return mWidth;
+    }
 
-    public Vector3 getPos() { return mPos; }
+    public int getHeight() {
+        return mHeight;
+    }
 
-    public Body getBody(){ return body; };
+    public Vector3 getPos() {
+        return mPos;
+    }
 
-    public void setPosX(float x){ mPos.x = x; }
-    public void setPosY(float y){ mPos.y = y; }
+    public Body getBody() {
+        return body;
+    }
 
-    public float getPosX(){ return mPos.x; }
-    public float getPosY(){ return mPos.y; }
-    public float getVelocityY(){ return mVelocityY; }
+    ;
+
+    public void setPosX(float x) {
+        mPos.x = x;
+    }
+
+    public void setPosY(float y) {
+        mPos.y = y;
+    }
+
+    public float getPosX() {
+        return mPos.x;
+    }
+
+    public float getPosY() {
+        return mPos.y;
+    }
+
+    public float getVelocityY() {
+        return mVelocityY;
+    }
 
 
-    public Vector3 getmPos() { return mPos; }
+    public Vector3 getmPos() {
+        return mPos;
+    }
 
-    public gameMap getMap(){ return mMap; }
+    public gameMap getMap() {
+        return mMap;
+    }
 
-    public boolean isOnGround(){ return amIOnTheGound; }
+    public boolean isOnGround() {
+        return amIOnTheGound;
+    }
 
-    public void setMoveLeft(boolean moveLeft) { this.moveLeft = moveLeft; }
-    public void setMoveRight(boolean moveRight) { this.moveRight = moveRight; }
-    public void setMoveUp(boolean moveUp) { this.moveUp = moveUp; }
-    public void setMoveDown(boolean moveDown) { this.moveDown = moveDown; }
+    public void setMoveLeft(boolean moveLeft) {
+        this.moveLeft = moveLeft;
+    }
 
-    public boolean isMoveLeft() { return moveLeft; }
-    public boolean isMoveRight() { return moveRight; }
-    public boolean isMoveUp() { return moveUp; }
-    public boolean isMoveDown() { return moveDown; }
+    public void setMoveRight(boolean moveRight) {
+        this.moveRight = moveRight;
+    }
+
+    public void setMoveUp(boolean moveUp) {
+        this.moveUp = moveUp;
+    }
+
+    public void setMoveDown(boolean moveDown) {
+        this.moveDown = moveDown;
+    }
+
+    public boolean isMoveLeft() {
+        return moveLeft;
+    }
+
+    public boolean isMoveRight() {
+        return moveRight;
+    }
+
+    public boolean isMoveUp() {
+        return moveUp;
+    }
+
+    public boolean isMoveDown() {
+        return moveDown;
+    }
 
     public float getEntDistance(entity target) {
         mPos.x = getBody().getPosition().x;
         mPos.y = getBody().getPosition().y;
         float tempx = abs(target.getPosX() - this.mPos.x);
         float tempy = abs(target.getPosY() - this.mPos.y);
-        return (float)Math.sqrt(tempx * tempx + tempy * tempy);
+        return (float) Math.sqrt(tempx * tempx + tempy * tempy);
     }
 
 }
