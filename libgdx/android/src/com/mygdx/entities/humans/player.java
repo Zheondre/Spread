@@ -10,8 +10,15 @@ import com.badlogic.gdx.math.Vector3;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.humans.person;
 import com.mygdx.entities.humans.zombie;
+import com.mygdx.world.Controller;
 
 import java.util.ArrayList;
+
+import static com.mygdx.utils.entUtils.getMoveDownVec;
+import static com.mygdx.utils.entUtils.getMoveLeftVec;
+import static com.mygdx.utils.entUtils.getMoveRightVec;
+import static com.mygdx.utils.entUtils.getMoveUpVec;
+import static com.mygdx.utils.entUtils.getStopVec;
 
 public class player implements InputProcessor {
 
@@ -32,11 +39,13 @@ public class player implements InputProcessor {
 
     private ArrayList<person> peopleRef;
 
-    private boolean switchZombie(zombie host){
-        return  false ; // something got fucked up
+    private boolean switchZombie(zombie host) {
+        return false; // something got fucked up
     }
+
     private boolean touchUp;
     private boolean attackButton;
+
 
     //private static final player ourInstance = new player();
 /*
@@ -74,7 +83,11 @@ public class player implements InputProcessor {
         this.converts = converts;
         this.host = host;
         Gdx.input.setInputProcessor(this);
+
+        //controller = new Controller();
     }
+
+    // public Controller getController() { return controller; }
 
     public int getPoints() {
         return points;
@@ -120,18 +133,57 @@ public class player implements InputProcessor {
         this.peopleRef = peopleRef;
     }
 
-    public void update(float dTime){
+    public void update(float dTime) {
         host.update(dTime);
-        //playCam.position.x = host.getPosX();
-        //playCam.position.y = host.getPosY();
-        if(touchUp)
-            host.getBody().setLinearVelocity(new Vector2(0,0));
+/*
 
-        playCam.position.x = host.getBody().getPosition().x;
-        playCam.position.y = host.getBody().getPosition().y;
+        if(controller.isAttackPressed())
+        {
+            //TODO place anamation
+            if(host.attack()){
+                switch(host.getClassID()) {
+                    case Zombie:
+                    case Person:
+                    case PZombie:
+                    case PPerson:
+                    case ConvertedPer:
+                        points += 3;
+                        break;
+                    case Security:
+                    case Emt:
+                        points += 7;
+                        break;
+                    case Cop:
+                        points += 10;
+                        break;
+                    case Swat:
+                    case Medic:
+                        points += 13;
+                        break;
+                    case Army:
+                    case Hazmat:
+                        points += 20;
+                        break;
+                }
 
+            }
+        }
+*/
+        float wdth = (Gdx.graphics.getWidth() - 1300) / 2;
+        float hght = (Gdx.graphics.getHeight() - 975) / 2;
+
+        float tx = host.getBody().getPosition().x;
+        float ty = host.getBody().getPosition().y;
+
+        // i only tested the left buttom corner sooo
+        if ( !( ((tx - wdth) < 0 ) || ((ty + hght) > Gdx.graphics.getWidth()) ||
+                ((ty - hght) < 0 ) || ((tx + wdth) > Gdx.graphics.getWidth()) )) {
+            playCam.position.x = host.getBody().getPosition().x;
+            playCam.position.y = host.getBody().getPosition().y;
+        }
         playCam.update();
     }
+
     public OrthographicCamera getPlayCam() {
         return playCam;
     }
@@ -169,15 +221,19 @@ public class player implements InputProcessor {
         this.screenX = pos.x;
         this.screenY = pos.y;
 
-        float tempy = (float)screenY - host.getPosY();
-        float tempx = (float)screenX - host.getPosX();
+        float tempy = (float) screenY - host.getPosY();
+        float tempx = (float) screenX - host.getPosX();
 
-       // (float) ((Math.atan2()) * 180.0d / Math.PI));
+        // (float) ((Math.atan2()) * 180.0d / Math.PI));
 
         //float degs = (float) ( (Math.atan2(tempy,tempx)* 180.0d / Math.PI));
 
         //Log.d("degs", "The angle is " +degs);
-        Log.d("TouchDown", "Screen Touched In X " + this.screenX+ " Y "+ this.screenY);
+        Log.d("TouchDown", "Screen Touched In X " + this.screenX + " Y " + this.screenY);
+
+
+//Touch Screen Movements - Start
+        /*
         if((this.screenX - host.getPosX()) < -20) {
             host.setMoveLeft(true);
             //host.getBody().applyLinearImpulse(new Vector2(-0.5f,0),host.getBody().getWorldCenter(),true);
@@ -188,7 +244,7 @@ public class player implements InputProcessor {
             //host.getBody().applyLinearImpulse(new Vector2(0.5f,0),host.getBody().getWorldCenter(),true);
 
         }
-        //*/
+        //
         if((this.screenY - host.getPosY()) < -20) {
             host.setMoveDown(true);
             //host.getBody().applyLinearImpulse(new Vector2(0,-0.5f),host.getBody().getWorldCenter(),true);
@@ -198,33 +254,11 @@ public class player implements InputProcessor {
             host.setMoveUp(true);
             //host.getBody().applyLinearImpulse(new Vector2(0,0.5f),host.getBody().getWorldCenter(),true);
 
-        }
+        }*/
 
-        if(attackButton){
-            //TODO place anamation
-            if(getHost().attack()){
-                switch(getHost().getClassID()) {
-                    case Zombie:
-                    case Person:
-                    case PZombie:
-                    case PPerson:
-                    case ConvertedPer:
-                        points += 3;
-                        break;
-                    case Security:
-                    case Emt:
-                        points += 7;
-                        break;
-                    case Cop:
-                        points += 10;
-                        break;
-                    case Army:
-                        points += 13;
-                }
 
-            }
+//Touch Screen Movements - END
 
-        }
 
         //if longpressed then we are trying to get the zombie
 /*
@@ -292,14 +326,14 @@ public class player implements InputProcessor {
 */
 
         //if(peopleRef.get(myindex).classID == entityInfo.ZOMBIE)
-            //playCam.translate(host.getPosX(),host.getPosY());
+        //playCam.translate(host.getPosX(),host.getPosY());
         return true;
     }
 
-    private int getPlayerIndex(){
+    private int getPlayerIndex() {
         int i;
-        for(i= 0; i < peopleRef.size(); i++);
-            peopleRef.get(i).equals(host);
+        for (i = 0; i < peopleRef.size(); i++) ;
+        peopleRef.get(i).equals(host);
         return i;
     }
 
@@ -307,13 +341,14 @@ public class player implements InputProcessor {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         //need to convert the screen coordinates to world coordinates
+      /*
         touchUp = true;
         host.setMoveLeft(false);
         host.setMoveRight(false);
         host.setMoveUp(false);
         host.setMoveDown(false);
 
-        host.getBody().setLinearVelocity(new Vector2(0,0));
+        host.getBody().setLinearVelocity(getStopVec()); */
         return true;
     }
 
