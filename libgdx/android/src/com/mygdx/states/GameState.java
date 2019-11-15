@@ -4,9 +4,9 @@ package com.mygdx.states;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.entities.entity;
-import com.mygdx.entities.player;
 import com.mygdx.game.Application;
 import com.mygdx.managers.GameStateManager;
+import com.mygdx.entities.humans.player;
 
 import java.util.ArrayList;
 

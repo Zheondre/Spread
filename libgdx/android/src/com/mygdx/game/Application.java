@@ -35,12 +35,6 @@ public class Application extends ApplicationAdapter {
 
 	GameStateManager gsm;
 
-
-
-
-
-
-	//we shouldnt load the game here we will have to do so in an activaty
 	@Override
 	public void create () {
 
@@ -51,8 +45,6 @@ public class Application extends ApplicationAdapter {
 		camera.setToOrtho(false, wdth - 900, hght - 900);
 		gsm = new GameStateManager(this);
 		camera.update();
-
-
 
 
 		//m_GameMap = new tileGameMap();
