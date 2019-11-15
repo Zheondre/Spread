@@ -202,7 +202,28 @@ public class player implements InputProcessor {
 
         if(attackButton){
             //TODO place anamation
-            //getHost().attack();
+            if(getHost().attack()){
+                switch(getHost().getClassID()) {
+                    case Zombie:
+                    case Person:
+                    case PZombie:
+                    case PPerson:
+                    case ConvertedPer:
+                        points += 3;
+                        break;
+                    case Security:
+                    case Emt:
+                        points += 7;
+                        break;
+                    case Cop:
+                        points += 10;
+                        break;
+                    case Army:
+                        points += 13;
+                }
+
+            }
+
         }
 
         //if longpressed then we are trying to get the zombie

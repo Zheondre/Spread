@@ -124,8 +124,7 @@ public class tileGameMap extends gameMap {
         people.get(2).getSteerEnt().setMaxLinearAcceleration(4000);
         people.get(2).getSteerEnt().setMaxAngularSpeed(20f);
         people.get(2).getSteerEnt().setMaxAngularAcceleration(10f);
-
-*/
+        */
 
         //people.get(2).setArriveSB(people.get(0).getSteerEnt());// over shoots
 

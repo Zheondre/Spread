@@ -138,7 +138,7 @@ public class person extends zombie {
         this.mAlerted = 3;
         this.mZombie = true;
         //this.setClsId(classIdEnum.Zombie);
-        this.setClsId(classIdEnum.ConvertedPer);
+        this.setClsId(classIdEnum.ConvertedPer);//Debug
         this.setImage("zombie.png");
         this.setPrey(null);
 
