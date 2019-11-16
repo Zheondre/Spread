@@ -227,12 +227,11 @@ public class zombie extends entity {
     public void update(float dTime){
 
         if(this.mIsCpu) {
-
             //check if there are any special messages
             switch(this.classID) {
                 case Person:
                     if(steerEnt.getBehavior() != this.getWanderSB())
-                        steerEnt.update(dTime);
+                       steerEnt.update(dTime);
                     else
                         super.update(dTime);
                     break;

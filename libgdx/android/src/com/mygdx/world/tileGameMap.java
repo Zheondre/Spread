@@ -23,9 +23,11 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 
+import com.mygdx.entities.objects.bomb;
 import com.mygdx.entities.objects.gameBlocks;
 import com.mygdx.entities.humans.person;
 import com.mygdx.entities.humans.player;
@@ -33,9 +35,15 @@ import com.mygdx.entities.humans.zombie;
 
 import java.util.ArrayList;
 
+import static com.mygdx.entities.entityInfo.CPlAYER;
+import static com.mygdx.entities.entityInfo.PBOMB;
 import static com.mygdx.utils.entUtils.getStopVec;
 
 public class tileGameMap extends gameMap {
+
+    //private classIdEnum DEBUGMODE = classIdEnum.PBomb;
+    private classIdEnum DEBUGMODE = classIdEnum.PZombie;
+    //private classIdEnum DEBUGMODE = classIdEnum.PPerson;
 
     public static final int STATSCREEN_WIDTH = 400;
     public static final int STATSCREEN_HEIGHT = 208;
@@ -96,7 +104,7 @@ public class tileGameMap extends gameMap {
 
         gameBlocks = new ArrayList<gameBlocks>();
 
-        for(MapObject object : m_TileMap.getLayers().get(7).getObjects().getByType(RectangleMapObject.class))
+        for(MapObject object : m_TileMap.getLayers().get(6).getObjects().getByType(RectangleMapObject.class))
         {
             gameBlocks.add(new gameBlocks(entityInfo.STATIC_OBJECT, this, ((RectangleMapObject)object).getRectangle()));
         }
@@ -105,23 +113,32 @@ public class tileGameMap extends gameMap {
         CnvrtdEntRdy = new ArrayList<person>();
         zombies = new ArrayList<zombie>();
 
-        playerOne = new player(new zombie(entityInfo.ZPLAYER,this)); // temp
-        zombies.add((zombie) playerOne.getHost()); //debug
+        switch (DEBUGMODE) {
+            case PBomb:
+                playerOne = new player(new bomb(PBOMB,this));
+                break;
+            case PPerson:
+                playerOne = new player(new person(CPlAYER,this));
+                people.add((person)playerOne.getHost());
+                break;
+            case PZombie:
+                playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
+                zombies.add((zombie) playerOne.getHost());
+                break;
+        }
 
-       // playerOne = new player(new person(CPlAYER,this));
-        //people.add((person)playerOne.getHost());
-
-        playerOne.setPeopleRef(people);
-
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < 3; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
         //debug
-        for(int i = 0; i < 7; i++)
+        for(int i = 0; i < 10; i++)
             people.add(new person(entityInfo.PERSON,this));
 
         statsScreen = new libgdxSreen(batch, people.size());
         controller = new Controller(playerOne);
+
+        playerOne.setPeopleRef(people);
+
         // testing ai behaviors
         /*
 
@@ -169,7 +186,7 @@ public class tileGameMap extends gameMap {
         */
 
         //box2d Debug
-        b2dr.render(world,playerOne.getPlayCam().combined);
+   //   b2dr.render(world,playerOne.getPlayCam().combined);
         controller.draw();
         batch.end();
     }
