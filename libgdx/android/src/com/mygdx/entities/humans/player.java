@@ -39,13 +39,10 @@ public class player implements InputProcessor {
 
     private ArrayList<person> peopleRef;
 
-    private boolean switchZombie(zombie host) {
-        return false; // something got fucked up
-    }
-
     private boolean touchUp;
     private boolean attackButton;
 
+    private boolean isAttackPressed = false;
 
     //private static final player ourInstance = new player();
 /*
@@ -83,11 +80,12 @@ public class player implements InputProcessor {
         this.converts = converts;
         this.host = host;
         Gdx.input.setInputProcessor(this);
-
-        //controller = new Controller();
     }
 
-    // public Controller getController() { return controller; }
+    public void setAttackPressed(boolean attackPressed) {
+        isAttackPressed = attackPressed;
+    }
+
 
     public int getPoints() {
         return points;
@@ -133,11 +131,15 @@ public class player implements InputProcessor {
         this.peopleRef = peopleRef;
     }
 
+    private boolean switchZombie(zombie host) {
+        return false; // something got fucked up
+    }
+
     public void update(float dTime) {
         host.update(dTime);
-/*
 
-        if(controller.isAttackPressed())
+
+        if(isAttackPressed)
         {
             //TODO place anamation
             if(host.attack()){
@@ -165,10 +167,10 @@ public class player implements InputProcessor {
                         points += 20;
                         break;
                 }
-
             }
+            isAttackPressed = false;
         }
-*/
+
         float wdth = (Gdx.graphics.getWidth() - 1300) / 2;
         float hght = (Gdx.graphics.getHeight() - 975) / 2;
 
@@ -176,6 +178,8 @@ public class player implements InputProcessor {
         float ty = host.getBody().getPosition().y;
 
         // i only tested the left buttom corner sooo
+        // if we touch the left button screen, and we hit the up arrow,
+        // //the screen wont go up if the character is out from the view
         if ( !( ((tx - wdth) < 0 ) || ((ty + hght) > Gdx.graphics.getWidth()) ||
                 ((ty - hght) < 0 ) || ((tx + wdth) > Gdx.graphics.getWidth()) )) {
             playCam.position.x = host.getBody().getPosition().x;
@@ -236,24 +240,17 @@ public class player implements InputProcessor {
         /*
         if((this.screenX - host.getPosX()) < -20) {
             host.setMoveLeft(true);
-            //host.getBody().applyLinearImpulse(new Vector2(-0.5f,0),host.getBody().getWorldCenter(),true);
         }
 
         if((this.screenX - host.getPosX())> 20) {
             host.setMoveRight(true);
-            //host.getBody().applyLinearImpulse(new Vector2(0.5f,0),host.getBody().getWorldCenter(),true);
-
         }
         //
         if((this.screenY - host.getPosY()) < -20) {
             host.setMoveDown(true);
-            //host.getBody().applyLinearImpulse(new Vector2(0,-0.5f),host.getBody().getWorldCenter(),true);
-
         }
         if((this.screenY - host.getPosY())> 20) {
             host.setMoveUp(true);
-            //host.getBody().applyLinearImpulse(new Vector2(0,0.5f),host.getBody().getWorldCenter(),true);
-
         }*/
 
 

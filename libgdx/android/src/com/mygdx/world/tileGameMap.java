@@ -56,6 +56,12 @@ public class tileGameMap extends gameMap {
     private int tileWidth;
     private int tileHeight;
 
+    private int currentLevel;
+
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+
     private static World world;
     private Box2DDebugRenderer b2dr;
 
@@ -77,7 +83,7 @@ public class tileGameMap extends gameMap {
         //down_button = new Texture("down_button.png");
 
         batch = new SpriteBatch();
-
+        currentLevel = 1;
         m_TileMap = new TmxMapLoader().load("house_road.tmx"); // we will have to make this dynamic based on user map selection
         m_TileMapRender = new OrthogonalTiledMapRenderer(m_TileMap);
         MapProperties MapProp = m_TileMap.getProperties();
@@ -138,11 +144,8 @@ public class tileGameMap extends gameMap {
         m_TileMapRender.render();
 
         batch.setProjectionMatrix(statsScreen.stage.getCamera().combined);
-        statsScreen.setNonZombies(people.size());
-        //statsScreen.setCurrentLevel();
-        statsScreen.setPlayerScore(this.playerOne.getPoints());
-        statsScreen.stage.draw(); // calling statsScreen.stage.draw() after batch.begin() will crash the program
 
+        statsScreen.updateScreen(this); // calling statsScreen.stage.draw() after batch.begin() will crash the program
 
         batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
         batch.begin();
