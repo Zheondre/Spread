@@ -102,7 +102,6 @@ public abstract class entity {
         boolean goodposition = false;
 
         collisionLayer = (TiledMapTileLayer) mMap.getMapLayers().get("Buildings");
-        //collisionLayer = (TiledMapTileLayer) mMap.getMapLayers().get("regen");
 
         tileW = collisionLayer.getTileWidth();
         tileH = collisionLayer.getTileHeight();
@@ -119,10 +118,9 @@ public abstract class entity {
 
                 if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty)/tileH)) != null)
                     goodposition = false;
-
             }
-
         }
+        
         this.mPos = new Vector3(tx, ty, 0);
 
         entBody.position.set(mPos.x, mPos.y);
