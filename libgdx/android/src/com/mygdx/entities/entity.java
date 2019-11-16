@@ -42,8 +42,6 @@ public abstract class entity {
 
     protected Vector3 mPos;
 
-    // private Vector2 StopVec; // we dont need multiple instances of this so move it from the class later
-
     protected classIdEnum classID;
 
     private Body body;
@@ -69,7 +67,6 @@ public abstract class entity {
     public abstract void render(SpriteBatch batch);
 
     public entity() {
-        //mMap = NULL;
         this.mVelocityY = 0;
         this.mPos.x = 0;
         this.mPos.y = 0;
@@ -79,7 +76,6 @@ public abstract class entity {
         this.moveUp = false;
         this.moveDown = false;
         this.validPath = false;
-        // this.StopVec = new Vector2(0,0);
     }
 
     public entity(entityInfo entType, gameMap Map) {
@@ -103,8 +99,6 @@ public abstract class entity {
         BodyDef entBody = new BodyDef();
         FixtureDef fd = new FixtureDef();
 
-        //this.StopVec = new Vector2(0,0);
-
         boolean goodposition = false;
 
         collisionLayer = (TiledMapTileLayer) mMap.getMapLayers().get("Buildings");
@@ -116,37 +110,17 @@ public abstract class entity {
             ty = entType.getYpos();
         } else {
             while (!goodposition) {
-                tx = (float) (Math.random() * ((150 - 40) + 40)) + 1;
-                ty = (float) (Math.random() * ((150 - 30) + 30)) + 1;
+                tx = (float) (Math.random() * ((100 - 20) + 20)) + 1;
+                ty = (float) (Math.random() * ((100 - 20) + 20)) + 1;
 
                 goodposition = true;
                 TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int) ((tx) / tileW), (int) (ty / tileH));
-                int tscale = 40;
-/*
-            if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty)/tileH)) != null)
-                goodposition = false;
-            if(collisionLayer.getCell((int)((tx + tscale)/tileW),(int)((ty + tscale)/tileH)) != null)
-                goodposition = false;
-            if(collisionLayer.getCell((int)((tx - tscale)/tileW),(int)((ty - tscale)/tileH)) != null)
-                goodposition = false;
-            if(collisionLayer.getCell((int)((tx - tscale)/tileW),(int)((ty + tscale)/tileH)) != null)
-                goodposition = false;
-            if(collisionLayer.getCell((int)((tx + tscale)/tileW),(int)((ty - tscale)/tileH)) != null)
-                goodposition = false;
-            if(collisionLayer.getCell((int)((tx + tscale)/tileW),(int)((ty) /tileH)) != null)
-                goodposition = false;
-            if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty+tscale)/tileH)) != null)
-                goodposition = false;
-            if(collisionLayer.getCell((int)((tx - tscale)/tileW),(int)((ty) /tileH)) != null)
-                goodposition = false;
-            if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty-tscale)/tileH)) != null)
-                goodposition = false;
-            */
 
-                //find a better way than this
+                if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty)/tileH)) != null)
+                    goodposition = false;
             }
-
         }
+        
         this.mPos = new Vector3(tx, ty, 0);
 
         entBody.position.set(mPos.x, mPos.y);

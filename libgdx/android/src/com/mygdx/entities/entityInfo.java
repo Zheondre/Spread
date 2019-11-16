@@ -22,7 +22,8 @@ public enum entityInfo {
     COP(classIdEnum.Cop),
     SECURITY(classIdEnum.Security),
     ZOMBIE(classIdEnum.Zombie),
-    STATIC_OBJECT(classIdEnum.STATIC_OBJECT);
+    STATIC_OBJECT(classIdEnum.STATIC_OBJECT),
+    PBOMB(classIdEnum.PBomb);
 
     private classIdEnum weapon;
     private classIdEnum id;
@@ -61,6 +62,9 @@ public enum entityInfo {
         this.isCpu = true;
 
         switch(id){
+            case PBomb:
+                this.isCpu = false;
+                break;
             case PZombie:
                 this.xpos = 70;
                 this.ypos = 70;

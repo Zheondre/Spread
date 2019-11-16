@@ -39,6 +39,12 @@ public class zombie extends entity {
     //private Box2dSteering prey;
     private entity prey;
 
+    public float getPreyDistance() {
+        return preyDistance;
+    }
+
+    private float preyDistance;
+
    protected Box2dSteering steerEnt;
 
     protected Pursue<Vector2>  pursueSB;
@@ -188,10 +194,13 @@ public class zombie extends entity {
     public boolean attack(){
         // TODO make sure the person we are attacking is in the direction we are looking
         person per = findSomeOneToChase();
-        if(getEntDistance(per) < 15) {
-            biteNonZombie(per);
-            return true;
-        }
+        //preyDistance
+       if(per != null)
+           if(preyDistance < 20) {
+               biteNonZombie(per);
+               return true;
+           }
+
         return false;
     }
 
@@ -218,12 +227,11 @@ public class zombie extends entity {
     public void update(float dTime){
 
         if(this.mIsCpu) {
-
             //check if there are any special messages
             switch(this.classID) {
                 case Person:
                     if(steerEnt.getBehavior() != this.getWanderSB())
-                        steerEnt.update(dTime);
+                       steerEnt.update(dTime);
                     else
                         super.update(dTime);
                     break;
@@ -343,6 +351,10 @@ public class zombie extends entity {
                 }
             }
         }
+
+        if(shortEnt != null)
+            preyDistance = tth;
+
         return shortEnt;
     }
 

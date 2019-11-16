@@ -15,7 +15,9 @@ public class bomb extends entity {
 
     int infecRatio;
     int healthRatio;
-    bomb(entityInfo entType, gameMap Map){
+    public bomb(entityInfo entType, gameMap Map){
+        super(entType, Map);
+
         setImage("bomb.png");
         infecRatio = 350;
         healthRatio = 300;
@@ -46,7 +48,11 @@ public class bomb extends entity {
 
     }
     public void update(float dTime) {
-        ;
+        super.update(dTime);
+        //Update Picture position to box2d position
+        mPos.x = this.getBody().getPosition().x - 7;
+        mPos.y = this.getBody().getPosition().y - 7.5f;
+
     }
     public void render(SpriteBatch batch){
         Texture image = getImage();
@@ -61,6 +67,11 @@ public class bomb extends entity {
         float tempx = abs(target.getPosX() - this.mPos.x);
         float tempy = abs(target.getPosY() - this.mPos.y);
         return (float)Math.sqrt(tempx * tempx + tempy * tempy);
+    }
+
+    public void dispose(){
+        ;
+
     }
 
 }

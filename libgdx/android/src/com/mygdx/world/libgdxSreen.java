@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.entities.humans.player;
 
 // Turtorial Libdx part 4 creating a Hud - Super Mario Bros
 
@@ -33,22 +34,6 @@ public class libgdxSreen {
     Label scoreLabelValue;
     Label peopleLabelValue;
     Label levelLabelValue;
-
-    public void setLevelTime(float levelTime) {
-        this.levelTime = levelTime;
-    }
-
-    public void setPlayerScore(int playerScore) {
-        this.playerScore = playerScore;
-    }
-
-    public void setNonZombies(int nonZombies) {
-        this.nonZombies = nonZombies;
-    }
-
-    public void setCurrentLevel(byte currentLevel) {
-        this.currentLevel = currentLevel;
-    }
 
     public libgdxSreen(SpriteBatch batch, int nonZombies){
 
@@ -89,9 +74,15 @@ public class libgdxSreen {
         stage.addActor(table);
 
     }
+
+    public void updateScreen(tileGameMap gm){
+        //cntDwnLabelValue.setText();
+        scoreLabelValue.setText(gm.getPlayerOne().getPoints());
+        peopleLabelValue.setText(gm.getPeople().size());
+        levelLabelValue.setText(gm.getCurrentLevel());
+        stage.draw();
+    }
+
     //display health
     //display armor
-    //display points
-    //display current level
-    //display people left
 }
