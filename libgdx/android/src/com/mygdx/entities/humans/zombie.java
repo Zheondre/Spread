@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.entities.BehaviorEnum;
 import com.mygdx.entities.Box2dSteering;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
@@ -13,6 +14,7 @@ import com.mygdx.entities.entityInfo;
 import com.mygdx.entities.humans.person;
 import com.mygdx.world.gameMap;
 
+import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
 import static com.mygdx.utils.entUtils.stopDownVec;
 import static com.mygdx.utils.entUtils.stopLeftVec;
 import static com.mygdx.utils.entUtils.stopRightVec;
@@ -27,6 +29,7 @@ public class zombie extends entity {
     protected int health;
 
     protected classIdEnum weapon;
+    protected BehaviorEnum mAlerted;
 
     private static final int biteTimeSetting = 5;
     private float bitetime = biteTimeSetting;
@@ -230,10 +233,13 @@ public class zombie extends entity {
             //check if there are any special messages
             switch(this.classID) {
                 case Person:
-                    if(steerEnt.getBehavior() != this.getWanderSB())
-                       steerEnt.update(dTime);
-                    else
+                case Security:
+                case Cop:
+                case Emt:
+                    if(mAlerted == WALK_RANDOMLY)
                         super.update(dTime);
+                     else
+                         steerEnt.update(dTime);
                     break;
 
                 case ConvertedPer: // debug
@@ -301,7 +307,6 @@ public class zombie extends entity {
                         } else {
                             walkRandomly(dTime);
                             super.update(dTime);
-
                         }
                     }
                     break;

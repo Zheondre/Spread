@@ -32,6 +32,7 @@ import com.mygdx.entities.objects.gameBlocks;
 import com.mygdx.entities.humans.person;
 import com.mygdx.entities.humans.player;
 import com.mygdx.entities.humans.zombie;
+import com.mygdx.game.LevelInfo;
 
 import java.util.ArrayList;
 
@@ -65,6 +66,7 @@ public class tileGameMap extends gameMap {
     private int tileHeight;
 
     private int currentLevel;
+    private int levelAmount;
 
     public int getCurrentLevel() {
         return currentLevel;
@@ -77,6 +79,8 @@ public class tileGameMap extends gameMap {
     private ArrayList<zombie> zombies;
     private ArrayList<gameBlocks> gameBlocks;
     private ArrayList<person> CnvrtdEntRdy;
+    private ArrayList<LevelInfo> levels;
+
 
     private zombie convertedEnt;
 
@@ -91,7 +95,8 @@ public class tileGameMap extends gameMap {
         //down_button = new Texture("down_button.png");
 
         batch = new SpriteBatch();
-        currentLevel = 1;
+        levelAmount = 3;
+        currentLevel = 0;
         m_TileMap = new TmxMapLoader().load("house_road.tmx"); // we will have to make this dynamic based on user map selection
         m_TileMapRender = new OrthogonalTiledMapRenderer(m_TileMap);
         MapProperties MapProp = m_TileMap.getProperties();
@@ -112,6 +117,7 @@ public class tileGameMap extends gameMap {
         people = new ArrayList<person>();
         CnvrtdEntRdy = new ArrayList<person>();
         zombies = new ArrayList<zombie>();
+        levels = new ArrayList<LevelInfo>();
 
         switch (DEBUGMODE) {
             case PBomb:
@@ -127,7 +133,13 @@ public class tileGameMap extends gameMap {
                 break;
         }
 
-        for(int i = 0; i < 3; i++)
+        /*
+        for(int i = 0; i < levelAmount; i++) {
+            levels.add(new LevelInfo(i, 20, , 0, 0, 0 ));
+        }
+*/
+
+        for(int i = 0; i < 0; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
         //debug
@@ -213,6 +225,11 @@ public class tileGameMap extends gameMap {
             lastEntPos--;
         }
         //check to see who has died and clean them off the map ?
+    }
+
+    public void levelLogic() {
+        ; // if all civilans are converted add current level * 10 points
+        //
     }
 
     public void setBatch(SpriteBatch batch) {

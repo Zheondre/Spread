@@ -79,7 +79,7 @@ public class libgdxSreen {
         //cntDwnLabelValue.setText();
         scoreLabelValue.setText(gm.getPlayerOne().getPoints());
         peopleLabelValue.setText(gm.getPeople().size());
-        levelLabelValue.setText(gm.getCurrentLevel());
+        levelLabelValue.setText(gm.getCurrentLevel() + 1);
         stage.draw();
     }
 

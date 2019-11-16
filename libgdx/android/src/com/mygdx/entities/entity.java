@@ -120,7 +120,7 @@ public abstract class entity {
                     goodposition = false;
             }
         }
-        
+
         this.mPos = new Vector3(tx, ty, 0);
 
         entBody.position.set(mPos.x, mPos.y);
@@ -271,8 +271,6 @@ public abstract class entity {
         return body;
     }
 
-    ;
-
     public void setPosX(float x) {
         mPos.x = x;
     }
@@ -292,7 +290,6 @@ public abstract class entity {
     public float getVelocityY() {
         return mVelocityY;
     }
-
 
     public Vector3 getmPos() {
         return mPos;
