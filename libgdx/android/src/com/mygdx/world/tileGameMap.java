@@ -9,8 +9,6 @@ they also explain how to modify the tiles in a map during game play, we wont add
 
 package com.mygdx.world;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
@@ -20,11 +18,9 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.entities.classIdEnum;
-import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 
 import com.mygdx.entities.objects.bomb;
@@ -32,7 +28,7 @@ import com.mygdx.entities.objects.gameBlocks;
 import com.mygdx.entities.humans.person;
 import com.mygdx.entities.humans.player;
 import com.mygdx.entities.humans.zombie;
-import com.mygdx.game.LevelInfo;
+import com.mygdx.game.WaveInfo;
 
 import java.util.ArrayList;
 
@@ -79,7 +75,7 @@ public class tileGameMap extends gameMap {
     private ArrayList<zombie> zombies;
     private ArrayList<gameBlocks> gameBlocks;
     private ArrayList<person> CnvrtdEntRdy;
-    private ArrayList<LevelInfo> levels;
+    private ArrayList<WaveInfo> levels;
 
 
     private zombie convertedEnt;
@@ -117,7 +113,7 @@ public class tileGameMap extends gameMap {
         people = new ArrayList<person>();
         CnvrtdEntRdy = new ArrayList<person>();
         zombies = new ArrayList<zombie>();
-        levels = new ArrayList<LevelInfo>();
+        levels = new ArrayList<WaveInfo>();
 
         switch (DEBUGMODE) {
             case PBomb:
@@ -135,7 +131,7 @@ public class tileGameMap extends gameMap {
 
         /*
         for(int i = 0; i < levelAmount; i++) {
-            levels.add(new LevelInfo(i, 20, , 0, 0, 0 ));
+            levels.add(new WaveInfo(i, 20, , 0, 0, 0 ));
         }
 */
 

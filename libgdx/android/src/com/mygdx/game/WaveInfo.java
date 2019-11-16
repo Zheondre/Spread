@@ -2,7 +2,7 @@ package com.mygdx.game;
 
 import java.util.ArrayList;
 
-public class LevelInfo {
+public class WaveInfo {
 
     byte levelNum;
     byte peopleNum;
@@ -16,7 +16,7 @@ public class LevelInfo {
     byte antidoes;
     byte cureZones;
 
-    public LevelInfo(byte levelNum, byte peopleNum, byte securityNum, byte copNum, byte emtNum) {
+    public WaveInfo(byte levelNum, byte peopleNum, byte securityNum, byte copNum, byte emtNum) {
         this.levelNum = levelNum;
         this.peopleNum = peopleNum;
         this.securityNum = securityNum;
@@ -25,7 +25,7 @@ public class LevelInfo {
         this.BackUpTime = 120;
     }
 
-    public LevelInfo(byte levelNum, byte peopleNum, byte securityNum, byte copNum, byte emtNum, int backUpTime) {
+    public WaveInfo(byte levelNum, byte peopleNum, byte securityNum, byte copNum, byte emtNum, int backUpTime) {
         this.levelNum = levelNum;
         this.peopleNum = peopleNum;
         this.securityNum = securityNum;
@@ -34,7 +34,7 @@ public class LevelInfo {
         this.BackUpTime = backUpTime;
     }
 
-    public LevelInfo(byte levelNum, byte peopleNum, byte securityNum, byte copNum, byte emtNum, int backUpTime, byte healthPackNum, byte antidoes, byte cureZones) {
+    public WaveInfo(byte levelNum, byte peopleNum, byte securityNum, byte copNum, byte emtNum, int backUpTime, byte healthPackNum, byte antidoes, byte cureZones) {
         this.levelNum = levelNum;
         this.peopleNum = peopleNum;
         this.securityNum = securityNum;
