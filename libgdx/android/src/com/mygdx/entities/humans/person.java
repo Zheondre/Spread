@@ -28,6 +28,7 @@ public class person extends zombie {
     public void setEvadeSB(Evade<Vector2> evadeSB) {
         if(evadeSB!= null)
             this.evadeSB = evadeSB;
+        steerEnt.setBehavior(evadeSB);
     }
 
     public void setEvadeSB(zombie target) {
@@ -35,6 +36,7 @@ public class person extends zombie {
             //this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt(), .5f);
             this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt());
             this.setPrey(target);// temp
+            steerEnt.setBehavior(evadeSB);
         }
     }
 
@@ -93,12 +95,13 @@ public class person extends zombie {
         //check if hurt or if infected
         if(!mZombie) {
             if (mInfected) {
-                mInfctTime -= .04;
+                mInfctTime -= .03;
                 if (mInfctTime < 0)
                     turnIntoAZombie();
             }
         }
         switch(mAlerted) {// we might want to change these into enums
+            //change steering ent based on alertness
             case 5:
                 // test wander steering ent
                 if(getSteerEnt().getBehavior() != getWanderSB()){
@@ -117,7 +120,7 @@ public class person extends zombie {
             break;
             case 2:
                 //evade or seek help
-                steerEnt.update(dTime);
+                //steerEnt.update(dTime);
                 //zombie has been spotted or you have been attacked
                 break;
             case 3:

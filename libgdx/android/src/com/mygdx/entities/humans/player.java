@@ -39,13 +39,10 @@ public class player implements InputProcessor {
 
     private ArrayList<person> peopleRef;
 
-    private boolean switchZombie(zombie host) {
-        return false; // something got fucked up
-    }
-
     private boolean touchUp;
     private boolean attackButton;
 
+    private boolean isAttackPressed = false;
 
     //private static final player ourInstance = new player();
 /*
@@ -53,12 +50,15 @@ public class player implements InputProcessor {
         return ourInstance;
     }*/
 
+    private Vector3 pos;
     public player(entity host) {
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
         playCam = new OrthographicCamera();
-        playCam.setToOrtho(false, wdth - 1300, hght - 975);
+        playCam.setToOrtho(false, wdth - 1300, hght - 850);
         playCam.update();
+       // Vector3 pos = new Vector3(wdth, hght, 0);
+        //playCam.unproject(pos);
 
         this.points = 0;
         this.infects = 0;
@@ -83,11 +83,12 @@ public class player implements InputProcessor {
         this.converts = converts;
         this.host = host;
         Gdx.input.setInputProcessor(this);
-
-        //controller = new Controller();
     }
 
-    // public Controller getController() { return controller; }
+    public void setAttackPressed(boolean attackPressed) {
+        isAttackPressed = attackPressed;
+    }
+
 
     public int getPoints() {
         return points;
@@ -133,11 +134,14 @@ public class player implements InputProcessor {
         this.peopleRef = peopleRef;
     }
 
+    private boolean switchZombie(zombie host) {
+        return false; // something got fucked up
+    }
+
     public void update(float dTime) {
         host.update(dTime);
-/*
 
-        if(controller.isAttackPressed())
+        if(isAttackPressed)
         {
             //TODO place anamation
             if(host.attack()){
@@ -165,22 +169,74 @@ public class player implements InputProcessor {
                         points += 20;
                         break;
                 }
-
             }
+            isAttackPressed = false;
         }
-*/
-        float wdth = (Gdx.graphics.getWidth() - 1300) / 2;
-        float hght = (Gdx.graphics.getHeight() - 975) / 2;
+
+        /*
+
+        float w = (Gdx.graphics.getWidth() - 1300) / 2;
+        float h = (Gdx.graphics.getHeight() - 975) / 2;
 
         float tx = host.getBody().getPosition().x;
         float ty = host.getBody().getPosition().y;
 
         // i only tested the left buttom corner sooo
-        if ( !( ((tx - wdth) < 0 ) || ((ty + hght) > Gdx.graphics.getWidth()) ||
-                ((ty - hght) < 0 ) || ((tx + wdth) > Gdx.graphics.getWidth()) )) {
+        // if we touch the left button screen, and we hit the up arrow,
+        // //the screen wont go up if the character is out from the view
+// need to convert cordinates or this wont work/////////////////////
+        /*
+        boolean isCamNnMap = true;
+        boolean notInACorner = true;
+       if(((tx - w) < 0) & ((ty + h) > ((float)Gdx.graphics.getHeight())/16f)) { //Left Bottom Corner
+           notInACorner = false;
+        }
+
+        if(((tx - w) < 0) & ((ty - h) < 0)) { //Left Upper Corner
+           notInACorner = false;
+        }
+
+        if(((tx + w) > ((float)Gdx.graphics.getWidth()/16f)) &
+          ((ty + h) > (((float)Gdx.graphics.getHeight())/16f))) { //Right Bottom Corner
+            notInACorner = false;
+        }
+
+        if(((tx + w) >((float)Gdx.graphics.getWidth()/16f)) & ((ty - h) < 0)) { //Right Upper Corner
+            notInACorner = false;
+        }
+
+        if(notInACorner){
+            if((tx - w) < 0){
+                playCam.position.y = host.getBody().getPosition().y;
+                isCamNnMap = false;
+            }
+
+            if((tx + w) > ((float)Gdx.graphics.getWidth()/16f)) {//need to be tested
+                playCam.position.y = host.getBody().getPosition().y;
+                isCamNnMap = false;
+            }
+
+            if((ty + h) > (((float)Gdx.graphics.getHeight())/16f)) {
+                playCam.position.x = host.getBody().getPosition().x;
+                isCamNnMap = false;
+            }
+
+            if((ty - h) < 0) {
+                playCam.position.x = host.getBody().getPosition().x;
+                isCamNnMap = false;
+            }
+        } else {
+            isCamNnMap = false;
+        }
+
+        if(isCamNnMap)  {
             playCam.position.x = host.getBody().getPosition().x;
             playCam.position.y = host.getBody().getPosition().y;
-        }
+        }*/
+
+        playCam.position.x = host.getBody().getPosition().x;
+        playCam.position.y = host.getBody().getPosition().y;
+
         playCam.update();
     }
 
@@ -236,24 +292,17 @@ public class player implements InputProcessor {
         /*
         if((this.screenX - host.getPosX()) < -20) {
             host.setMoveLeft(true);
-            //host.getBody().applyLinearImpulse(new Vector2(-0.5f,0),host.getBody().getWorldCenter(),true);
         }
 
         if((this.screenX - host.getPosX())> 20) {
             host.setMoveRight(true);
-            //host.getBody().applyLinearImpulse(new Vector2(0.5f,0),host.getBody().getWorldCenter(),true);
-
         }
         //
         if((this.screenY - host.getPosY()) < -20) {
             host.setMoveDown(true);
-            //host.getBody().applyLinearImpulse(new Vector2(0,-0.5f),host.getBody().getWorldCenter(),true);
-
         }
         if((this.screenY - host.getPosY())> 20) {
             host.setMoveUp(true);
-            //host.getBody().applyLinearImpulse(new Vector2(0,0.5f),host.getBody().getWorldCenter(),true);
-
         }*/
 
 

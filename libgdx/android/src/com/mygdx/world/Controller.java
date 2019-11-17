@@ -134,14 +134,14 @@ public class Controller {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 attackPressed = true;
-                // player1.getHost().setMoveUp(attackPressed);
+                player1.setAttackPressed(attackPressed);
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 attackPressed = false;
-                //player1.getHost().setMoveUp(attackPressed);
+                player1.setAttackPressed(attackPressed);
             }
         });
 
