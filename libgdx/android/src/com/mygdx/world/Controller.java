@@ -3,11 +3,16 @@ package com.mygdx.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.entities.humans.player;
@@ -23,6 +28,12 @@ public class Controller {
 
     player player1;
 
+    Image upImg = new Image(new Texture("up_button.png"));
+    Image downImg = new Image(new Texture("down_button.png"));
+    Image leftImg = new Image(new Texture("left_button.png"));
+    Image rightImg = new Image(new Texture("right_button.png"));
+    Image attackImg = new Image(new Texture("attack_button.png"));
+
     public Controller(final player playerOne) {
         this.player1 = playerOne;
         cam = new OrthographicCamera();
@@ -35,11 +46,7 @@ public class Controller {
         Table table = new Table();
         table.left().bottom();
 
-        Image upImg = new Image(new Texture("up_button.png"));
-        Image downImg = new Image(new Texture("down_button.png"));
-        Image leftImg = new Image(new Texture("left_button.png"));
-        Image rightImg = new Image(new Texture("right_button.png"));
-        Image attackImg = new Image(new Texture("attack_button.png"));
+
 
         upImg.setSize(50, 50);
         downImg.setSize(50, 50);
@@ -53,6 +60,8 @@ public class Controller {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 upPressed = true;
                 player1.getHost().setMoveUp(upPressed);
+                upImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("up_button_purple.png"))));
+
                 return true;
             }
 
@@ -60,6 +69,7 @@ public class Controller {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 upPressed = false;
                 player1.getHost().setMoveUp(upPressed);
+                upImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("up_button.png"))));
             }
         });
 
@@ -68,12 +78,14 @@ public class Controller {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 downPressed = true;
                 player1.getHost().setMoveDown(downPressed);
+                downImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("down_button_purple.png"))));
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 downPressed = false;
+                downImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("down_button.png"))));
                 player1.getHost().setMoveDown(downPressed);
             }
         });
@@ -85,6 +97,7 @@ public class Controller {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 leftPressed = true;
                 player1.getHost().setMoveLeft(leftPressed);
+                leftImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("left_button_purple.png"))));
                 return true;
             }
 
@@ -92,6 +105,7 @@ public class Controller {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 leftPressed = false;
                 player1.getHost().setMoveLeft(leftPressed);
+                leftImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("left_button.png"))));
             }
         });
 
@@ -102,6 +116,7 @@ public class Controller {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 rightPressed = true;
                 player1.getHost().setMoveRight(rightPressed);
+                rightImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("right_button_purple.png"))));
                 return true;
             }
 
@@ -109,6 +124,7 @@ public class Controller {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 rightPressed = false;
                 player1.getHost().setMoveRight(rightPressed);
+                rightImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("right_button.png"))));
             }
         });
 
@@ -153,6 +169,7 @@ public class Controller {
     }
 
     public boolean isUpPressed() {
+
         return upPressed;
     }
 
