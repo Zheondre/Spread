@@ -1,4 +1,6 @@
 package com.mygdx.entities.humans;
+import android.os.SystemClock;
+
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
@@ -198,8 +200,12 @@ public class zombie extends entity {
        if(per != null)
            if(preyDistance < 20) {
                biteNonZombie(per);
+
                return true;
            }
+
+
+
 
         return false;
     }
@@ -208,7 +214,6 @@ public class zombie extends entity {
 
         if(victum == null)
             return false;
-
         if(!victum.isInfected())
             victum.setInfected(true, this);
         else
@@ -219,7 +224,7 @@ public class zombie extends entity {
 
         victum.decreaseInfectTime(5);
         victum.decreaseHlth(1);
-
+        setImage("zombieAttack.png");
         return true;
     }
 
@@ -248,6 +253,11 @@ public class zombie extends entity {
                     //loop through noinfected victums
                     //also need to see if they are in out view but for now we will base this off of ditance
                     //if close enough chase, if too close stop and attack
+
+                    if(SystemClock.elapsedRealtime() / 1000 % 2 == 1) setImage("zombie2.png");
+                    else setImage("zombie.png");
+
+
 
                     if (doISeeANoneZombie) {
 
