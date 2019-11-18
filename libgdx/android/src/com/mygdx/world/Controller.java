@@ -33,6 +33,8 @@ public class Controller {
     Image leftImg = new Image(new Texture("left_button.png"));
     Image rightImg = new Image(new Texture("right_button.png"));
     Image attackImg = new Image(new Texture("attack_button.png"));
+    Image leftCycle = new Image(new Texture("left_button.png"));
+    Image rightCycle = new Image(new Texture("right_button.png"));
 
     public Controller(final player playerOne) {
         this.player1 = playerOne;
@@ -53,6 +55,8 @@ public class Controller {
         leftImg.setSize(50, 50);
         rightImg.setSize(50, 50);
         attackImg.setSize(100, 100);
+        leftCycle.setSize(50, 50);
+        rightCycle.setSize(50, 50);
 
         Gdx.input.setInputProcessor(stage);
         upImg.addListener(new InputListener() {
@@ -159,9 +163,19 @@ public class Controller {
         stage.addActor(table);
 
 
-        attack.row().pad(5, 650, 75, 5);
-        attack.add(attackImg).size(attackImg.getWidth(), attackImg.getHeight());
+
+        attack.row().pad(5, 550, 60, 5);
+        attack.add(leftCycle).size(leftCycle.getWidth(), leftCycle.getHeight());
+        attack.add(attackImg).size(attackImg.getWidth(), attackImg.getHeight()).padLeft(5);
+        attack.add(rightCycle).size(rightCycle.getWidth(), rightCycle.getHeight()).padLeft(5);
+
         stage.addActor(attack);
+
+        /*attack.row().pad(5, 650, 75, 5);
+        attack.add(leftCycle).size(leftCycle.getWidth(), leftCycle.getHeight());
+        attack.add(attackImg).size(attackImg.getWidth(), attackImg.getHeight());
+        attack.add(rightCycle).size(rightCycle.getWidth(), rightCycle.getHeight());
+        stage.addActor(attack);*/
     }
 
     public void draw() {

@@ -1,5 +1,7 @@
 package com.mygdx.entities.humans;
 
+import android.os.SystemClock;
+
 import com.badlogic.gdx.ai.steer.behaviors.Evade;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.Hide;
@@ -87,6 +89,9 @@ public class person extends zombie {
             super.update(dTime);
         else
             processMoves(dTime);
+
+        if(SystemClock.elapsedRealtime() % 2 == 1) setImage("player2.png");
+        else setImage("player.png");
     }
 
     public void processMoves(float dTime)
