@@ -89,13 +89,16 @@ public class player implements InputProcessor {
         isAttackPressed = attackPressed;
     }
 
-
     public int getPoints() {
         return points;
     }
 
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    public void addPoints(int points){
+        this.points += points;
     }
 
     public int getInfects() {
@@ -138,6 +141,38 @@ public class player implements InputProcessor {
         return false; // something got fucked up
     }
 
+
+    public int ptsMgr(entity ent){
+
+       int ptsHolder = 0;
+        switch(ent.getClassID()) {
+            case PBomb:
+            case Zombie:
+            case Person:
+            case PZombie:
+            case PPerson:
+            case ConvertedPer:
+                ptsHolder = 3;
+                break;
+            case Security:
+            case Emt:
+                ptsHolder = 7;
+                break;
+            case Cop:
+                ptsHolder = 10;
+                break;
+            case Swat:
+            case Medic:
+                ptsHolder = 13;
+                break;
+            case Army:
+            case Hazmat:
+                ptsHolder = 20;
+                break;
+        }
+        return ptsHolder;
+    }
+
     public void update(float dTime) {
         host.update(dTime);
 
@@ -145,30 +180,7 @@ public class player implements InputProcessor {
         {
             //TODO place anamation
             if(host.attack()){
-                switch(host.getClassID()) {
-                    case Zombie:
-                    case Person:
-                    case PZombie:
-                    case PPerson:
-                    case ConvertedPer:
-                        points += 3;
-                        break;
-                    case Security:
-                    case Emt:
-                        points += 7;
-                        break;
-                    case Cop:
-                        points += 10;
-                        break;
-                    case Swat:
-                    case Medic:
-                        points += 13;
-                        break;
-                    case Army:
-                    case Hazmat:
-                        points += 20;
-                        break;
-                }
+                points += ptsMgr(host);
             }
             isAttackPressed = false;
         }
