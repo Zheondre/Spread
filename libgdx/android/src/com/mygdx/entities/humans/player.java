@@ -1,24 +1,12 @@
 package com.mygdx.entities.humans;
 
 import android.util.Log;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.entities.entity;
-import com.mygdx.entities.humans.person;
-import com.mygdx.entities.humans.zombie;
-import com.mygdx.world.Controller;
-
 import java.util.ArrayList;
-
-import static com.mygdx.utils.entUtils.getMoveDownVec;
-import static com.mygdx.utils.entUtils.getMoveLeftVec;
-import static com.mygdx.utils.entUtils.getMoveRightVec;
-import static com.mygdx.utils.entUtils.getMoveUpVec;
-import static com.mygdx.utils.entUtils.getStopVec;
 
 public class player implements InputProcessor {
 
@@ -35,31 +23,23 @@ public class player implements InputProcessor {
     private OrthographicCamera playCam;
 
     private entity host;
-    private zombie tHost;
+    private entity tempHost = null;
 
     private ArrayList<person> peopleRef;
 
     private boolean touchUp;
     private boolean attackButton;
-
+    private boolean bombExploded = false;
     private boolean isAttackPressed = false;
 
-    //private static final player ourInstance = new player();
-/*
-    public static player getInstance() {
-        return ourInstance;
-    }*/
-
     private Vector3 pos;
+
     public player(entity host) {
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
         playCam = new OrthographicCamera();
         playCam.setToOrtho(false, wdth - 1300, hght - 850);
         playCam.update();
-       // Vector3 pos = new Vector3(wdth, hght, 0);
-        //playCam.unproject(pos);
-
         this.points = 0;
         this.infects = 0;
         this.kills = 0;
@@ -70,7 +50,6 @@ public class player implements InputProcessor {
     }
 
     public player(int points, int infects, int kills, int converts, zombie host) {
-
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
         playCam = new OrthographicCamera();
@@ -143,7 +122,6 @@ public class player implements InputProcessor {
 
 
     public int ptsMgr(entity ent){
-
        int ptsHolder = 0;
         switch(ent.getClassID()) {
             case PBomb:
@@ -185,66 +163,7 @@ public class player implements InputProcessor {
             isAttackPressed = false;
         }
 
-        /*
-
-        float w = (Gdx.graphics.getWidth() - 1300) / 2;
-        float h = (Gdx.graphics.getHeight() - 975) / 2;
-
-        float tx = host.getBody().getPosition().x;
-        float ty = host.getBody().getPosition().y;
-
-        // i only tested the left buttom corner sooo
-        // if we touch the left button screen, and we hit the up arrow,
-        // //the screen wont go up if the character is out from the view
-// need to convert cordinates or this wont work/////////////////////
-        /*
-        boolean isCamNnMap = true;
-        boolean notInACorner = true;
-       if(((tx - w) < 0) & ((ty + h) > ((float)Gdx.graphics.getHeight())/16f)) { //Left Bottom Corner
-           notInACorner = false;
-        }
-
-        if(((tx - w) < 0) & ((ty - h) < 0)) { //Left Upper Corner
-           notInACorner = false;
-        }
-
-        if(((tx + w) > ((float)Gdx.graphics.getWidth()/16f)) &
-          ((ty + h) > (((float)Gdx.graphics.getHeight())/16f))) { //Right Bottom Corner
-            notInACorner = false;
-        }
-
-        if(((tx + w) >((float)Gdx.graphics.getWidth()/16f)) & ((ty - h) < 0)) { //Right Upper Corner
-            notInACorner = false;
-        }
-
-        if(notInACorner){
-            if((tx - w) < 0){
-                playCam.position.y = host.getBody().getPosition().y;
-                isCamNnMap = false;
-            }
-
-            if((tx + w) > ((float)Gdx.graphics.getWidth()/16f)) {//need to be tested
-                playCam.position.y = host.getBody().getPosition().y;
-                isCamNnMap = false;
-            }
-
-            if((ty + h) > (((float)Gdx.graphics.getHeight())/16f)) {
-                playCam.position.x = host.getBody().getPosition().x;
-                isCamNnMap = false;
-            }
-
-            if((ty - h) < 0) {
-                playCam.position.x = host.getBody().getPosition().x;
-                isCamNnMap = false;
-            }
-        } else {
-            isCamNnMap = false;
-        }
-
-        if(isCamNnMap)  {
-            playCam.position.x = host.getBody().getPosition().x;
-            playCam.position.y = host.getBody().getPosition().y;
-        }*/
+        checkForSwitch();
 
         playCam.position.x = host.getBody().getPosition().x;
         playCam.position.y = host.getBody().getPosition().y;
@@ -252,6 +171,19 @@ public class player implements InputProcessor {
         playCam.update();
     }
 
+    public void setTempHost(entity tempHost) {
+        this.tempHost = tempHost;
+    }
+
+    public void checkForSwitch(){
+        if(tempHost != null) {
+            host = tempHost;
+            //if bomb instance, dipose of it after the switch
+            // we should wait after the bomb animation is done then call dispose
+            //tempHost.disPose();
+            //tempHost = null;
+        }
+    }
     public OrthographicCamera getPlayCam() {
         return playCam;
     }
@@ -351,7 +283,6 @@ public class player implements InputProcessor {
                      else
                         tIndex--;
                 }
-
                  tHost = peopleRef.get(tIndex);
             }
 
@@ -371,7 +302,6 @@ public class player implements InputProcessor {
                     else
                         tIndex++;
                 }
-
                 tHost = peopleRef.get(tIndex);
              }
 
@@ -408,7 +338,6 @@ public class player implements InputProcessor {
         host.setMoveRight(false);
         host.setMoveUp(false);
         host.setMoveDown(false);
-
         host.getBody().setLinearVelocity(getStopVec()); */
         return true;
     }

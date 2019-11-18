@@ -11,7 +11,6 @@ import com.mygdx.entities.Box2dSteering;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
-import com.mygdx.entities.humans.person;
 import com.mygdx.world.gameMap;
 
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
@@ -48,15 +47,12 @@ public class zombie extends entity {
 
     private float preyDistance;
 
-   protected Box2dSteering steerEnt;
+   //protected Box2dSteering steerEnt;
 
     protected Pursue<Vector2>  pursueSB;
     protected Wander<Vector2>  wanderSB;
     protected Arrive<Vector2>  arriveSB;
 
-    public Box2dSteering getSteerEnt() {
-        return steerEnt;
-    }
     public Wander<Vector2> getWanderSB() {
         return wanderSB;
     }
@@ -136,17 +132,17 @@ public class zombie extends entity {
 
         this.doISeeANoneZombie = false;
         //this.randomWalkTime;
-        this.steerEnt = new Box2dSteering(super.getBody(),10);
+        //this.steerEnt = new Box2dSteering(super.getBody(),10);
 
         this.wanderSB = new Wander<Vector2>(steerEnt) //
                 .setFaceEnabled(true) // We want to use Face internally (independent facing is on)
                 .setAlignTolerance(1f) // Used by Face
-                .setDecelerationRadius(20f) // Used by Face
-                .setTimeToTarget(20f) // Used by Face
+                .setDecelerationRadius(10f) // Used by Face
+                .setTimeToTarget(.5f) // Used by Face
                 .setWanderOffset(50f) //
-                .setWanderOrientation(100f) //
-                .setWanderRadius(100f) //
-                .setWanderRate(MathUtils.PI2 * 30);
+                .setWanderOrientation(1000f) //
+                .setWanderRadius(1000f) //
+                .setWanderRate(MathUtils.PI2 * 8);
 
         if(this.mIsCpu){
             //put player towards the beginning of map if its not a new game
@@ -162,7 +158,6 @@ public class zombie extends entity {
         if(this.classID == classIdEnum.ConvertedPer)
             debugbreakpoint = 0;
 
-
         if(!this.validPath)
             wlkDirection = (int)(Math.random()*((5-1)+1))+1;
 
@@ -171,7 +166,6 @@ public class zombie extends entity {
             wlkDirection = (int)(Math.random()*((5-1)+1))+1;
         }else {
             wlkTime -= dt;
-
             this.setMoveUp(false);
             this.setMoveRight(false);
             this.setMoveDown(false);

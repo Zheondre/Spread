@@ -9,6 +9,7 @@ import com.mygdx.entities.Box2dSteering;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
+import com.mygdx.entities.objects.bomb;
 import com.mygdx.world.gameMap;
 
 import static com.mygdx.entities.BehaviorEnum.INFECTED;
@@ -36,6 +37,15 @@ public class person extends zombie {
     }
 
     public void setEvadeSB(zombie target) {
+        if(target!= null) {
+            //this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt(), .5f);
+            this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt());
+            this.setPrey(target);// temp
+            steerEnt.setBehavior(evadeSB);
+        }
+    }
+
+    public void setEvadeSB(bomb target) {
         if(target!= null) {
             //this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt(), .5f);
             this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt());
@@ -174,6 +184,12 @@ public class person extends zombie {
     }
 
     public void setInfected(boolean Infected) {
+        this.mInfected = Infected;
+        this.mAlerted = INFECTED;
+    }
+
+    public void setInfected(boolean Infected, bomb zom) {
+        this.setEvadeSB(zom);
         this.mInfected = Infected;
         this.mAlerted = INFECTED;
     }

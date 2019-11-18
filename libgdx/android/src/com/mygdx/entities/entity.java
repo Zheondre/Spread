@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -18,10 +17,6 @@ import static com.mygdx.utils.entUtils.getMoveLeftVec;
 import static com.mygdx.utils.entUtils.getMoveRightVec;
 import static com.mygdx.utils.entUtils.getMoveUpVec;
 import static com.mygdx.utils.entUtils.getStopVec;
-import static com.mygdx.utils.entUtils.stopDownVec;
-import static com.mygdx.utils.entUtils.stopLeftVec;
-import static com.mygdx.utils.entUtils.stopRightVec;
-import static com.mygdx.utils.entUtils.stopUpVec;
 import static java.lang.StrictMath.abs;
 
 public abstract class entity {
@@ -45,6 +40,8 @@ public abstract class entity {
     protected classIdEnum classID;
 
     private Body body;
+
+    protected Box2dSteering steerEnt;
 
     private boolean amIOnTheGound;
     private boolean moveLeft;
@@ -80,7 +77,6 @@ public abstract class entity {
 
     public entity(entityInfo entType, gameMap Map) {
 
-
         this.mVelocityY = 0;
         this.mMap = Map;
         this.amIOnTheGound = true; // every thing will be on the ground for now
@@ -110,8 +106,8 @@ public abstract class entity {
             ty = entType.getYpos();
         } else {
             while (!goodposition) {
-                tx = (float) (Math.random() * ((100 - 20) + 20)) + 1;
-                ty = (float) (Math.random() * ((100 - 20) + 20)) + 1;
+                tx = (float) (Math.random() * ((300 - 50) + 50)) + 1;
+                ty = (float) (Math.random() * ((300 - 50) + 50)) + 1;
 
                 goodposition = true;
                 TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int) ((tx) / tileW), (int) (ty / tileH));
@@ -133,6 +129,8 @@ public abstract class entity {
         fd.shape = cs;
 
         this.body = mMap.getWorld().createBody(entBody);
+        this.steerEnt = new Box2dSteering(this.body,10);
+
         //fd.filter.groupIndex = 0;
         this.body.createFixture(fd);
         badPath = false;
@@ -164,6 +162,10 @@ public abstract class entity {
         this.body = mMap.getWorld().createBody(entBody);
         this.body.createFixture(fd);
         badPath = false;
+    }
+
+    public Box2dSteering getSteerEnt() {
+        return steerEnt;
     }
 
     public classIdEnum getClassID() {

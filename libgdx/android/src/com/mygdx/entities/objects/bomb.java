@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 import com.mygdx.entities.humans.person;
+import com.mygdx.entities.humans.zombie;
 import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
 
@@ -16,49 +17,60 @@ public class bomb extends entity {
 
     int infecRatio;
     int healthRatio;
+
     public bomb(entityInfo entType, gameMap Map){
         super(entType, Map);
 
         setImage("bomb.png");
         infecRatio = 350;
         healthRatio = 300;
+        //bombExploded = false;
         //what should the size be ?
     }
 
     public boolean attack(){
         //set infection based on the distance,
-        // anything around 5 is a zombie
+        // anything around 30 is a zombie
         int entDist;
+        entity tempEnt = null;
 
+        //((tileGameMap)mMap).getPlayerOne()
         if(mMap.getPeople().size() == 0)
             return false;
 
-        for(person victum : mMap.getPeople()) {
-            entDist = (int)getEntDistance(victum);
-            if(entDist < 5) {
-                ((tileGameMap)mMap).getPlayerOne().addPoints(5);
+        for (person victum : mMap.getPeople()) {
+            entDist = (int) getEntDistance(victum);
+            if (entDist < 30) {
+                ((tileGameMap) mMap).getPlayerOne().addPoints(5);
                 victum.turnIntoAZombie();
-            } else if(entDist < 150) {
+                if(tempEnt == null) {
+                    tempEnt = victum;
+                    ((zombie)tempEnt).setCpuStatus(false);
+                }
+            } else if (entDist < 150) {
                 //the closer you are to the bomb the higher your infection is
                 // we can put in deaths later
                 //if a person is near a bomb and it goes off they should ran away from it
                 //set an alterness for those near by but didnt get infected =
-
-                // if we have oTher ent to save this object's steeringent
+                // if we have an other ent to save this object's steeringent
                 // we need to becareful of getting rid of this instance
                 // when its time to switch to a zombie after an explosion
-                ((tileGameMap)mMap).getPlayerOne().addPoints(
-                        ((tileGameMap)mMap).getPlayerOne().ptsMgr(victum)
+                ((tileGameMap) mMap).getPlayerOne().addPoints(
+                        ((tileGameMap) mMap).getPlayerOne().ptsMgr(victum)
                 );
-                victum.setInfected(true);
+                victum.setInfected(true, this);
                 victum.decreaseInfectTime((1 / entDist * infecRatio));
                 victum.decreaseHlth((1 / entDist * healthRatio));
             } else if (entDist < 250) {
                 //change alertness that a bomb went off
+                //to investage for authorities
+                //e
             }
         }
-        return true;
 
+        if(tempEnt != null)
+            ((tileGameMap)mMap).getPlayerOne().setTempHost(tempEnt);
+        return true;
     }
     public void update(float dTime) {
         super.update(dTime);
@@ -83,8 +95,6 @@ public class bomb extends entity {
     }
 
     public void dispose(){
-        ;
-
+       ;
     }
-
 }
