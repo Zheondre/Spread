@@ -165,8 +165,13 @@ public class player implements InputProcessor {
 
         checkForSwitch();
 
-        playCam.position.x = host.getBody().getPosition().x;
-        playCam.position.y = host.getBody().getPosition().y;
+
+
+        if(host.getBody().getPosition().x < 260) playCam.position.x = 260;
+        else playCam.position.x = host.getBody().getPosition().x;
+
+        if(host.getBody().getPosition().y < 120) playCam.position.y = 120;
+        else playCam.position.y = host.getBody().getPosition().y;
 
         playCam.update();
     }
