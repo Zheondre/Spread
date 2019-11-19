@@ -108,9 +108,6 @@ public class person extends zombie {
         else
             processMoves(dTime);
 
-       // if((SystemClock.elapsedRealtime() % 2) == 1) setImage("player2.png");
-        //else setImage("player.png");
-
         changeImage(((SystemClock.elapsedRealtime() % 2) == 1));
     }
 

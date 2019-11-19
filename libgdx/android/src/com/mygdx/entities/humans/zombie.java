@@ -6,6 +6,7 @@ import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.entities.BehaviorEnum;
@@ -14,6 +15,7 @@ import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 import com.mygdx.world.gameMap;
+import com.mygdx.world.tileGameMap;
 
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
 import static com.mygdx.utils.entUtils.stopDownVec;
@@ -33,12 +35,19 @@ public class zombie extends entity {
     protected BehaviorEnum mAlerted;
 
     private static final int biteTimeSetting = 5;
+    private float reviveTime = 20;
     private float bitetime = biteTimeSetting;
     private float wlkTime;
     private int wlkDirection;
 
     private boolean mIsCpu;
     private boolean doISeeANoneZombie;
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    private boolean isAlive;
 
     //private Box2dSteering prey;
     private entity prey;
@@ -120,12 +129,13 @@ public class zombie extends entity {
         we will need to position characters in different locations based on the map and class  id
         we can figure this out later
          */
-
+        this.isAlive = true;
         this.classID = entType.getId();
 
-        if(classID == classIdEnum.Zombie || classID == classIdEnum.PZombie)
+        if(classID == classIdEnum.Zombie || classID == classIdEnum.PZombie) {
             setImage("zombie.png");
-
+            setImageB("zombie2.png");
+        }
         this.infections = 0;
         this.attackPt = entType.getAttackPt();//
         this.health = entType.getHealth();
@@ -201,9 +211,6 @@ public class zombie extends entity {
                return true;
            }
 
-
-
-
         return false;
     }
 
@@ -221,13 +228,21 @@ public class zombie extends entity {
 
         victum.decreaseInfectTime(5);
         victum.decreaseHlth(1);
-        setImage("zombieAttack.png");
+        setImage("zombieAttack.png"); // might have to change this
         return true;
     }
 
   //  @Override
     public void update(float dTime){
 
+        if(health < 0) {
+            isAlive = false;
+            reviveTime -= .05;
+            if(reviveTime < 0) {
+                ((tileGameMap)mMap).getReadyForDeletion().add(this);
+            }
+            return;
+        }
         if(this.mIsCpu) {
             //check if there are any special messages
             switch(this.classID) {
@@ -254,10 +269,7 @@ public class zombie extends entity {
                     //also need to see if they are in out view but for now we will base this off of ditance
                     //if close enough chase, if too close stop and attack
 
-                    if(SystemClock.elapsedRealtime() / 1000 % 2 == 1) setImage("zombie2.png");
-                    else setImage("zombie.png");
-
-
+                    changeImage(((SystemClock.elapsedRealtime() / (1000 % 2)) == 1));
 
                     if (doISeeANoneZombie) {
 

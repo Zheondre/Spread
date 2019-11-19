@@ -21,6 +21,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.entities.classIdEnum;
+import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 
 import com.mygdx.entities.objects.bomb;
@@ -34,12 +35,13 @@ import java.util.ArrayList;
 
 import static com.mygdx.entities.entityInfo.CPlAYER;
 import static com.mygdx.entities.entityInfo.PBOMB;
+import static com.mygdx.entities.entityInfo.ZOMBIE;
 import static com.mygdx.utils.entUtils.getStopVec;
 
 public class tileGameMap extends gameMap {
 
-    //private classIdEnum DEBUGMODE = classIdEnum.PBomb;
-    private classIdEnum DEBUGMODE = classIdEnum.PZombie;
+    private classIdEnum DEBUGMODE = classIdEnum.PBomb;
+    //private classIdEnum DEBUGMODE = classIdEnum.PZombie;
     //private classIdEnum DEBUGMODE = classIdEnum.PPerson;
 
     public static final int STATSCREEN_WIDTH = 400;
@@ -77,7 +79,11 @@ public class tileGameMap extends gameMap {
     private ArrayList<person> CnvrtdEntRdy;
     private ArrayList<WaveInfo> levels;
 
+    public ArrayList<entity> getReadyForDeletion() {
+        return ReadyForDeletion;
+    }
 
+    private ArrayList<entity> ReadyForDeletion;
     private zombie convertedEnt;
 
     private player playerOne;
@@ -114,6 +120,7 @@ public class tileGameMap extends gameMap {
         CnvrtdEntRdy = new ArrayList<person>();
         zombies = new ArrayList<zombie>();
         levels = new ArrayList<WaveInfo>();
+        ReadyForDeletion = new ArrayList<>();
 
         switch (DEBUGMODE) {
             case PBomb:
@@ -131,9 +138,9 @@ public class tileGameMap extends gameMap {
 
         /*
         for(int i = 0; i < levelAmount; i++) {
-            levels.add(new WaveInfo(i, 20, , 0, 0, 0 ));
+            levels.add(new WaveInfo(i, 10, , 0, 0, 0 ));
         }
-*/
+        */
 
         for(int i = 0; i < 0; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
@@ -204,10 +211,10 @@ public class tileGameMap extends gameMap {
 
        world.step(1/60f,6,2);// need to read docs on this
 
-        for(zombie ent: zombies)
+        for(zombie ent: zombies) //if ready for clean up skip
             ent.update(deltaT);
 
-        for(person ent: people)
+        for(person ent: people) //if ready for clean up skip
             ent.update(deltaT);
 
         playerOne.update(deltaT);
@@ -220,12 +227,45 @@ public class tileGameMap extends gameMap {
             CnvrtdEntRdy.remove(lastEntPos);
             lastEntPos--;
         }
+
+        lastEntPos = ReadyForDeletion.size()-1;
+        entity entToBeDeleted;
+        while(lastEntPos > -1) {
+            entToBeDeleted = ReadyForDeletion.get(lastEntPos);
+            switch(entToBeDeleted.getClassID()) {
+                case Emt:
+                case Security:
+                case Hazmat:
+                case Person:
+                case Army:
+                case Medic:
+                    getPeople().remove(entToBeDeleted);// to be on the safe side im removing the exact instance of the object instad of the index
+                    break;
+                case ConvertedPer:
+                case Zombie:
+                    getZombies().remove(entToBeDeleted);
+                    default:
+            }
+            ReadyForDeletion.remove(entToBeDeleted);
+            entToBeDeleted.dispose();
+            entToBeDeleted = null;
+        }
+
         //check to see who has died and clean them off the map ?
     }
 
-    public void levelLogic() {
+    public void waveLogic() {
         ; // if all civilans are converted add current level * 10 points
         //
+
+        if(people.size() == 0) {
+            ;//go to next wave and delete previous one
+            //if all civilans are converted add current level * 10 point
+        }
+
+        if(zombies.size() == 0) {
+            ; //all zombied were killed or no one was converted say game over
+        }
     }
 
     public void setBatch(SpriteBatch batch) {

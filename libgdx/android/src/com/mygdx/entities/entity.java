@@ -26,6 +26,8 @@ public abstract class entity {
     //private static int yspeed = 80;
 
     private Texture image;
+    private Texture imageA;
+    private Texture imageB;
 
     private final static int mWidth = 14;
     private final static int mHeight = 15;
@@ -117,6 +119,7 @@ public abstract class entity {
             }
         }
 
+        collisionLayer = null;
         this.mPos = new Vector3(tx, ty, 0);
 
         entBody.position.set(mPos.x, mPos.y);
@@ -164,6 +167,17 @@ public abstract class entity {
         badPath = false;
     }
 
+    public void dispose(){
+        image = null;
+        imageA.dispose();
+        imageB.dispose();
+        mPos = null;
+        // becarefull bellow if some one is stilling pointing to this object it wont be freed
+        steerEnt = null;
+        body = null;  // check on this
+
+    }
+
     public Box2dSteering getSteerEnt() {
         return steerEnt;
     }
@@ -181,11 +195,28 @@ public abstract class entity {
     }
 
     public void setImage(String path) {
+        //anamation #1
         if (image != null)
             image.dispose();
         image = new Texture(path);
+        imageA = image;
+
+    }
+    public void setImageB(String path) {
+        //anamation #2
+        if (imageB != null)
+            imageB.dispose();
+        imageB = new Texture(path);
     }
 
+    public void changeImage(boolean chngeim){
+        if((image != null) && (imageB != null)) {
+            if (chngeim)
+                image = imageB;
+            else
+                image = imageA;
+        }
+    }
     public void update(float dTime) {
 
         if (moveRight)
