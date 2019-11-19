@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -18,10 +17,6 @@ import static com.mygdx.utils.entUtils.getMoveLeftVec;
 import static com.mygdx.utils.entUtils.getMoveRightVec;
 import static com.mygdx.utils.entUtils.getMoveUpVec;
 import static com.mygdx.utils.entUtils.getStopVec;
-import static com.mygdx.utils.entUtils.stopDownVec;
-import static com.mygdx.utils.entUtils.stopLeftVec;
-import static com.mygdx.utils.entUtils.stopRightVec;
-import static com.mygdx.utils.entUtils.stopUpVec;
 import static java.lang.StrictMath.abs;
 
 public abstract class entity {
@@ -31,6 +26,8 @@ public abstract class entity {
     //private static int yspeed = 80;
 
     private Texture image;
+    private Texture imageA;
+    private Texture imageB;
 
     private final static int mWidth = 14;
     private final static int mHeight = 15;
@@ -45,6 +42,8 @@ public abstract class entity {
     protected classIdEnum classID;
 
     private Body body;
+
+    protected Box2dSteering steerEnt;
 
     private boolean amIOnTheGound;
     private boolean moveLeft;
@@ -80,7 +79,6 @@ public abstract class entity {
 
     public entity(entityInfo entType, gameMap Map) {
 
-
         this.mVelocityY = 0;
         this.mMap = Map;
         this.amIOnTheGound = true; // every thing will be on the ground for now
@@ -110,8 +108,8 @@ public abstract class entity {
             ty = entType.getYpos();
         } else {
             while (!goodposition) {
-                tx = (float) (Math.random() * ((100 - 20) + 20)) + 1;
-                ty = (float) (Math.random() * ((100 - 20) + 20)) + 1;
+                tx = (float) (Math.random() * ((300 - 50) + 50)) + 1;
+                ty = (float) (Math.random() * ((300 - 50) + 50)) + 1;
 
                 goodposition = true;
                 TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int) ((tx) / tileW), (int) (ty / tileH));
@@ -120,7 +118,8 @@ public abstract class entity {
                     goodposition = false;
             }
         }
-        
+
+        collisionLayer = null;
         this.mPos = new Vector3(tx, ty, 0);
 
         entBody.position.set(mPos.x, mPos.y);
@@ -133,6 +132,8 @@ public abstract class entity {
         fd.shape = cs;
 
         this.body = mMap.getWorld().createBody(entBody);
+        this.steerEnt = new Box2dSteering(this.body,10);
+
         //fd.filter.groupIndex = 0;
         this.body.createFixture(fd);
         badPath = false;
@@ -166,6 +167,21 @@ public abstract class entity {
         badPath = false;
     }
 
+    public void dispose(){
+        image = null;
+        imageA.dispose();
+        imageB.dispose();
+        mPos = null;
+        // becarefull bellow if some one is stilling pointing to this object it wont be freed
+        steerEnt = null;
+        body = null;  // check on this
+
+    }
+
+    public Box2dSteering getSteerEnt() {
+        return steerEnt;
+    }
+
     public classIdEnum getClassID() {
         return classID;
     }
@@ -179,11 +195,28 @@ public abstract class entity {
     }
 
     public void setImage(String path) {
+        //anamation #1
         if (image != null)
             image.dispose();
         image = new Texture(path);
+        imageA = image;
+
+    }
+    public void setImageB(String path) {
+        //anamation #2
+        if (imageB != null)
+            imageB.dispose();
+        imageB = new Texture(path);
     }
 
+    public void changeImage(boolean chngeim){
+        if((image != null) && (imageB != null)) {
+            if (chngeim)
+                image = imageB;
+            else
+                image = imageA;
+        }
+    }
     public void update(float dTime) {
 
         if (moveRight)
@@ -271,8 +304,6 @@ public abstract class entity {
         return body;
     }
 
-    ;
-
     public void setPosX(float x) {
         mPos.x = x;
     }
@@ -292,7 +323,6 @@ public abstract class entity {
     public float getVelocityY() {
         return mVelocityY;
     }
-
 
     public Vector3 getmPos() {
         return mPos;

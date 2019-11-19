@@ -50,15 +50,15 @@ public class libgdxSreen {
         table.setFillParent(true);
 
         //cntDwnLabel = new Label("Time", new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
-        scoreLabel = new Label("Score", new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
-        peopleLabel = new Label("Prey", new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
-        levelLabel = new Label("Level", new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
+        scoreLabel = new Label("Score", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        peopleLabel = new Label("Prey", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        levelLabel = new Label("Level", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
 
         //cntDwnLabelValue = new Label(String.format("%03d",levelTime), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
-        scoreLabelValue = new Label(String.format("%06d",playerScore), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
-        peopleLabelValue = new Label(String.format("%02d",this.nonZombies), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
-        levelLabelValue = new Label(String.format("%01d",currentLevel), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
+        scoreLabelValue = new Label(String.format("%06d",playerScore), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        peopleLabelValue = new Label(String.format("%02d",this.nonZombies), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        levelLabelValue = new Label(String.format("%01d",currentLevel), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         //table.add(cntDwnLabel).expandX().pad(10); // should we even do a countdown ?
         table.add(scoreLabel).expandX().pad(2);
@@ -79,7 +79,7 @@ public class libgdxSreen {
         //cntDwnLabelValue.setText();
         scoreLabelValue.setText(gm.getPlayerOne().getPoints());
         peopleLabelValue.setText(gm.getPeople().size());
-        levelLabelValue.setText(gm.getCurrentLevel());
+        levelLabelValue.setText(gm.getCurrentLevel() + 1);
         stage.draw();
     }
 

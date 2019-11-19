@@ -9,8 +9,6 @@ they also explain how to modify the tiles in a map during game play, we wont add
 
 package com.mygdx.world;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
@@ -20,7 +18,6 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.entities.classIdEnum;
@@ -32,17 +29,19 @@ import com.mygdx.entities.objects.gameBlocks;
 import com.mygdx.entities.humans.person;
 import com.mygdx.entities.humans.player;
 import com.mygdx.entities.humans.zombie;
+import com.mygdx.game.WaveInfo;
 
 import java.util.ArrayList;
 
 import static com.mygdx.entities.entityInfo.CPlAYER;
 import static com.mygdx.entities.entityInfo.PBOMB;
+import static com.mygdx.entities.entityInfo.ZOMBIE;
 import static com.mygdx.utils.entUtils.getStopVec;
 
 public class tileGameMap extends gameMap {
 
-    //private classIdEnum DEBUGMODE = classIdEnum.PBomb;
-    private classIdEnum DEBUGMODE = classIdEnum.PZombie;
+    private classIdEnum DEBUGMODE = classIdEnum.PBomb;
+    //private classIdEnum DEBUGMODE = classIdEnum.PZombie;
     //private classIdEnum DEBUGMODE = classIdEnum.PPerson;
 
     public static final int STATSCREEN_WIDTH = 400;
@@ -65,6 +64,7 @@ public class tileGameMap extends gameMap {
     private int tileHeight;
 
     private int currentLevel;
+    private int levelAmount;
 
     public int getCurrentLevel() {
         return currentLevel;
@@ -77,7 +77,13 @@ public class tileGameMap extends gameMap {
     private ArrayList<zombie> zombies;
     private ArrayList<gameBlocks> gameBlocks;
     private ArrayList<person> CnvrtdEntRdy;
+    private ArrayList<WaveInfo> levels;
 
+    public ArrayList<entity> getReadyForDeletion() {
+        return ReadyForDeletion;
+    }
+
+    private ArrayList<entity> ReadyForDeletion;
     private zombie convertedEnt;
 
     private player playerOne;
@@ -91,7 +97,8 @@ public class tileGameMap extends gameMap {
         //down_button = new Texture("down_button.png");
 
         batch = new SpriteBatch();
-        currentLevel = 1;
+        levelAmount = 3;
+        currentLevel = 0;
         m_TileMap = new TmxMapLoader().load("house_road.tmx"); // we will have to make this dynamic based on user map selection
         m_TileMapRender = new OrthogonalTiledMapRenderer(m_TileMap);
         MapProperties MapProp = m_TileMap.getProperties();
@@ -112,6 +119,8 @@ public class tileGameMap extends gameMap {
         people = new ArrayList<person>();
         CnvrtdEntRdy = new ArrayList<person>();
         zombies = new ArrayList<zombie>();
+        levels = new ArrayList<WaveInfo>();
+        ReadyForDeletion = new ArrayList<>();
 
         switch (DEBUGMODE) {
             case PBomb:
@@ -127,7 +136,13 @@ public class tileGameMap extends gameMap {
                 break;
         }
 
-        for(int i = 0; i < 3; i++)
+        /*
+        for(int i = 0; i < levelAmount; i++) {
+            levels.add(new WaveInfo(i, 10, , 0, 0, 0 ));
+        }
+        */
+
+        for(int i = 0; i < 0; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
         //debug
@@ -196,10 +211,10 @@ public class tileGameMap extends gameMap {
 
        world.step(1/60f,6,2);// need to read docs on this
 
-        for(zombie ent: zombies)
+        for(zombie ent: zombies) //if ready for clean up skip
             ent.update(deltaT);
 
-        for(person ent: people)
+        for(person ent: people) //if ready for clean up skip
             ent.update(deltaT);
 
         playerOne.update(deltaT);
@@ -212,7 +227,45 @@ public class tileGameMap extends gameMap {
             CnvrtdEntRdy.remove(lastEntPos);
             lastEntPos--;
         }
+
+        lastEntPos = ReadyForDeletion.size()-1;
+        entity entToBeDeleted;
+        while(lastEntPos > -1) {
+            entToBeDeleted = ReadyForDeletion.get(lastEntPos);
+            switch(entToBeDeleted.getClassID()) {
+                case Emt:
+                case Security:
+                case Hazmat:
+                case Person:
+                case Army:
+                case Medic:
+                    getPeople().remove(entToBeDeleted);// to be on the safe side im removing the exact instance of the object instad of the index
+                    break;
+                case ConvertedPer:
+                case Zombie:
+                    getZombies().remove(entToBeDeleted);
+                    default:
+            }
+            ReadyForDeletion.remove(entToBeDeleted);
+            entToBeDeleted.dispose();
+            entToBeDeleted = null;
+        }
+
         //check to see who has died and clean them off the map ?
+    }
+
+    public void waveLogic() {
+        ; // if all civilans are converted add current level * 10 points
+        //
+
+        if(people.size() == 0) {
+            ;//go to next wave and delete previous one
+            //if all civilans are converted add current level * 10 point
+        }
+
+        if(zombies.size() == 0) {
+            ; //all zombied were killed or no one was converted say game over
+        }
     }
 
     public void setBatch(SpriteBatch batch) {

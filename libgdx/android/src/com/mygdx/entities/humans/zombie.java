@@ -6,15 +6,18 @@ import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.entities.BehaviorEnum;
 import com.mygdx.entities.Box2dSteering;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
-import com.mygdx.entities.humans.person;
 import com.mygdx.world.gameMap;
+import com.mygdx.world.tileGameMap;
 
+import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
 import static com.mygdx.utils.entUtils.stopDownVec;
 import static com.mygdx.utils.entUtils.stopLeftVec;
 import static com.mygdx.utils.entUtils.stopRightVec;
@@ -29,14 +32,22 @@ public class zombie extends entity {
     protected int health;
 
     protected classIdEnum weapon;
+    protected BehaviorEnum mAlerted;
 
     private static final int biteTimeSetting = 5;
+    private float reviveTime = 20;
     private float bitetime = biteTimeSetting;
     private float wlkTime;
     private int wlkDirection;
 
     private boolean mIsCpu;
     private boolean doISeeANoneZombie;
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    private boolean isAlive;
 
     //private Box2dSteering prey;
     private entity prey;
@@ -47,15 +58,12 @@ public class zombie extends entity {
 
     private float preyDistance;
 
-   protected Box2dSteering steerEnt;
+   //protected Box2dSteering steerEnt;
 
     protected Pursue<Vector2>  pursueSB;
     protected Wander<Vector2>  wanderSB;
     protected Arrive<Vector2>  arriveSB;
 
-    public Box2dSteering getSteerEnt() {
-        return steerEnt;
-    }
     public Wander<Vector2> getWanderSB() {
         return wanderSB;
     }
@@ -121,12 +129,13 @@ public class zombie extends entity {
         we will need to position characters in different locations based on the map and class  id
         we can figure this out later
          */
-
+        this.isAlive = true;
         this.classID = entType.getId();
 
-        if(classID == classIdEnum.Zombie || classID == classIdEnum.PZombie)
+        if(classID == classIdEnum.Zombie || classID == classIdEnum.PZombie) {
             setImage("zombie.png");
-
+            setImageB("zombie2.png");
+        }
         this.infections = 0;
         this.attackPt = entType.getAttackPt();//
         this.health = entType.getHealth();
@@ -135,17 +144,17 @@ public class zombie extends entity {
 
         this.doISeeANoneZombie = false;
         //this.randomWalkTime;
-        this.steerEnt = new Box2dSteering(super.getBody(),10);
+        //this.steerEnt = new Box2dSteering(super.getBody(),10);
 
         this.wanderSB = new Wander<Vector2>(steerEnt) //
                 .setFaceEnabled(true) // We want to use Face internally (independent facing is on)
                 .setAlignTolerance(1f) // Used by Face
-                .setDecelerationRadius(20f) // Used by Face
-                .setTimeToTarget(20f) // Used by Face
+                .setDecelerationRadius(10f) // Used by Face
+                .setTimeToTarget(.5f) // Used by Face
                 .setWanderOffset(50f) //
-                .setWanderOrientation(100f) //
-                .setWanderRadius(100f) //
-                .setWanderRate(MathUtils.PI2 * 30);
+                .setWanderOrientation(1000f) //
+                .setWanderRadius(1000f) //
+                .setWanderRate(MathUtils.PI2 * 8);
 
         if(this.mIsCpu){
             //put player towards the beginning of map if its not a new game
@@ -161,7 +170,6 @@ public class zombie extends entity {
         if(this.classID == classIdEnum.ConvertedPer)
             debugbreakpoint = 0;
 
-
         if(!this.validPath)
             wlkDirection = (int)(Math.random()*((5-1)+1))+1;
 
@@ -170,7 +178,6 @@ public class zombie extends entity {
             wlkDirection = (int)(Math.random()*((5-1)+1))+1;
         }else {
             wlkTime -= dt;
-
             this.setMoveUp(false);
             this.setMoveRight(false);
             this.setMoveDown(false);
@@ -204,9 +211,6 @@ public class zombie extends entity {
                return true;
            }
 
-
-
-
         return false;
     }
 
@@ -224,21 +228,32 @@ public class zombie extends entity {
 
         victum.decreaseInfectTime(5);
         victum.decreaseHlth(1);
-        setImage("zombieAttack.png");
+        setImage("zombieAttack.png"); // might have to change this
         return true;
     }
 
   //  @Override
     public void update(float dTime){
 
+        if(health < 0) {
+            isAlive = false;
+            reviveTime -= .05;
+            if(reviveTime < 0) {
+                ((tileGameMap)mMap).getReadyForDeletion().add(this);
+            }
+            return;
+        }
         if(this.mIsCpu) {
             //check if there are any special messages
             switch(this.classID) {
                 case Person:
-                    if(steerEnt.getBehavior() != this.getWanderSB())
-                       steerEnt.update(dTime);
-                    else
+                case Security:
+                case Cop:
+                case Emt:
+                    if(mAlerted == WALK_RANDOMLY)
                         super.update(dTime);
+                     else
+                         steerEnt.update(dTime);
                     break;
 
                 case ConvertedPer: // debug
@@ -254,10 +269,7 @@ public class zombie extends entity {
                     //also need to see if they are in out view but for now we will base this off of ditance
                     //if close enough chase, if too close stop and attack
 
-                    if(SystemClock.elapsedRealtime() / 1000 % 2 == 1) setImage("zombie2.png");
-                    else setImage("zombie.png");
-
-
+                    changeImage(((SystemClock.elapsedRealtime() / (1000 % 2)) == 1));
 
                     if (doISeeANoneZombie) {
 
@@ -311,7 +323,6 @@ public class zombie extends entity {
                         } else {
                             walkRandomly(dTime);
                             super.update(dTime);
-
                         }
                     }
                     break;

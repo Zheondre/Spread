@@ -7,7 +7,7 @@ import com.mygdx.world.gameMap;
 public class EMT extends person {
 
     private int healamt;
-    private int antiInfect;
+    private int antiInfect = 5;
 
 
     public EMT(entityInfo entityType, gameMap map) {
@@ -16,6 +16,14 @@ public class EMT extends person {
 
         if (entityType.getId() == classIdEnum.Emt )
             this.setImage("emt.png");
+
+    }
+
+  @Override
+    public void dispose(){
+        super.dispose();
+    }
+    public void heal(){
 
     }
     /*
