@@ -81,9 +81,10 @@ public class person extends zombie {
 
         super(entityType, map);
 
-        if(entityType.getId() == classIdEnum.Person || entityType.getId() == classIdEnum.PPerson)
+        if(entityType.getId() == classIdEnum.Person || entityType.getId() == classIdEnum.PPerson) {
             this.setImage("player.png");
-
+            this.setImageB("player2.png");
+        }
         this.weapon = entityType.getWeapon();
         this.mZombie =  entityType.isZombie();
         this.mInfected = entityType.isInfected();
@@ -93,18 +94,24 @@ public class person extends zombie {
         this.wlkTime = -1;
     }
 
+    public void dispose(){
+        super.dispose();
+    }
+
    // @Override
     public void update(float dTime){
 
         if(mZombie)
             super.update(dTime);
-        else if(classID == classIdEnum.PPerson)
+        else if(classID == classIdEnum.PPerson) //debug player is controlling person
             super.update(dTime);
         else
             processMoves(dTime);
 
-        if(SystemClock.elapsedRealtime() % 2 == 1) setImage("player2.png");
-        else setImage("player.png");
+       // if((SystemClock.elapsedRealtime() % 2) == 1) setImage("player2.png");
+        //else setImage("player.png");
+
+        changeImage(((SystemClock.elapsedRealtime() % 2) == 1));
     }
 
     public void processMoves(float dTime)
@@ -178,6 +185,7 @@ public class person extends zombie {
         //this.setClsId(classIdEnum.Zombie);
         this.setClsId(classIdEnum.ConvertedPer);//Debug
         this.setImage("zombie.png");
+        this.setImageB("zombie2.png");
         this.setPrey(null);
 
         mMap.getZombies().add(this); // if we multi thread use a semiphore
