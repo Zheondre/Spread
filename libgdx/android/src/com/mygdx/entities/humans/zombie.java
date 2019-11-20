@@ -30,8 +30,8 @@ public class zombie extends entity {
 
     protected int peopleConverted;
     protected int infections;
-    protected int attackPt;
-    protected int armorPts;
+    protected float attackPt;
+    protected float armorPts;
 
     protected float health;
     protected float mInfctTime;
@@ -438,9 +438,9 @@ public class zombie extends entity {
 
     public void setInfections(int infections) { this.infections = infections; }
 
-    public int getAttackPt() { return attackPt; }
+    public float getAttackPt() { return attackPt; }
 
-    public void setAttackPt(int attackPt) { this.attackPt = attackPt; }
+    public void setAttackPt(float attackPt) { this.attackPt = attackPt; }
 
     public void setHealth(float health) { this.health = health; }
 

@@ -23,7 +23,7 @@ public class person extends zombie {
     private boolean mZombie;
 
     //protected int mAlerted;
-    private float mInfctTime;
+    //private float mInfctTime;
 
     private float wlkTime;
     private int wlkDirection;
@@ -89,7 +89,7 @@ public class person extends zombie {
         this.mZombie =  entityType.isZombie();
         this.mInfected = entityType.isInfected();
         this.mAlerted = BehaviorEnum.WALK_RANDOMLY;
-        this.mInfctTime = 100;
+        this.mInfctTime = 1;
         this.wlkDirection = 0;
         this.wlkTime = -1;
     }
@@ -180,13 +180,13 @@ public class person extends zombie {
         this.mAlerted = NEW_ZOMBIE;
         this.mZombie = true;
         //this.setClsId(classIdEnum.Zombie);
-        this.setClsId(classIdEnum.ConvertedPer);//Debug
+        this.setClassID(classIdEnum.ConvertedPer);//Debug
         this.setImage("zombie.png");
         this.setImageB("zombie2.png");
         this.setPrey(null);
 
         mMap.getZombies().add(this); // if we multi thread use a semiphore
-        mMap.setCnvrtdEntRdy(this);//temp code
+        mMap.setCnvrtdEntRdy(this);
     }
 
     public boolean isInfected() {
@@ -210,7 +210,6 @@ public class person extends zombie {
         this.mAlerted = INFECTED;
     }
 
-
     public float getInfctTime() {
         return mInfctTime;
     }
@@ -219,7 +218,7 @@ public class person extends zombie {
         this.mInfctTime = InfctTime;
     }
 
-    public void decreaseInfectTime(int InfctTime){
+    public void decreaseInfectTime(float InfctTime){
         this.mInfctTime -= InfctTime;
     }
 }
