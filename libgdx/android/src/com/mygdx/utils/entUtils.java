@@ -1,10 +1,11 @@
 package com.mygdx.utils;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 public final class entUtils {
 
-    static final float yforce = 25.8f;
+    static final float yforce = 35.8f;
     static final float xforce = 25.8f;
  //15.8f move up Move Y
     //-15.6f move down MoveY
@@ -22,12 +23,16 @@ public final class entUtils {
     private static final Vector2 stopUpVec = new Vector2(0,yforce);
     private static final Vector2 stopDownVec = new Vector2(0,-yforce);
 
+    private static final Texture zombieAttack = new  Texture("zombieAttack.png");
+
     entUtils(){
     }
 
     public static void dispose(){
         //dispose all vecs
     }
+
+   public static Texture getZombieAttack() { return zombieAttack; }
     public static Vector2 getStopVec() {
         return StopVec;
     }

@@ -17,6 +17,7 @@ import static com.mygdx.utils.entUtils.getMoveLeftVec;
 import static com.mygdx.utils.entUtils.getMoveRightVec;
 import static com.mygdx.utils.entUtils.getMoveUpVec;
 import static com.mygdx.utils.entUtils.getStopVec;
+import static com.mygdx.utils.entUtils.getZombieAttack;
 import static java.lang.StrictMath.abs;
 
 public abstract class entity {
@@ -28,6 +29,7 @@ public abstract class entity {
     private Texture image;
     private Texture imageA;
     private Texture imageB;
+    private Texture imageC;
 
     private final static int mWidth = 13;
     private final static int mHeight = 18;
@@ -196,6 +198,11 @@ public abstract class entity {
 
     public Texture getImage() {
         return image;
+    }
+
+    public void setImage(Texture txt){
+        if(txt != null)
+            image = txt;
     }
 
     public void setImage(String path) {

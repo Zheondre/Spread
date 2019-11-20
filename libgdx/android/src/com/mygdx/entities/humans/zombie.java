@@ -20,6 +20,7 @@ import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
 
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
+import static com.mygdx.utils.entUtils.getZombieAttack;
 import static com.mygdx.utils.entUtils.stopDownVec;
 import static com.mygdx.utils.entUtils.stopLeftVec;
 import static com.mygdx.utils.entUtils.stopRightVec;
@@ -50,6 +51,7 @@ public class zombie extends entity {
     private boolean isAlive;
     private boolean mIsCpu;
     private boolean doISeeANoneZombie;
+    private boolean areWeBiting = false;
 
     private entity prey;
 
@@ -170,7 +172,7 @@ public class zombie extends entity {
             wlkDirection = (int)(Math.random()*((5-1)+1))+1;
 
         if(wlkTime < 0) {
-            wlkTime =  (float)(Math.random()*((5-2)+2))+1;
+            wlkTime =  (float)(Math.random()*((4-1)+1))+1;
             wlkDirection = (int)(Math.random()*((5-1)+1))+1;
         }else {
             wlkTime -= dt;
@@ -221,10 +223,11 @@ public class zombie extends entity {
                 // change or add to the behaviors
                 victum.changeEvadeTarget(this);
             }
-
-        victum.decreaseInfectTime(.20f);
+        areWeBiting = true;
+        victum.decreaseInfectTime(.10f);
         victum.decreaseHlth(.05f);
-        setImage("zombieAttack.png"); // might have to change this
+
+        setImage(getZombieAttack()); // might have to change this
         return true;
     }
 
@@ -339,14 +342,20 @@ public class zombie extends entity {
     public void render(SpriteBatch batch){
         Texture image = getImage();
         if(image != null) {
+
             batch.draw(image, mPos.x, mPos.y, getWidth(), getHeight());
 
             //libgdx tutorial health bar + exposions
 
             //TODO CLEAN UP CODE BELLOW
-            if((getClassID() == classIdEnum.PZombie) || (getClassID() == classIdEnum.ConvertedPer) ) {
+            if((getClassID() == classIdEnum.PZombie) || (getClassID() == classIdEnum.ConvertedPer) || (getClassID() == classIdEnum.Zombie) ) {
                 //TODO move to the right of the screen
                 //if there is armor show one bar for that then show grey once armor is at 0;
+
+                if(areWeBiting) {
+                    changeImage(false);
+                    areWeBiting = false;
+                }
 
                 if(getHealth() > .8f)
                     batch.setColor(Color.GREEN);
