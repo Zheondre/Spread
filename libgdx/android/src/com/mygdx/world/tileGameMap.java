@@ -139,11 +139,11 @@ public class tileGameMap extends gameMap {
         }
         */
 
-        for(int i = 0; i < 0; i++)
+        for(int i = 0; i < 2; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
         //debug
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < 5; i++)
             people.add(new person(entityInfo.PERSON,this));
 
         statsScreen = new libgdxSreen(batch, people.size());

@@ -200,6 +200,10 @@ public abstract class entity {
         return image;
     }
 
+    public void makeImageNull(){
+        image = null;
+    }
+
     public void setImage(Texture txt){
         if(txt != null)
             image = txt;

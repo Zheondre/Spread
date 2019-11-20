@@ -24,12 +24,21 @@ public final class entUtils {
     private static final Vector2 stopDownVec = new Vector2(0,-yforce);
 
     private static final Texture zombieAttack = new  Texture("zombieAttack.png");
+    private static final Texture Bullet = new  Texture("blank.png");
 
     entUtils(){
     }
 
+
+    public static Texture getBullet() {
+        return Bullet;
+    }
+
     public static void dispose(){
         //dispose all vecs
+
+        zombieAttack.dispose();
+        Bullet.dispose();
     }
 
    public static Texture getZombieAttack() { return zombieAttack; }

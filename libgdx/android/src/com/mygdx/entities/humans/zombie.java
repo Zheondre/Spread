@@ -298,7 +298,7 @@ public class zombie extends entity {
                                 if (bitetime == biteTimeSetting)
                                     biteNonZombie((person) this.getPrey());
                                 else {
-                                    bitetime -= .05;
+                                    bitetime -= .30;
                                     if (bitetime < 0)
                                         bitetime = biteTimeSetting;
                                 }

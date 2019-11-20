@@ -18,7 +18,23 @@ public class cop extends security {
 
     @Override
     public boolean attack() {
+
+
+        if(iscpu()) {
+
+        } else {
+
+            // if its safe to shoot, than shoot
+
+        }
+
         //return super.attack();
         return true;
+    }
+
+
+    public void callforBackUp(){
+
+
     }
 }

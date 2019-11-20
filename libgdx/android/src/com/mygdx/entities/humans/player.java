@@ -1,5 +1,7 @@
 package com.mygdx.entities.humans;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -17,6 +19,7 @@ public class player implements InputProcessor {
     private int myIndex;
     private int tIndex;
 
+    private float saveTime = 1;
     private float screenX;
     private float screenY;
 
@@ -185,6 +188,23 @@ public class player implements InputProcessor {
         CamYPos = playCam.position.y;
 
         playCam.update();
+
+        saveTime-= .001;
+
+        //jSharedPreferences set = getSharedPreferences("GAME_DATA", Context.MODE_PRIVATE);
+        if (saveTime < 0 ) {
+            saveTime = 1;
+            /*
+            totalkills += current kills
+            totalplaytime += playtime;
+            totalconverter += converts;
+
+            if(HighScore < currentScore) {
+                HighScore = currentScore;
+            }
+
+             */
+        }
     }
 
     public void setTempHost(entity tempHost) {
