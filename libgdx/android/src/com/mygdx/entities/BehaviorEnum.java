@@ -8,5 +8,6 @@ public enum BehaviorEnum {
     ARRIVE_ZOMBIE,
     NEW_ZOMBIE,
     PATROL,
+    INVESTIGATE,
     TEST_WANDER_SB,
 }

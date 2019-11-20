@@ -2,6 +2,7 @@ package com.mygdx.entities.objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 import com.mygdx.entities.humans.person;
@@ -46,6 +47,7 @@ public class bomb extends entity {
                 if(tempEnt == null) {
                     tempEnt = victum;
                     ((zombie)tempEnt).setCpuStatus(false);
+                    tempEnt.setClassID(classIdEnum.PZombie);
                 }
             } else if (entDist < 150) {
                 //the closer you are to the bomb the higher your infection is
@@ -59,8 +61,8 @@ public class bomb extends entity {
                         ((tileGameMap) mMap).getPlayerOne().ptsMgr(victum)
                 );
                 victum.setInfected(true, this);
-                victum.decreaseInfectTime((1 / entDist * infecRatio));
-                victum.decreaseHlth((1 / entDist * healthRatio));
+                victum.decreaseInfectTime((1 /(entDist *100)* infecRatio));
+                victum.decreaseHlth((1 /(entDist * 100) * healthRatio));
             } else if (entDist < 250) {
                 //change alertness that a bomb went off
                 //to investage for authorities

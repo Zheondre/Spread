@@ -9,7 +9,7 @@ public class security extends person {
     // can knock down or whip zombies
     // tell people where they can get help
 
-    protected int armorPts;
+    //protected int armorPts;
 
     public security(entityInfo entityType, gameMap map) {
         super(entityType,map);

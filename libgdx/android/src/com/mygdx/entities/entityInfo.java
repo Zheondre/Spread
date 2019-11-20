@@ -36,7 +36,7 @@ public enum entityInfo {
 
     private int infectPts;
     private int attackPt;
-    private int health;
+    private float health;
     private int armor;
 
     private int walkSpeed;
@@ -54,7 +54,7 @@ public enum entityInfo {
        this.walkSpeed = 80;
 
         this.armor = 0;
-        this.health = 100;
+        this.health = 1;
         this.attackPt = 3;
 
         this.zombie = false;
@@ -146,7 +146,7 @@ public enum entityInfo {
         return this.attackPt;
     }
 
-    public int getHealth() {
+    public float getHealth() {
         return this.health;
     }
 

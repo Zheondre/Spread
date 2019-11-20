@@ -1,9 +1,11 @@
 package com.mygdx.entities.humans;
 import android.os.SystemClock;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
@@ -29,34 +31,27 @@ public class zombie extends entity {
     protected int peopleConverted;
     protected int infections;
     protected int attackPt;
-    protected int health;
+    protected int armorPts;
+
+    protected float health;
+    protected float mInfctTime;
 
     protected classIdEnum weapon;
     protected BehaviorEnum mAlerted;
 
     private static final int biteTimeSetting = 5;
+    private int wlkDirection;
+
     private float reviveTime = 20;
     private float bitetime = biteTimeSetting;
     private float wlkTime;
-    private int wlkDirection;
+    private float preyDistance;
 
+    private boolean isAlive;
     private boolean mIsCpu;
     private boolean doISeeANoneZombie;
 
-    public boolean isAlive() {
-        return isAlive;
-    }
-
-    private boolean isAlive;
-
-    //private Box2dSteering prey;
     private entity prey;
-
-    public float getPreyDistance() {
-        return preyDistance;
-    }
-
-    private float preyDistance;
 
    //protected Box2dSteering steerEnt;
 
@@ -135,6 +130,7 @@ public class zombie extends entity {
         if(classID == classIdEnum.Zombie || classID == classIdEnum.PZombie) {
             setImage("zombie.png");
             setImageB("zombie2.png");
+            mInfctTime = 0;
         }
         this.infections = 0;
         this.attackPt = entType.getAttackPt();//
@@ -226,8 +222,8 @@ public class zombie extends entity {
                 victum.changeEvadeTarget(this);
             }
 
-        victum.decreaseInfectTime(5);
-        victum.decreaseHlth(1);
+        victum.decreaseInfectTime(.20f);
+        victum.decreaseHlth(.05f);
         setImage("zombieAttack.png"); // might have to change this
         return true;
     }
@@ -269,7 +265,7 @@ public class zombie extends entity {
                     //also need to see if they are in out view but for now we will base this off of ditance
                     //if close enough chase, if too close stop and attack
 
-                    changeImage(((SystemClock.elapsedRealtime() / (1000 % 2)) == 1));
+                    changeImage( (((SystemClock.elapsedRealtime() / 1000) % 2) == 1) ) ;
 
                     if (doISeeANoneZombie) {
 
@@ -342,9 +338,52 @@ public class zombie extends entity {
    // @Override
     public void render(SpriteBatch batch){
         Texture image = getImage();
-        if(image != null)
-            batch.draw(image,mPos.x, mPos.y, getWidth(), getHeight());
+        if(image != null) {
+            batch.draw(image, mPos.x, mPos.y, getWidth(), getHeight());
+
+            //libgdx tutorial health bar + exposions
+
+            //TODO CLEAN UP CODE BELLOW
+            if((getClassID() == classIdEnum.PZombie) || (getClassID() == classIdEnum.ConvertedPer) ) {
+                //TODO move to the right of the screen
+                //if there is armor show one bar for that then show grey once armor is at 0;
+
+                if(getHealth() > .8f)
+                    batch.setColor(Color.GREEN);
+                else if(getHealth() > .3f)
+                    batch.setColor(Color.ORANGE);
+                else
+                    batch.setColor(Color.RED);
+
+                batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +20, 22* getHealth(), 3);
+               // this puts the bar under the moving buttons
+                //batch.draw(mMap.getPlayerHealth(),  ((tileGameMap)mMap).getPlayerOne().getCamXPos(), ((tileGameMap)mMap).getPlayerOne().getCamYPos(), ((Gdx.graphics.getWidth() - 1300) / 3) * getHealth(), 6);
+                batch.setColor(Color.WHITE);
+            } else if (getClassID() != classIdEnum.ConvertedPer) {
+
+                if(getHealth() > .8f)
+                    batch.setColor(Color.WHITE);
+                else if(getHealth() > .5f)
+                    batch.setColor(Color.YELLOW);
+                else
+                    batch.setColor(Color.PURPLE);
+                batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +25, 22* mInfctTime, 3);
+
+                batch.setColor(Color.WHITE);
+                if(getHealth() > .8f)
+                    batch.setColor(Color.GREEN);
+                else if(getHealth() > .3f)
+                    batch.setColor(Color.ORANGE);
+                else
+                    batch.setColor(Color.RED);
+
+                batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +20, 22* getHealth(), 3);
+                batch.setColor(Color.WHITE);
+            }
+
+        }
     }
+
 
     public float getEntDistance() {
         mPos.x = super.getBody().getPosition().x;
@@ -379,6 +418,18 @@ public class zombie extends entity {
         return shortEnt;
     }
 
+    public float getPreyDistance() {
+        return preyDistance;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public float getHealth() {
+        return health;
+    }
+
     public boolean iscpu() { return mIsCpu; }
 
     public void setCpuStatus(boolean IsCpu) { this.mIsCpu = IsCpu; }
@@ -391,13 +442,10 @@ public class zombie extends entity {
 
     public void setAttackPt(int attackPt) { this.attackPt = attackPt; }
 
-    public void setHealth(int health) { this.health = health; }
+    public void setHealth(float health) { this.health = health; }
 
     public void setWeapon(classIdEnum weapon) { this.weapon = weapon; }
 
-    public void decreaseHlth(int amount){ this.health -= amount; }
+    public void decreaseHlth(float amount){ this.health -= amount; }
 
-    public classIdEnum getClsId() { return classID; }
-
-    public void setClsId(classIdEnum clsId) { this.classID = clsId; }
 }
