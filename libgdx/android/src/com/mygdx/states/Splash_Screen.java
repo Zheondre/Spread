@@ -44,7 +44,7 @@ public class Splash_Screen extends GameState {
 
     @Override
     public void render(SpriteBatch spriteBatch) {
-        Gdx.gl.glClearColor(1,1,1,1);
+        Gdx.gl.glClearColor(190/255f,77/255f,227/255f,0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         spriteBatch.begin();
         spriteBatch.draw(play_button, Gdx.graphics.getWidth() / 2 - (play_button.getWidth() / 2), Gdx.graphics.getHeight() / 2 - (play_button.getHeight()/2) - 250);
