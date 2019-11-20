@@ -7,6 +7,7 @@ they also explain how to modify the tiles in a map during game play, we wont add
  */
 
 package com.mygdx.world;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.physics.box2d.World;
@@ -21,6 +22,7 @@ public abstract class gameMap {
     public gameMap(){
     }
 
+    public abstract Texture getPlayerHealth();
     public abstract void setCnvrtdEntRdy(person b);
 
     public abstract ArrayList<person> getPeople();

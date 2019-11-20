@@ -20,6 +20,9 @@ public class player implements InputProcessor {
     private float screenX;
     private float screenY;
 
+    private float CamXPos;
+    private float CamYPos;
+
     private OrthographicCamera playCam;
 
     private entity host;
@@ -38,7 +41,7 @@ public class player implements InputProcessor {
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
         playCam = new OrthographicCamera();
-        playCam.setToOrtho(false, wdth - 1300, hght - 850);
+        playCam.setToOrtho(false, wdth - 1300, hght - 800);
         playCam.update();
         this.points = 0;
         this.infects = 0;
@@ -53,7 +56,7 @@ public class player implements InputProcessor {
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
         playCam = new OrthographicCamera();
-        playCam.setToOrtho(false, wdth - 800, hght - 800);
+        playCam.setToOrtho(false, wdth - 800, hght - 825);
         playCam.update();
 
         this.points = points;
@@ -62,6 +65,14 @@ public class player implements InputProcessor {
         this.converts = converts;
         this.host = host;
         Gdx.input.setInputProcessor(this);
+    }
+
+    public float getCamXPos() {
+        return CamXPos;
+    }
+
+    public float getCamYPos() {
+        return CamYPos;
     }
 
     public void setAttackPressed(boolean attackPressed) {
@@ -120,7 +131,6 @@ public class player implements InputProcessor {
         return false; // something got fucked up
     }
 
-
     public int ptsMgr(entity ent){
        int ptsHolder = 0;
         switch(ent.getClassID()) {
@@ -165,13 +175,14 @@ public class player implements InputProcessor {
 
         checkForSwitch();
 
-
-
         if(host.getBody().getPosition().x < 260) playCam.position.x = 260;
         else playCam.position.x = host.getBody().getPosition().x;
 
         if(host.getBody().getPosition().y < 120) playCam.position.y = 120;
         else playCam.position.y = host.getBody().getPosition().y;
+
+        CamXPos = playCam.position.x;
+        CamYPos = playCam.position.y;
 
         playCam.update();
     }

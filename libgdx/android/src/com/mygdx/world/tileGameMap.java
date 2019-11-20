@@ -9,6 +9,7 @@ they also explain how to modify the tiles in a map during game play, we wont add
 
 package com.mygdx.world;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
@@ -38,7 +39,10 @@ import static com.mygdx.entities.entityInfo.PBOMB;
 import static com.mygdx.entities.entityInfo.ZOMBIE;
 import static com.mygdx.utils.entUtils.getStopVec;
 
+
 public class tileGameMap extends gameMap {
+
+    public Texture playerHealth;
 
     private classIdEnum DEBUGMODE = classIdEnum.PBomb;
     //private classIdEnum DEBUGMODE = classIdEnum.PZombie;
@@ -66,10 +70,6 @@ public class tileGameMap extends gameMap {
     private int currentLevel;
     private int levelAmount;
 
-    public int getCurrentLevel() {
-        return currentLevel;
-    }
-
     private static World world;
     private Box2DDebugRenderer b2dr;
 
@@ -78,11 +78,6 @@ public class tileGameMap extends gameMap {
     private ArrayList<gameBlocks> gameBlocks;
     private ArrayList<person> CnvrtdEntRdy;
     private ArrayList<WaveInfo> levels;
-
-    public ArrayList<entity> getReadyForDeletion() {
-        return ReadyForDeletion;
-    }
-
     private ArrayList<entity> ReadyForDeletion;
     private zombie convertedEnt;
 
@@ -95,6 +90,8 @@ public class tileGameMap extends gameMap {
         //right_button = new Texture("right_button.png");
         //left_button = new Texture("left_button.png");
         //down_button = new Texture("down_button.png");
+
+        playerHealth = new Texture("blank.jpg"); // will move later
 
         batch = new SpriteBatch();
         levelAmount = 3;
@@ -184,6 +181,7 @@ public class tileGameMap extends gameMap {
 
        playerOne.getHost().render(batch);
 
+
         //batch.draw(up_button, Gdx.graphics.getWidth() - (up_button.getWidth() * 2), Gdx.graphics.getHeight()/5);
         //batch.draw(right_button, Gdx.graphics.getWidth() - right_button.getWidth(), Gdx.graphics.getHeight()/5 - right_button.getHeight());
         //batch.draw(down_button, Gdx.graphics.getWidth() - (down_button.getWidth() * 2), Gdx.graphics.getHeight()/5 - (down_button.getHeight() * 2));
@@ -222,7 +220,7 @@ public class tileGameMap extends gameMap {
         int lastEntPos = CnvrtdEntRdy.size() - 1;
         // becarefull bellow here
         // safetly remove civilian turned zombies from civilian array
-        while(lastEntPos > -1){
+        while(lastEntPos > 0){
             getPeople().remove(CnvrtdEntRdy.get(lastEntPos));
             CnvrtdEntRdy.remove(lastEntPos);
             lastEntPos--;
@@ -230,7 +228,7 @@ public class tileGameMap extends gameMap {
 
         lastEntPos = ReadyForDeletion.size()-1;
         entity entToBeDeleted;
-        while(lastEntPos > -1) {
+        while(lastEntPos > 0) {
             entToBeDeleted = ReadyForDeletion.get(lastEntPos);
             switch(entToBeDeleted.getClassID()) {
                 case Emt:
@@ -247,7 +245,7 @@ public class tileGameMap extends gameMap {
                     default:
             }
             ReadyForDeletion.remove(entToBeDeleted);
-            entToBeDeleted.dispose();
+            entToBeDeleted.dispose();// index one size one error ? 8.14pm 11.19.19
             entToBeDeleted = null;
         }
 
@@ -255,7 +253,7 @@ public class tileGameMap extends gameMap {
     }
 
     public void waveLogic() {
-        ; // if all civilans are converted add current level * 10 points
+        // if all civilans are converted add current level * 10 points
         //
 
         if(people.size() == 0) {
@@ -268,8 +266,19 @@ public class tileGameMap extends gameMap {
         }
     }
 
+    public ArrayList<entity> getReadyForDeletion() {
+        return ReadyForDeletion;
+    }
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+
     public void setBatch(SpriteBatch batch) {
         tileGameMap.batch = batch;
+    }
+
+    public Texture getPlayerHealth() {
+        return playerHealth;
     }
 
     public void setCnvrtdEntRdy(person moveReady) { this.CnvrtdEntRdy.add(moveReady); }

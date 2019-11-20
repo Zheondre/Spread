@@ -34,10 +34,10 @@ public enum entityInfo {
 
     private boolean isCpu;
 
-    private int infectPts;
-    private int attackPt;
-    private int health;
-    private int armor;
+    private float infectPts;
+    private float attackPt;
+    private float health;
+    private float armor;
 
     private int walkSpeed;
 
@@ -54,8 +54,8 @@ public enum entityInfo {
        this.walkSpeed = 80;
 
         this.armor = 0;
-        this.health = 100;
-        this.attackPt = 3;
+        this.health = 1;
+        this.attackPt = .03f;
 
         this.zombie = false;
         this.infected = false;
@@ -93,11 +93,11 @@ public enum entityInfo {
                 //this.ypos = 25;
                 break;
             case Security:
-            this.armor = 50;
+            this.armor = .50f;
                this.weapon = classIdEnum.BATON;
                 break;
             case Cop:
-                this.armor = 70;
+                this.armor = .70f;
                 this.weapon = classIdEnum.PISTOL;
                 break;
 
@@ -138,19 +138,19 @@ public enum entityInfo {
         return this.isCpu;
     }
 
-    public int getInfectPts() {
+    public float getInfectPts() {
         return this.infectPts;
     }
 
-    public int getAttackPt() {
+    public float getAttackPt() {
         return this.attackPt;
     }
 
-    public int getHealth() {
+    public float getHealth() {
         return this.health;
     }
 
-    public int getArmor() {
+    public float getArmor() {
         return this.armor;
     }
 

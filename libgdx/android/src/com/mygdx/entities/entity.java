@@ -29,8 +29,8 @@ public abstract class entity {
     private Texture imageA;
     private Texture imageB;
 
-    private final static int mWidth = 14;
-    private final static int mHeight = 15;
+    private final static int mWidth = 13;
+    private final static int mHeight = 18;
     private static final float mWeight = 40;
 
     protected float mVelocityY;
@@ -184,6 +184,10 @@ public abstract class entity {
 
     public classIdEnum getClassID() {
         return classID;
+    }
+
+    public void setClassID(classIdEnum classID) {
+        this.classID = classID;
     }
 
     public void setSpeed(int speed) {
