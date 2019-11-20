@@ -262,6 +262,13 @@ public abstract class entity {
             body.setLinearVelocity(getStopVec());
     }
 
+    public void stopMoving(){
+        moveRight = false;
+        moveLeft = false;
+        moveDown = false;
+        moveUp = false;
+    }
+
     protected boolean moveX(float amount) {
 
         if ((mPos.x + amount) < 0)
