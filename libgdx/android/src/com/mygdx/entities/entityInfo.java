@@ -34,6 +34,13 @@ public enum entityInfo {
 
     private boolean isCpu;
 
+    private int blastRadius;
+    private int infectRadius;
+    private int alertnedRadius;
+    private int nonEffectsRadius;
+    private int infecRatio;
+    private int healthRatio;
+
     private float infectPts;
     private float attackPt;
     private float health;
@@ -64,6 +71,12 @@ public enum entityInfo {
         switch(id){
             case PBomb:
                 this.isCpu = false;
+                this.blastRadius = 40;
+                this.infectRadius = 150;
+                this.alertnedRadius = 250;
+                this.nonEffectsRadius  = 550;
+                this.infecRatio = 350;
+                this.healthRatio = 300;
                 break;
             case PZombie:
                 this.xpos = 70;
@@ -113,6 +126,30 @@ public enum entityInfo {
 				default:
                 //throw an error, unknown type
         }
+    }
+
+    public int getInfecRatio() {
+        return infecRatio;
+    }
+
+    public int getHealthRatio() {
+        return healthRatio;
+    }
+
+    public int getBlastRadius() {
+        return blastRadius;
+    }
+
+    public int getInfectRadius() {
+        return infectRadius;
+    }
+
+    public int getAlertnedRadius() {
+        return alertnedRadius;
+    }
+
+    public int getNonEffectsRadius() {
+        return nonEffectsRadius;
     }
 
     public boolean isInfected() {
