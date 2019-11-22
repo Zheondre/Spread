@@ -1,6 +1,7 @@
 package com.mygdx.entities.objects;
 
 
+import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.entities.entity;
@@ -19,6 +20,9 @@ public class gameBlocks extends entity {
     }
     public void render(SpriteBatch batch){
         //batch.draw(image,mPos.x, mPos.y, mWidth, mHeight);
+    }
+    public boolean handleMessage(Telegram msg) {
+        return true;
     }
 }
 
