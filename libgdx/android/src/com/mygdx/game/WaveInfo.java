@@ -4,19 +4,19 @@ import java.util.ArrayList;
 
 public class WaveInfo {
 
-    byte levelNum;
-    byte peopleNum;
-    byte securityNum;
-    byte copNum;
-    byte emtNum;
+    int levelNum;
+    int peopleNum;
+    int securityNum;
+    int copNum;
+    int emtNum;
 
     int BackUpTime;
 
-    byte healthPackNum;
-    byte antidoes;
-    byte cureZones;
+    int healthPackNum;
+    int antidoes;
+    int cureZones;
 
-    public WaveInfo(byte levelNum, byte peopleNum, byte securityNum, byte copNum, byte emtNum) {
+    public WaveInfo(int levelNum, int peopleNum, int securityNum, int copNum, int emtNum) {
         this.levelNum = levelNum;
         this.peopleNum = peopleNum;
         this.securityNum = securityNum;
@@ -25,7 +25,7 @@ public class WaveInfo {
         this.BackUpTime = 120;
     }
 
-    public WaveInfo(byte levelNum, byte peopleNum, byte securityNum, byte copNum, byte emtNum, int backUpTime) {
+    public WaveInfo(int levelNum, int peopleNum, int securityNum, int copNum, int emtNum, int backUpTime) {
         this.levelNum = levelNum;
         this.peopleNum = peopleNum;
         this.securityNum = securityNum;
@@ -34,7 +34,7 @@ public class WaveInfo {
         this.BackUpTime = backUpTime;
     }
 
-    public WaveInfo(byte levelNum, byte peopleNum, byte securityNum, byte copNum, byte emtNum, int backUpTime, byte healthPackNum, byte antidoes, byte cureZones) {
+    public WaveInfo(int levelNum, int peopleNum, int securityNum, int copNum, int emtNum, int backUpTime, int healthPackNum, int antidoes, int cureZones) {
         this.levelNum = levelNum;
         this.peopleNum = peopleNum;
         this.securityNum = securityNum;
@@ -51,35 +51,35 @@ public class WaveInfo {
         return BackUpTime;
     }
 
-    public byte getLevelNum() {
+    public int getLevelNum() {
         return levelNum;
     }
 
-    public byte getPeopleNum() {
+    public int getPeopleNum() {
         return peopleNum;
     }
 
-    public byte getSecurityNum() {
+    public int getSecurityNum() {
         return securityNum;
     }
 
-    public byte getCopNum() {
+    public int getCopNum() {
         return copNum;
     }
 
-    public byte getEmtNum() {
+    public int getEmtNum() {
         return emtNum;
     }
 
-    public byte getHealthPackNum() {
+    public int getHealthPackNum() {
         return healthPackNum;
     }
 
-    public byte getAntidoes() {
+    public int getAntidoes() {
         return antidoes;
     }
 
-    public byte getCureZones() {
+    public int getCureZones() {
         return cureZones;
     }
 }

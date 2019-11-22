@@ -67,9 +67,9 @@ public class bullet extends entity {
             float tempx = target.getPosX() - this.mPos.x;
             float tempy = target.getPosY() - this.mPos.y;
             tangle = (float)Math.atan(tempy/tempx);
-           vy =  (float)(vSpeed * Math.sin(tangle));
-           vx = (float) (vSpeed * Math.cos(tangle));
-             Vector2 tv = new Vector2(vx,vy); //this might slow things down, change later
+            vy = (float)(vSpeed * Math.sin(tangle));
+            vx = (float) (vSpeed * Math.cos(tangle));
+            Vector2 tv = new Vector2(vx,vy); //this might slow things down, change later
             getBody().applyLinearImpulse(tv, getBody().getWorldCenter(), true);
         }
     }
@@ -77,7 +77,7 @@ public class bullet extends entity {
         return true;
     }
     public void shoot(Vector2 vPos){
-
+// a gun should be shooting a bullet but leave this here for debug
     }
 
     public void shootDebug(player play){

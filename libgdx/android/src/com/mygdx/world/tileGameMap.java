@@ -26,6 +26,9 @@ import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 
+import com.mygdx.entities.humans.EMT;
+import com.mygdx.entities.humans.cop;
+import com.mygdx.entities.humans.security;
 import com.mygdx.entities.objects.bomb;
 import com.mygdx.entities.objects.gameBlocks;
 import com.mygdx.entities.humans.person;
@@ -35,6 +38,7 @@ import com.mygdx.game.WaveInfo;
 
 import java.util.ArrayList;
 
+import static com.mygdx.entities.classIdEnum.Emt;
 import static com.mygdx.entities.entityInfo.CPlAYER;
 import static com.mygdx.entities.entityInfo.PBOMB;
 import static com.mygdx.entities.entityInfo.ZOMBIE;
@@ -99,8 +103,8 @@ public class tileGameMap extends gameMap {
         playerHealth = new Texture("blank.jpg"); // will move later
 
         batch = new SpriteBatch();
-        levelAmount = 3;
-        currentLevel = 0;
+        levelAmount = 1;
+        currentLevel = -1;
         m_TileMap = new TmxMapLoader().load("house_road.tmx"); // we will have to make this dynamic based on user map selection
         m_TileMapRender = new OrthogonalTiledMapRenderer(m_TileMap);
         MapProperties MapProp = m_TileMap.getProperties();
@@ -138,12 +142,15 @@ public class tileGameMap extends gameMap {
                 break;
         }
 
-        /*
-        for(int i = 0; i < levelAmount; i++) {
-            levels.add(new WaveInfo(i, 10, , 0, 0, 0 ));
+        for(byte i = 0; i < levelAmount; i++) {
+           int  tempA = (int) (Math.random() * ((30 - 5) + 5)) + 1;
+           int  tempB = (int) (Math.random() * ((tempA - 5) + 5)) + 1;
+            levels.add(new WaveInfo(i, tempB - i *2,tempB+ i *2 , tempB+ i *3, tempB +i*2));
         }
-        */
 
+        //loadEnts();
+
+        //debug
         for(int i = 0; i < 2; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
@@ -157,20 +164,6 @@ public class tileGameMap extends gameMap {
         playerOne.setPeopleRef(people);
 
         initMessage();
-
-        // testing ai behaviors
-        /*
-
-        people.get(2).setPursueSB(people.get(0));//
-       // people.get(2).setPursueSB(people.get(0).getSteerEnt());//
-        people.get(2).getSteerEnt().setMaxLinearSpeed(50);
-        people.get(2).getSteerEnt().setMaxLinearAcceleration(4000);
-        people.get(2).getSteerEnt().setMaxAngularSpeed(20f);
-        people.get(2).getSteerEnt().setMaxAngularAcceleration(10f);
-        */
-
-        //people.get(2).setArriveSB(people.get(0).getSteerEnt());// over shoots
-
     }
 
     private void initMessage(){
@@ -192,8 +185,7 @@ public class tileGameMap extends gameMap {
         batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
         batch.begin();
 
-       playerOne.getHost().render(batch);
-
+        playerOne.getHost().render(batch);
 
         //batch.draw(up_button, Gdx.graphics.getWidth() - (up_button.getWidth() * 2), Gdx.graphics.getHeight()/5);
         //batch.draw(right_button, Gdx.graphics.getWidth() - right_button.getWidth(), Gdx.graphics.getHeight()/5 - right_button.getHeight());
@@ -262,21 +254,52 @@ public class tileGameMap extends gameMap {
             entToBeDeleted = null;
         }
 
-        //check to see who has died and clean them off the map ?
-    }
-
-    public void waveLogic() {
-        // if all civilans are converted add current level * 10 points
-        //
-
+        /*
         if(people.size() == 0) {
-            ;//go to next wave and delete previous one
-            //if all civilans are converted add current level * 10 point
+            //
+            zombies.clear();
+            getPlayerOne().addPoints(currentLevel * 10);
+            getPlayerOne().resetBomb();
+            loadEnts();
         }
+        */
 
         if(zombies.size() == 0) {
             ; //all zombied were killed or no one was converted say game over
         }
+    }
+
+    public void loadEnts() {
+        // if all civilans are converted add current level * 10 points
+
+        try {
+            if (levels.size() == 0) {
+                //end game
+                return;
+            }
+        }
+        catch(NullPointerException ex) {
+            System.out.println("No more Levels to delete ");
+        }
+
+        for(int i = 0; i < levels.get(0).getPeopleNum(); i++)
+            people.add(new person(entityInfo.PERSON,this));
+
+        for(int i = 0; i < levels.get(currentLevel).getSecurityNum(); i++)
+           people.add(new security(entityInfo.SECURITY,this));
+
+        for(int i = 0; i < levels.get(0).getCopNum(); i++)
+            people.add(new cop(entityInfo.COP,this));
+
+        for(int i = 0; i < levels.get(0).getEmtNum(); i++)
+            people.add(new EMT(entityInfo.EMT,this));
+
+        //clear ents on the game
+        //getPlayerOne().resetBomb();
+
+        if(levels.size() > 0)
+             levels.remove(0);
+
     }
 
     public ArrayList<entity> getReadyForDeletion() {

@@ -1,5 +1,7 @@
 package com.mygdx.entities.humans;
 
+import android.util.Log;
+
 import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.msg.Telegraph;
@@ -38,7 +40,8 @@ public class cop extends security {
                 HELP_INFECTED, HELP_INFECTED_REPLY,
                 HELP_BACKUP_COPS, HELP_BACKUP_COPS_REPLY,
                 FOLLOW_ME, FOLLOW_ME_REPLY,
-                GIVE_PER_LOCATION_REPLY);
+                GIVE_PER_LOCATION_REPLY
+        );
 
     }
 
@@ -66,23 +69,30 @@ public class cop extends security {
         //zombies for now will now be listening for messages
         //if(areYouAZombie())
             //takeoutlistener
+        entity temp = (entity)msg.extraInfo;
 
         //what should happen if the person asking for help turns into a zombie ?
         switch(msg.message) {
             case HELP_ZOMBIE_SPOTTED:
+                //if close enough find zombie and termniate
                 break;
             case HELP_INFECTED:
+                // see if close enough to get message if so direct it to the emt
             break;
             case HELP_COP_NEEDS_EMT:
+                // cop is infected need an emt
             break;
             case HELP_BACKUP_COPS:
+                //getting sorounded or infected is really low call for backup,, else allocate more cops
             break;
             case HELP_BACKUP_ARMY:
+                //shit has hit the fan call the army
             break;
             case FOLLOW_ME:
+                // follow the commanding cop
             break;
         }
-
+        Log.d("Cop", "Received a request");
         //get needs help message from other classe
 
         //can call for emt

@@ -99,7 +99,6 @@ public abstract class entity implements Telegraph {
         float tileW, tileH, tx = 0, ty = 0;
 
         //mario tutorial youtube libgdx box2d
-        //box2d
         BodyDef entBody = new BodyDef();
         FixtureDef fd = new FixtureDef();
 

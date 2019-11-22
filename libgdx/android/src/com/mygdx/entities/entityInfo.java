@@ -23,6 +23,7 @@ public enum entityInfo {
     SECURITY(classIdEnum.Security),
     ZOMBIE(classIdEnum.Zombie),
     STATIC_OBJECT(classIdEnum.STATIC_OBJECT),
+    EMT(classIdEnum.Emt),
     PBOMB(classIdEnum.PBomb);
 
     private classIdEnum weapon;
@@ -69,6 +70,8 @@ public enum entityInfo {
         this.isCpu = true;
 
         switch(id){
+            case Emt:
+                this.health = 2;
             case PBomb:
                 this.isCpu = false;
                 this.blastRadius = 40;
@@ -91,7 +94,6 @@ public enum entityInfo {
                 this.isCpu = false;
                 break;
             case Zombie:
-
                 this.xpos = 30;
                 this.ypos = 50;
 
@@ -101,7 +103,6 @@ public enum entityInfo {
                 this.walkSpeed = 40;
                 break;
             case Person:
-                //temp dont commit
                 //this.xpos = 75;
                 //this.ypos = 25;
                 break;
@@ -113,7 +114,6 @@ public enum entityInfo {
                 this.armor = .70f;
                 this.weapon = classIdEnum.PISTOL;
                 break;
-
             case STATIC_OBJECT:
                 this.walkSpeed = 0;
                 this.armor = 0;
