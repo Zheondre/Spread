@@ -24,7 +24,9 @@ public final class entUtils {
     private static final Vector2 stopDownVec = new Vector2(0,-yforce);
 
     private static final Texture zombieAttack = new  Texture("zombieAttack.png");
-    private static final Texture Bullet = new  Texture("blank.png");
+    //private static final Texture Bullet = new  Texture("blank.png"); // this was crashing
+    private static final Texture Bullet = null;
+
 
     entUtils(){
     }
@@ -42,9 +44,8 @@ public final class entUtils {
     }
 
    public static Texture getZombieAttack() { return zombieAttack; }
-    public static Vector2 getStopVec() {
-        return StopVec;
-    }
+
+   public static Vector2 getStopVec() { return StopVec; }
 
     public static Vector2 getMoveLeftVec() {
         return moveLeftVec;
@@ -59,7 +60,6 @@ public final class entUtils {
     public static Vector2 getMoveDownVec() {
         return moveDownVec;
     }
-
 
     public static Vector2 stopLeftVec() {
         return stopLeftVec;
