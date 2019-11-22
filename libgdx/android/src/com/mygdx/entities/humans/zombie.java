@@ -2,6 +2,8 @@ package com.mygdx.entities.humans;
 import android.os.SystemClock;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.msg.Telegram;
+import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
@@ -231,7 +233,12 @@ public class zombie extends entity {
         return true;
     }
 
-  //  @Override
+    public boolean handleMessage(Telegram msg) {
+;///////
+        return true;
+    }
+
+        //  @Override
     public void update(float dTime){
 
         if(health < 0) {
@@ -356,6 +363,7 @@ public class zombie extends entity {
                     changeImage(false);
                     areWeBiting = false;
                 }
+                if(armorPts > 0 )
 
                 if(getHealth() > .8f)
                     batch.setColor(Color.GREEN);
@@ -365,7 +373,14 @@ public class zombie extends entity {
                     batch.setColor(Color.RED);
 
                 batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +20, 22* getHealth(), 3);
-               // this puts the bar under the moving buttons
+
+                if(armorPts > 0 ) {
+                    batch.setColor(Color.DARK_GRAY);
+                    batch.draw(mMap.getPlayerHealth(), getPosX() + 8, getPosY() + 20, 22 * getHealth(), 3);
+                }
+
+
+                // this puts the bar under the moving buttons
                 //batch.draw(mMap.getPlayerHealth(),  ((tileGameMap)mMap).getPlayerOne().getCamXPos(), ((tileGameMap)mMap).getPlayerOne().getCamYPos(), ((Gdx.graphics.getWidth() - 1300) / 3) * getHealth(), 6);
                 batch.setColor(Color.WHITE);
             } else if (getClassID() != classIdEnum.ConvertedPer) {
@@ -387,6 +402,11 @@ public class zombie extends entity {
                     batch.setColor(Color.RED);
 
                 batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +20, 22* getHealth(), 3);
+
+                if(armorPts > 0 ) {
+                    batch.setColor(Color.DARK_GRAY);
+                    batch.draw(mMap.getPlayerHealth(), getPosX() + 8, getPosY() + 20, 22 * getHealth(), 3);
+                }
                 batch.setColor(Color.WHITE);
             }
 

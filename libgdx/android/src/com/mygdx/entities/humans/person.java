@@ -2,10 +2,13 @@ package com.mygdx.entities.humans;
 
 import android.os.SystemClock;
 
+import com.badlogic.gdx.ai.msg.MessageManager;
+import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.steer.behaviors.Evade;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.Hide;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.AiStates.MessageType;
 import com.mygdx.entities.BehaviorEnum;
 import com.mygdx.entities.Box2dSteering;
 import com.mygdx.entities.classIdEnum;
@@ -13,7 +16,12 @@ import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 import com.mygdx.entities.objects.bomb;
 import com.mygdx.world.gameMap;
+import com.mygdx.world.tileGameMap;
 
+import static com.mygdx.AiStates.MessageType.GIVE_PER_LOCATION;
+import static com.mygdx.AiStates.MessageType.HELP_INFECTED_REPLY;
+import static com.mygdx.AiStates.MessageType.HELP_ZOMBIE_SPOTTED;
+import static com.mygdx.AiStates.MessageType.HELP_ZOMBIE_SPOTTED_REPLY;
 import static com.mygdx.entities.BehaviorEnum.INFECTED;
 import static com.mygdx.entities.BehaviorEnum.NEW_ZOMBIE;
 
@@ -21,7 +29,7 @@ public class person extends zombie {
 
     private boolean mInfected;
     private boolean mZombie;
-
+    protected int MessageMsk = 0;
     //protected int mAlerted;
     //private float mInfctTime;
 
@@ -84,6 +92,8 @@ public class person extends zombie {
         if(entityType.getId() == classIdEnum.Person || entityType.getId() == classIdEnum.PPerson) {
             this.setImage("player.png");
             this.setImageB("player2.png");
+
+            MessageManager.getInstance().addListeners(this,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY, GIVE_PER_LOCATION,HELP_ZOMBIE_SPOTTED_REPLY );
         }
         this.weapon = entityType.getWeapon();
         this.mZombie =  entityType.isZombie();
@@ -92,6 +102,21 @@ public class person extends zombie {
         this.mInfctTime = 1;
         this.wlkDirection = 0;
         this.wlkTime = -1;
+    }
+
+    public boolean handleMessage(Telegram msg){
+
+        switch(msg.message) {
+            case HELP_ZOMBIE_SPOTTED:
+                break;
+            case HELP_ZOMBIE_SPOTTED_REPLY:
+                break;
+            case HELP_INFECTED_REPLY:
+                break;
+            case GIVE_PER_LOCATION:
+                break;
+        }
+        return true;
     }
 
     public void dispose(){
@@ -117,6 +142,12 @@ public class person extends zombie {
         //check if hurt or if infected
         if(!mZombie) {
             if (mInfected) {
+
+                if( (0) == (MessageMsk & (1 <<MessageType.HELP_INFECTED)) ) { // ask for help every like 10 seconds until help arrives ?
+                    MessageMsk = (MessageMsk | (1 <<MessageType.HELP_INFECTED));
+                    ((tileGameMap) getMap()).getMgMang().dispatchMessage(MessageType.HELP_INFECTED);
+                }
+
                 mInfctTime -= .03;
                 if (mInfctTime < 0)
                     turnIntoAZombie();

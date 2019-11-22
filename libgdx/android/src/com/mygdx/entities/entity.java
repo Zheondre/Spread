@@ -1,5 +1,7 @@
 package com.mygdx.entities;
 
+import com.badlogic.gdx.ai.msg.Telegram;
+import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -20,7 +22,7 @@ import static com.mygdx.utils.entUtils.getStopVec;
 import static com.mygdx.utils.entUtils.getZombieAttack;
 import static java.lang.StrictMath.abs;
 
-public abstract class entity {
+public abstract class entity implements Telegraph {
 
     private int speed = 80;
     // private static int xspeed = 80;
@@ -66,6 +68,8 @@ public abstract class entity {
     public abstract boolean attack();
 
     public abstract void render(SpriteBatch batch);
+
+    public abstract boolean handleMessage(Telegram msg);
 
     public entity() {
         this.mVelocityY = 0;

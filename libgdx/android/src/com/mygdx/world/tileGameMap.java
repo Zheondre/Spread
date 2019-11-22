@@ -9,6 +9,7 @@ they also explain how to modify the tiles in a map during game play, we wont add
 
 package com.mygdx.world;
 
+import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
@@ -42,7 +43,7 @@ import static com.mygdx.utils.entUtils.getStopVec;
 
 public class tileGameMap extends gameMap {
 
-    public Texture playerHealth;
+    public static Texture playerHealth;
 
     private classIdEnum DEBUGMODE = classIdEnum.PBomb;
     //private classIdEnum DEBUGMODE = classIdEnum.PZombie;
@@ -83,6 +84,10 @@ public class tileGameMap extends gameMap {
 
     private player playerOne;
     private static Controller controller;
+
+    private boolean paused = false;
+
+    MessageManager mgMang;
 
     public tileGameMap() {
 
@@ -151,6 +156,8 @@ public class tileGameMap extends gameMap {
 
         playerOne.setPeopleRef(people);
 
+        initMessage();
+
         // testing ai behaviors
         /*
 
@@ -166,6 +173,12 @@ public class tileGameMap extends gameMap {
 
     }
 
+    private void initMessage(){
+        this.mgMang = MessageManager.getInstance();
+    }
+    public MessageManager getMgMang() {
+        return mgMang;
+    }
     @Override
     public void render(){
 
