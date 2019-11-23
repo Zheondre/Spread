@@ -21,6 +21,7 @@ public class person extends zombie {
 
     private boolean mInfected;
     private boolean mZombie;
+    boolean walk = true;
 
     //protected int mAlerted;
     //private float mInfctTime;
@@ -107,8 +108,11 @@ public class person extends zombie {
             super.update(dTime);
         else
             processMoves(dTime);
+        if(((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+            changeImage(true);
+        else changeImage(false);
 
-        changeImage(((SystemClock.elapsedRealtime() % 2) == 1));
+
     }
 
     public void processMoves(float dTime)

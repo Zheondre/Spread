@@ -1,5 +1,7 @@
 package com.mygdx.entities.objects;
 
+
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.entities.classIdEnum;
@@ -9,6 +11,7 @@ import com.mygdx.entities.humans.person;
 import com.mygdx.entities.humans.zombie;
 import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
+
 
 import static java.lang.StrictMath.abs;
 
@@ -34,6 +37,8 @@ public class bomb extends entity {
         // anything around 30 is a zombie
         int entDist;
         entity tempEnt = null;
+
+
 
         //((tileGameMap)mMap).getPlayerOne()
         if(mMap.getPeople().size() == 0)
@@ -74,6 +79,10 @@ public class bomb extends entity {
             ((tileGameMap)mMap).getPlayerOne().setTempHost(tempEnt);
         return true;
     }
+
+
+
+
     public void update(float dTime) {
         super.update(dTime);
         //Update Picture position to box2d position
@@ -81,7 +90,7 @@ public class bomb extends entity {
         mPos.y = this.getBody().getPosition().y - 7.5f;
 
     }
-    public void render(SpriteBatch batch){
+    public void render(final SpriteBatch batch){
         Texture image = getImage();
         if(image != null)
             batch.draw(image,mPos.x, mPos.y, getWidth(), getHeight());

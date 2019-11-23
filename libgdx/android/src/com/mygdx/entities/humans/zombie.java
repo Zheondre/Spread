@@ -264,7 +264,7 @@ public class zombie extends entity {
                     //loop through noinfected victums
                     //also need to see if they are in out view but for now we will base this off of ditance
                     //if close enough chase, if too close stop and attack
-
+                    if(((SystemClock.elapsedRealtime() * 1000) % 2) == 1)
                     changeImage( (((SystemClock.elapsedRealtime() * 1000) % 2) == 1) ) ;
 
                     if (doISeeANoneZombie) {
