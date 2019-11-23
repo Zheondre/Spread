@@ -23,6 +23,7 @@ public enum entityInfo {
     SECURITY(classIdEnum.Security),
     ZOMBIE(classIdEnum.Zombie),
     STATIC_OBJECT(classIdEnum.STATIC_OBJECT),
+    EMT(classIdEnum.Emt),
     PBOMB(classIdEnum.PBomb);
 
     private classIdEnum weapon;
@@ -33,6 +34,13 @@ public enum entityInfo {
     private float ypos;
 
     private boolean isCpu;
+
+    private int blastRadius;
+    private int infectRadius;
+    private int alertnedRadius;
+    private int nonEffectsRadius;
+    private int infecRatio;
+    private int healthRatio;
 
     private float infectPts;
     private float attackPt;
@@ -62,8 +70,16 @@ public enum entityInfo {
         this.isCpu = true;
 
         switch(id){
+            case Emt:
+                this.health = 2;
             case PBomb:
                 this.isCpu = false;
+                this.blastRadius = 40;
+                this.infectRadius = 150;
+                this.alertnedRadius = 250;
+                this.nonEffectsRadius  = 550;
+                this.infecRatio = 350;
+                this.healthRatio = 300;
                 break;
             case PZombie:
                 this.xpos = 70;
@@ -78,7 +94,6 @@ public enum entityInfo {
                 this.isCpu = false;
                 break;
             case Zombie:
-
                 this.xpos = 30;
                 this.ypos = 50;
 
@@ -88,7 +103,6 @@ public enum entityInfo {
                 this.walkSpeed = 40;
                 break;
             case Person:
-                //temp dont commit
                 //this.xpos = 75;
                 //this.ypos = 25;
                 break;
@@ -100,7 +114,6 @@ public enum entityInfo {
                 this.armor = .70f;
                 this.weapon = classIdEnum.PISTOL;
                 break;
-
             case STATIC_OBJECT:
                 this.walkSpeed = 0;
                 this.armor = 0;
@@ -113,6 +126,30 @@ public enum entityInfo {
 				default:
                 //throw an error, unknown type
         }
+    }
+
+    public int getInfecRatio() {
+        return infecRatio;
+    }
+
+    public int getHealthRatio() {
+        return healthRatio;
+    }
+
+    public int getBlastRadius() {
+        return blastRadius;
+    }
+
+    public int getInfectRadius() {
+        return infectRadius;
+    }
+
+    public int getAlertnedRadius() {
+        return alertnedRadius;
+    }
+
+    public int getNonEffectsRadius() {
+        return nonEffectsRadius;
     }
 
     public boolean isInfected() {

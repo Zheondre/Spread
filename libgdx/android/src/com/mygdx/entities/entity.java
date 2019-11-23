@@ -1,5 +1,7 @@
 package com.mygdx.entities;
 
+import com.badlogic.gdx.ai.msg.Telegram;
+import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -17,9 +19,10 @@ import static com.mygdx.utils.entUtils.getMoveLeftVec;
 import static com.mygdx.utils.entUtils.getMoveRightVec;
 import static com.mygdx.utils.entUtils.getMoveUpVec;
 import static com.mygdx.utils.entUtils.getStopVec;
+import static com.mygdx.utils.entUtils.getZombieAttack;
 import static java.lang.StrictMath.abs;
 
-public abstract class entity {
+public abstract class entity implements Telegraph {
 
     private int speed = 80;
     // private static int xspeed = 80;
@@ -28,6 +31,7 @@ public abstract class entity {
     private Texture image;
     private Texture imageA;
     private Texture imageB;
+    private Texture imageC;
 
     private final static int mWidth = 13;
     private final static int mHeight = 18;
@@ -65,6 +69,8 @@ public abstract class entity {
 
     public abstract void render(SpriteBatch batch);
 
+    public abstract boolean handleMessage(Telegram msg);
+
     public entity() {
         this.mVelocityY = 0;
         this.mPos.x = 0;
@@ -93,7 +99,6 @@ public abstract class entity {
         float tileW, tileH, tx = 0, ty = 0;
 
         //mario tutorial youtube libgdx box2d
-        //box2d
         BodyDef entBody = new BodyDef();
         FixtureDef fd = new FixtureDef();
 
@@ -198,6 +203,15 @@ public abstract class entity {
         return image;
     }
 
+    public void makeImageNull(){
+        image = null;
+    }
+
+    public void setImage(Texture txt){
+        if(txt != null)
+            image = txt;
+    }
+
     public void setImage(String path) {
         //anamation #1
         if (image != null)
@@ -249,6 +263,13 @@ public abstract class entity {
 
         if (!validPath)
             body.setLinearVelocity(getStopVec());
+    }
+
+    public void stopMoving(){
+        moveRight = false;
+        moveLeft = false;
+        moveDown = false;
+        moveUp = false;
     }
 
     protected boolean moveX(float amount) {

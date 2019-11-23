@@ -1,9 +1,8 @@
 package com.mygdx.entities.objects;
 
-
-
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.SoundLoader;
+import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,7 +21,10 @@ import static java.lang.StrictMath.abs;
 
 public class bomb extends entity {
 
-    float blastRadius;
+    int blastRadius;
+    int infectRadius;
+    int alertnedRadius;
+    int nonEffectsRadius;
 
 
 
@@ -33,8 +35,14 @@ public class bomb extends entity {
         super(entType, Map);
 
         setImage("bomb.png");
-        infecRatio = 350;
-        healthRatio = 300;
+        this.infecRatio = entType.getInfecRatio();
+        this.healthRatio = entType.getHealthRatio();
+
+        this.blastRadius = entType.getBlastRadius();
+        this.infectRadius = entType.getInfectRadius();
+        this.alertnedRadius = entType.getAlertnedRadius();
+        this.nonEffectsRadius  = entType.getNonEffectsRadius();
+
         //bombExploded = false;
         //what should the size be ?
     }
@@ -53,7 +61,7 @@ public class bomb extends entity {
 
         for (person victum : mMap.getPeople()) {
             entDist = (int) getEntDistance(victum);
-            if (entDist < 30) {
+            if (entDist < blastRadius) {
                 ((tileGameMap) mMap).getPlayerOne().addPoints(5);
                 victum.turnIntoAZombie();
                 if(tempEnt == null) {
@@ -61,7 +69,7 @@ public class bomb extends entity {
                     ((zombie)tempEnt).setCpuStatus(false);
                     tempEnt.setClassID(classIdEnum.PZombie);
                 }
-            } else if (entDist < 150) {
+            } else if (entDist < infectRadius) {
                 //the closer you are to the bomb the higher your infection is
                 // we can put in deaths later
                 //if a person is near a bomb and it goes off they should ran away from it
@@ -75,10 +83,12 @@ public class bomb extends entity {
                 victum.setInfected(true, this);
                 victum.decreaseInfectTime((1 /(entDist *100)* infecRatio));
                 victum.decreaseHlth((1 /(entDist * 100) * healthRatio));
-            } else if (entDist < 250) {
+            } else if (entDist < alertnedRadius) {
                 //change alertness that a bomb went off
                 //to investage for authorities
                 //e
+            } else  if(entDist < nonEffectsRadius) {
+                //dont set anything
             }
         }
 
@@ -87,11 +97,11 @@ public class bomb extends entity {
         return true;
     }
 
-
-
-
-    public void update(float dTime) {
-        super.update(dTime);
+    public boolean handleMessage(Telegram msg) {
+		return true;
+    }
+        public void update(float dTime) {
+       super.update(dTime);
         //Update Picture position to box2d position
         mPos.x = this.getBody().getPosition().x - 7;
         mPos.y = this.getBody().getPosition().y - 7.5f;

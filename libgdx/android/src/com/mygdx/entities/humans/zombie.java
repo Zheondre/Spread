@@ -2,6 +2,8 @@ package com.mygdx.entities.humans;
 import android.os.SystemClock;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.msg.Telegram;
+import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
@@ -20,6 +22,7 @@ import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
 
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
+import static com.mygdx.utils.entUtils.getZombieAttack;
 import static com.mygdx.utils.entUtils.stopDownVec;
 import static com.mygdx.utils.entUtils.stopLeftVec;
 import static com.mygdx.utils.entUtils.stopRightVec;
@@ -50,6 +53,7 @@ public class zombie extends entity {
     private boolean isAlive;
     private boolean mIsCpu;
     private boolean doISeeANoneZombie;
+    private boolean areWeBiting = false;
 
     private entity prey;
 
@@ -170,7 +174,7 @@ public class zombie extends entity {
             wlkDirection = (int)(Math.random()*((5-1)+1))+1;
 
         if(wlkTime < 0) {
-            wlkTime =  (float)(Math.random()*((5-2)+2))+1;
+            wlkTime =  (float)(Math.random()*((4-1)+1))+1;
             wlkDirection = (int)(Math.random()*((5-1)+1))+1;
         }else {
             wlkTime -= dt;
@@ -221,14 +225,20 @@ public class zombie extends entity {
                 // change or add to the behaviors
                 victum.changeEvadeTarget(this);
             }
-
-        victum.decreaseInfectTime(.20f);
+        areWeBiting = true;
+        victum.decreaseInfectTime(.10f);
         victum.decreaseHlth(.05f);
-        setImage("zombieAttack.png"); // might have to change this
+
+        setImage(getZombieAttack()); // might have to change this
         return true;
     }
 
-  //  @Override
+    public boolean handleMessage(Telegram msg) {
+;///////
+        return true;
+    }
+
+        //  @Override
     public void update(float dTime){
 
         if(health < 0) {
@@ -295,7 +305,7 @@ public class zombie extends entity {
                                 if (bitetime == biteTimeSetting)
                                     biteNonZombie((person) this.getPrey());
                                 else {
-                                    bitetime -= .05;
+                                    bitetime -= .30;
                                     if (bitetime < 0)
                                         bitetime = biteTimeSetting;
                                 }
@@ -339,14 +349,21 @@ public class zombie extends entity {
     public void render(SpriteBatch batch){
         Texture image = getImage();
         if(image != null) {
+
             batch.draw(image, mPos.x, mPos.y, getWidth(), getHeight());
 
             //libgdx tutorial health bar + exposions
 
             //TODO CLEAN UP CODE BELLOW
-            if((getClassID() == classIdEnum.PZombie) || (getClassID() == classIdEnum.ConvertedPer) ) {
+            if((getClassID() == classIdEnum.PZombie) || (getClassID() == classIdEnum.ConvertedPer) || (getClassID() == classIdEnum.Zombie) ) {
                 //TODO move to the right of the screen
                 //if there is armor show one bar for that then show grey once armor is at 0;
+
+                if(areWeBiting) {
+                    changeImage(false);
+                    areWeBiting = false;
+                }
+                if(armorPts > 0 )
 
                 if(getHealth() > .8f)
                     batch.setColor(Color.GREEN);
@@ -356,7 +373,14 @@ public class zombie extends entity {
                     batch.setColor(Color.RED);
 
                 batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +20, 22* getHealth(), 3);
-               // this puts the bar under the moving buttons
+
+                if(armorPts > 0 ) {
+                    batch.setColor(Color.DARK_GRAY);
+                    batch.draw(mMap.getPlayerHealth(), getPosX() + 8, getPosY() + 20, 22 * getHealth(), 3);
+                }
+
+
+                // this puts the bar under the moving buttons
                 //batch.draw(mMap.getPlayerHealth(),  ((tileGameMap)mMap).getPlayerOne().getCamXPos(), ((tileGameMap)mMap).getPlayerOne().getCamYPos(), ((Gdx.graphics.getWidth() - 1300) / 3) * getHealth(), 6);
                 batch.setColor(Color.WHITE);
             } else if (getClassID() != classIdEnum.ConvertedPer) {
@@ -378,6 +402,11 @@ public class zombie extends entity {
                     batch.setColor(Color.RED);
 
                 batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +20, 22* getHealth(), 3);
+
+                if(armorPts > 0 ) {
+                    batch.setColor(Color.DARK_GRAY);
+                    batch.draw(mMap.getPlayerHealth(), getPosX() + 8, getPosY() + 20, 22 * getHealth(), 3);
+                }
                 batch.setColor(Color.WHITE);
             }
 
@@ -432,7 +461,10 @@ public class zombie extends entity {
 
     public boolean iscpu() { return mIsCpu; }
 
-    public void setCpuStatus(boolean IsCpu) { this.mIsCpu = IsCpu; }
+    public void setCpuStatus(boolean IsCpu) {
+        this.mIsCpu = IsCpu;
+        this.stopMoving();
+    }
 
     public int getInfections() { return infections; }
 

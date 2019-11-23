@@ -2,6 +2,8 @@ package com.mygdx.entities.humans;
 
 import android.os.SystemClock;
 
+import com.badlogic.gdx.ai.msg.MessageManager;
+import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.steer.behaviors.Evade;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.Hide;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
+import com.mygdx.AiStates.MessageType;
 import com.mygdx.entities.BehaviorEnum;
 import com.mygdx.entities.Box2dSteering;
 import com.mygdx.entities.classIdEnum;
@@ -17,7 +20,13 @@ import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 import com.mygdx.entities.objects.bomb;
 import com.mygdx.world.gameMap;
+import com.mygdx.world.tileGameMap;
 
+import static com.mygdx.AiStates.MessageType.GIVE_PER_LOCATION;
+import static com.mygdx.AiStates.MessageType.HELP_INFECTED_REPLY;
+import static com.mygdx.AiStates.MessageType.HELP_INFECTED_REPLY_DENIED;
+import static com.mygdx.AiStates.MessageType.HELP_ZOMBIE_SPOTTED;
+import static com.mygdx.AiStates.MessageType.HELP_ZOMBIE_SPOTTED_REPLY;
 import static com.mygdx.entities.BehaviorEnum.INFECTED;
 import static com.mygdx.entities.BehaviorEnum.NEW_ZOMBIE;
 
@@ -25,8 +34,9 @@ public class person extends zombie {
 
     private boolean mInfected;
     private boolean mZombie;
-    boolean walk = true;
 
+    boolean walk = true;
+    protected int MessageMsk = 0;
     //protected int mAlerted;
     //private float mInfctTime;
 
@@ -89,14 +99,46 @@ public class person extends zombie {
         if(entityType.getId() == classIdEnum.Person || entityType.getId() == classIdEnum.PPerson) {
             this.setImage("player.png");
             this.setImageB("player2.png");
+            MessageManager.getInstance().addListeners(this,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY, GIVE_PER_LOCATION,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY_DENIED);
+        } else if (entityType.getId() != classIdEnum.Emt) {
+            this.mInfctTime = 1;
         }
         this.weapon = entityType.getWeapon();
         this.mZombie =  entityType.isZombie();
         this.mInfected = entityType.isInfected();
         this.mAlerted = BehaviorEnum.WALK_RANDOMLY;
-        this.mInfctTime = 1;
+       // this.mInfctTime = 1;
         this.wlkDirection = 0;
         this.wlkTime = -1;
+    }
+
+    public boolean handleMessage(Telegram msg){
+
+        switch(msg.message) {
+            case HELP_ZOMBIE_SPOTTED:
+                //zombie is in raycast view flee but allet athoreties to location
+                break;
+            case HELP_ZOMBIE_SPOTTED_REPLY:
+                break;
+            case HELP_INFECTED_REPLY:
+                //ask for help
+                break;
+            case HELP_INFECTED_REPLY_DENIED:
+                //if I didnt make the request just ignore
+            case GIVE_PER_LOCATION:
+                // go to a location told by athorities
+                break;
+        }
+        return true;
+    }
+
+    public boolean callForHelp( int msVal){
+        if( (0) == (MessageMsk & (1 <<msVal)) ) { // ask for help every like 10 seconds until help arrives ?
+            MessageMsk = (MessageMsk | (1 <<msVal));
+            ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, msVal);
+            return true;
+        } else
+            return false;
     }
 
     public void dispose(){
@@ -145,6 +187,7 @@ public class person extends zombie {
                 //zombie has been spotted
                 //run away or attack at a safe distance
                 //if we dont have the correct steering ent change
+                callForHelp(MessageType.HELP_ZOMBIE_SPOTTED);
                 if(getSteerEnt().getBehavior() != getEvadeSB()){
                     getSteerEnt().setBehavior(getEvadeSB());
                 }
@@ -152,6 +195,8 @@ public class person extends zombie {
             case INFECTED:
 
                 //if a zombie is too close evade
+                callForHelp(MessageType.HELP_INFECTED);
+
                 if(false)
                     if(getSteerEnt().getBehavior() != getEvadeSB()){
                         // make sure to check if we have the evade sb allocated
@@ -168,6 +213,8 @@ public class person extends zombie {
                 //if we dont have the correct steering ent change
                 break;
             case NEW_ZOMBIE:
+                //put a status bit here to make sure we only call once
+                MessageManager.getInstance().removeListener(this ,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY, GIVE_PER_LOCATION,HELP_ZOMBIE_SPOTTED_REPLY );
                 // turned into a zombie so act as such.
                 break;
             case ARRIVE_ZOMBIE:
