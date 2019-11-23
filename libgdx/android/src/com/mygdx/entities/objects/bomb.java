@@ -1,8 +1,13 @@
 package com.mygdx.entities.objects;
 
+import com.badlogic.gdx.assets.loaders.AssetLoader;
+import com.badlogic.gdx.assets.loaders.SoundLoader;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Timer;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
@@ -19,7 +24,6 @@ public class bomb extends entity {
     int infectRadius;
     int alertnedRadius;
     int nonEffectsRadius;
-
     int infecRatio;
     int healthRatio;
 
@@ -45,7 +49,7 @@ public class bomb extends entity {
 
         int entDist;
         entity tempEnt = null;
-
+		
         if(mMap.getPeople().size() == 0)
             return false;
 
@@ -86,17 +90,18 @@ public class bomb extends entity {
             ((tileGameMap)mMap).getPlayerOne().setTempHost(tempEnt);
         return true;
     }
+
     public boolean handleMessage(Telegram msg) {
-return true;
+		return true;
     }
         public void update(float dTime) {
-        super.update(dTime);
+       super.update(dTime);
         //Update Picture position to box2d position
         mPos.x = this.getBody().getPosition().x - 7;
         mPos.y = this.getBody().getPosition().y - 7.5f;
 
     }
-    public void render(SpriteBatch batch){
+    public void render(final SpriteBatch batch){
         Texture image = getImage();
         if(image != null)
             batch.draw(image,mPos.x, mPos.y, getWidth(), getHeight());
@@ -114,4 +119,6 @@ return true;
     public void dispose(){
        ;
     }
+
+
 }
