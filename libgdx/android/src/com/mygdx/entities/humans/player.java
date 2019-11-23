@@ -7,7 +7,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
+import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
+import com.mygdx.entities.objects.bomb;
+
 import java.util.ArrayList;
 
 public class player implements InputProcessor {
@@ -31,6 +34,8 @@ public class player implements InputProcessor {
     private entity host;
     private entity tempHost = null;
 
+    private bomb bombRef;
+
     private ArrayList<person> peopleRef;
 
     private boolean touchUp;
@@ -51,6 +56,10 @@ public class player implements InputProcessor {
         this.kills = 0;
         this.converts = 0;
         Gdx.input.setInputProcessor(this);
+
+        if(host.getClassID() == classIdEnum.PBomb)
+            this.bombRef = (bomb)host;
+
         this.host = host;
         this.attackButton = false;
     }
@@ -68,6 +77,14 @@ public class player implements InputProcessor {
         this.converts = converts;
         this.host = host;
         Gdx.input.setInputProcessor(this);
+    }
+
+    public void setBombRef(bomb bombRef) {
+        this.bombRef = bombRef;
+    }
+
+    public bomb getBombRef() {
+        return bombRef;
     }
 
     public float getCamXPos() {
@@ -169,6 +186,8 @@ public class player implements InputProcessor {
 
         if(isAttackPressed)
         {
+            if(host.getClassID() == classIdEnum.PBomb)
+                bombExploded = true;
             //TODO place anamation
             if(host.attack()){
                 points += ptsMgr(host);
@@ -176,7 +195,18 @@ public class player implements InputProcessor {
             isAttackPressed = false;
         }
 
-        checkForSwitch();
+        if(bombExploded) {
+            //TODO if no one turns into a zombie after an exposion after 30 seconds you failed the game try again
+            //TODO hide bomb or showing explosion animation
+            if(host.getClassID() != classIdEnum.ConvertedPer)
+                if(host.getMap().getZombies().size() > 0) {
+
+                    host = host.getMap().getZombies().get(0);
+                    ((zombie)host).setCpuStatus(false);
+                    host.setClassID(classIdEnum.PZombie);
+                    bombExploded = false;
+                }
+        }
 
         if(host.getBody().getPosition().x < 260) playCam.position.x = 260;
         else playCam.position.x = host.getBody().getPosition().x;
@@ -367,14 +397,6 @@ public class player implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        //need to convert the screen coordinates to world coordinates
-      /*
-        touchUp = true;
-        host.setMoveLeft(false);
-        host.setMoveRight(false);
-        host.setMoveUp(false);
-        host.setMoveDown(false);
-        host.getBody().setLinearVelocity(getStopVec()); */
         return true;
     }
 

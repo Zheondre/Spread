@@ -42,10 +42,10 @@ public class bomb extends entity {
     public boolean attack(){
         //set infection based on the distance,
         // anything around 30 is a zombie
+
         int entDist;
         entity tempEnt = null;
 
-        //((tileGameMap)mMap).getPlayerOne()
         if(mMap.getPeople().size() == 0)
             return false;
 

@@ -446,6 +446,7 @@ public class zombie extends entity {
     public boolean iscpu() { return mIsCpu; }
 
     public void setCpuStatus(boolean IsCpu) {
+        this.doISeeANoneZombie = false;
         this.mIsCpu = IsCpu;
         this.stopMoving();
     }
