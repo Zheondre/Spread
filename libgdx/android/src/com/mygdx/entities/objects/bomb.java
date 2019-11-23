@@ -2,8 +2,13 @@ package com.mygdx.entities.objects;
 
 
 
+import com.badlogic.gdx.assets.loaders.AssetLoader;
+import com.badlogic.gdx.assets.loaders.SoundLoader;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Timer;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
@@ -18,6 +23,8 @@ import static java.lang.StrictMath.abs;
 public class bomb extends entity {
 
     float blastRadius;
+
+
 
     int infecRatio;
     int healthRatio;
@@ -108,4 +115,6 @@ public class bomb extends entity {
     public void dispose(){
        ;
     }
+
+
 }

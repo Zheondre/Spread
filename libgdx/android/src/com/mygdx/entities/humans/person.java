@@ -5,7 +5,11 @@ import android.os.SystemClock;
 import com.badlogic.gdx.ai.steer.behaviors.Evade;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.Hide;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 import com.mygdx.entities.BehaviorEnum;
 import com.mygdx.entities.Box2dSteering;
 import com.mygdx.entities.classIdEnum;
@@ -178,6 +182,11 @@ public class person extends zombie {
     }
 
     public void turnIntoAZombie() {
+
+
+
+
+
 
         this.mInfctTime = 0;
         this.mInfected = false;
