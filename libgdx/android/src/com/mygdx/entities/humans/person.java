@@ -100,14 +100,14 @@ public class person extends zombie {
             this.setImage("player.png");
             this.setImageB("player2.png");
             MessageManager.getInstance().addListeners(this,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY, GIVE_PER_LOCATION,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY_DENIED);
-        } else if (entityType.getId() != classIdEnum.Emt) {
             this.mInfctTime = 1;
+        } else if (entityType.getId() != classIdEnum.Emt) {
+
         }
         this.weapon = entityType.getWeapon();
         this.mZombie =  entityType.isZombie();
         this.mInfected = entityType.isInfected();
         this.mAlerted = BehaviorEnum.WALK_RANDOMLY;
-       // this.mInfctTime = 1;
         this.wlkDirection = 0;
         this.wlkTime = -1;
     }
@@ -229,11 +229,6 @@ public class person extends zombie {
     }
 
     public void turnIntoAZombie() {
-
-
-
-
-
 
         this.mInfctTime = 0;
         this.mInfected = false;

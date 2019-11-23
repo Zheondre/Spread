@@ -5,14 +5,19 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
+import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
+import com.mygdx.entities.objects.bomb;
+
 import java.util.ArrayList;
 
 public class player implements InputProcessor {
 
     private int points;
+    private int HighScore;
     private int infects;
     private int kills;
     private int converts;
@@ -31,14 +36,20 @@ public class player implements InputProcessor {
     private entity host;
     private entity tempHost = null;
 
-    private ArrayList<person> peopleRef;
+    private bomb bombRef;
+
+    private ArrayList<zombie> ZombieRef;
 
     private boolean touchUp;
     private boolean attackButton;
     private boolean bombExploded = false;
     private boolean isAttackPressed = false;
+    private boolean leftCyclePressed = false;
+    private boolean rightCyclePressed = false;
 
     private Vector3 pos;
+
+    private Preferences prefs;
 
     public player(entity host) {
         float wdth = Gdx.graphics.getWidth();
@@ -51,8 +62,26 @@ public class player implements InputProcessor {
         this.kills = 0;
         this.converts = 0;
         Gdx.input.setInputProcessor(this);
+
+        if(host.getClassID() == classIdEnum.PBomb)
+            this.bombRef = (bomb)host;
+
         this.host = host;
         this.attackButton = false;
+
+        prefs = Gdx.app.getPreferences("Spread_Stats_FILE");
+
+        if (!prefs.contains("converts")) {
+            prefs.putInteger("converts", 0);
+            converts = 0;
+        }
+
+        if (prefs.contains("highScore")) {
+            HighScore = prefs.getInteger("highScore");
+        } else {
+            prefs.putInteger("highScore", 0);
+            HighScore = 0;
+        }
     }
 
     public player(int points, int infects, int kills, int converts, zombie host) {
@@ -68,6 +97,18 @@ public class player implements InputProcessor {
         this.converts = converts;
         this.host = host;
         Gdx.input.setInputProcessor(this);
+    }
+
+    public int getHighScore() {
+        return HighScore;
+    }
+
+    public void setBombRef(bomb bombRef) {
+        this.bombRef = bombRef;
+    }
+
+    public bomb getBombRef() {
+        return bombRef;
     }
 
     public float getCamXPos() {
@@ -126,8 +167,8 @@ public class player implements InputProcessor {
         this.host = host;
     }
 
-    public void setPeopleRef(ArrayList<person> peopleRef) {
-        this.peopleRef = peopleRef;
+    public void setZombieRef(ArrayList<zombie> ZombieRef) {
+        this.ZombieRef = ZombieRef;
     }
 
     private boolean switchZombie(zombie host) {
@@ -169,6 +210,8 @@ public class player implements InputProcessor {
 
         if(isAttackPressed)
         {
+            if(host.getClassID() == classIdEnum.PBomb)
+                bombExploded = true;
             //TODO place anamation
             if(host.attack()){
                 points += ptsMgr(host);
@@ -176,7 +219,73 @@ public class player implements InputProcessor {
             isAttackPressed = false;
         }
 
-        checkForSwitch();
+        int entSize;
+
+        zombie tHost = null;
+        if(leftCyclePressed){
+            myIndex = getZombieIndex();
+            tIndex = myIndex;
+            entSize = ZombieRef.size();
+
+            tIndex--;
+
+            if(tIndex < 0)
+                tIndex = entSize-1;
+
+            while( (!((person)ZombieRef.get(tIndex)).areYouAZombie()) ){
+                if(tIndex - 1 < 0)
+                    tIndex = entSize - 1;
+                else
+                    tIndex--;
+            }
+            tHost = ZombieRef.get(tIndex);
+        }
+
+        if(rightCyclePressed){
+            myIndex = getZombieIndex();
+            tIndex = myIndex;
+            entSize = ZombieRef.size();
+
+            tIndex++;
+
+            if(tIndex > entSize - 1)
+                tIndex = 0;
+
+            while( (!((person)ZombieRef.get(tIndex)).areYouAZombie()) ){
+                if(tIndex + 1> entSize -1)
+                    tIndex = 0;
+                else
+                    tIndex++;
+            }
+            tHost = ZombieRef.get(tIndex);
+        }
+
+        if(leftCyclePressed || rightCyclePressed) {
+            //need to change class id
+            if (myIndex!=tIndex) {
+                if(tHost != null) {
+                    ((zombie) host).setClassID(classIdEnum.ConvertedPer);
+                    ((zombie) host).setCpuStatus(true);
+                    host = tHost;
+                    ((zombie) host).setCpuStatus(false);
+
+                    myIndex = tIndex;
+                }
+            }
+        }
+
+        if(bombExploded) {
+            //TODO if no one turns into a zombie after an exposion after 30 seconds you failed the game try again
+            //TODO hide bomb or showing explosion animation
+            if(host.getClassID() != classIdEnum.ConvertedPer)
+                if(host.getMap().getZombies().size() > 0) {
+
+                    host = host.getMap().getZombies().get(0);
+                    ((zombie)host).setCpuStatus(false);
+                    host.setClassID(classIdEnum.PZombie);
+                    bombExploded = false;
+                }
+        }
 
         if(host.getBody().getPosition().x < 260) playCam.position.x = 260;
         else playCam.position.x = host.getBody().getPosition().x;
@@ -189,22 +298,33 @@ public class player implements InputProcessor {
 
         playCam.update();
 
-        saveTime-= .001;
-
-        //jSharedPreferences set = getSharedPreferences("GAME_DATA", Context.MODE_PRIVATE);
-        if (saveTime < 0 ) {
+        saveTime-= .0001;
+        if (saveTime < 0) {
             saveTime = 1;
             /*
             totalkills += current kills
             totalplaytime += playtime;
-            totalconverter += converts;
+             */
+            int tempSize = host.getMap().getZombies().size();
 
-            if(HighScore < currentScore) {
-                HighScore = currentScore;
+            if(converts < tempSize) {
+                converts = tempSize;
+                tempSize = prefs.getInteger("converts");
+                tempSize+= converts;
+                prefs.putInteger("converts", converts);
             }
 
-             */
+            if(HighScore < points) {
+                HighScore = points;
+                prefs.putInteger("highScore", HighScore);
+                prefs.flush();
+            }
         }
+    }
+
+    public void resetBomb() {
+        //setPosition ??
+            host = bombRef;
     }
 
     public void setTempHost(entity tempHost) {
@@ -246,135 +366,22 @@ public class player implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        //Log.d("TouchDown", "Screen Touched In X " + screenX+ " Y "+ screenY);
-        // Log.d("Player Position", "X "+host.getPosX()+ " Y "+host.getPosY());
-        int entSize;
-        touchUp = false;
-        Vector3 pos = new Vector3(screenX, screenY, 0);
-
-        playCam.unproject(pos);
-
-        this.screenX = pos.x;
-        this.screenY = pos.y;
-
-        float tempy = (float) screenY - host.getPosY();
-        float tempx = (float) screenX - host.getPosX();
-
-        // (float) ((Math.atan2()) * 180.0d / Math.PI));
-
-        //float degs = (float) ( (Math.atan2(tempy,tempx)* 180.0d / Math.PI));
-
-        //Log.d("degs", "The angle is " +degs);
-        Log.d("TouchDown", "Screen Touched In X " + this.screenX + " Y " + this.screenY);
-
-
-//Touch Screen Movements - Start
-        /*
-        if((this.screenX - host.getPosX()) < -20) {
-            host.setMoveLeft(true);
-        }
-
-        if((this.screenX - host.getPosX())> 20) {
-            host.setMoveRight(true);
-        }
-        //
-        if((this.screenY - host.getPosY()) < -20) {
-            host.setMoveDown(true);
-        }
-        if((this.screenY - host.getPosY())> 20) {
-            host.setMoveUp(true);
-        }*/
-
-
-//Touch Screen Movements - END
-
-
+        //Log.d("TouchDown", "Screen Touched In X " + this.screenX + " Y " + this.screenY);
+        //Touch Screen code was taken out 11.23.19 use this date as a reference to find the commmit : ZC
         //if longpressed then we are trying to get the zombie
-/*
-            if(leftButtonPressed)
-               host.setMoveLeft(true);
-
-            if(rightButtonPressed)
-                host.setMoveRight(true);
-
-            if(downButtonPressed)
-                host.setMoveDown(true);
-
-            if(upButtonPressed)
-                host.setMoveUp(true);
-
-            if(LZombButtonPressed){
-                myIndex = getPlayerIndex();
-                tIndex = myIndex;
-                entSize = peopleRef.size();
-
-                tIndex--;
-
-                if(tIndex < 0)
-                    tIndex = entSize-1;
-
-                while( (!((person)peopleRef.get(tIndex)).areYouAZombie()) ){
-                     if(tIndex - 1 < 0)
-                         tIndex = entSize - 1;
-                     else
-                        tIndex--;
-                }
-                 tHost = peopleRef.get(tIndex);
-            }
-
-            if(RZombButtonPressed){
-                myIndex = getPlayerIndex();
-                tIndex = myIndex;
-                entSize = peopleRef.size();
-
-                tIndex++;
-
-                if(tIndex > entSize - 1)
-                    tIndex = 0;
-
-                while( (!((person)peopleRef.get(tIndex)).areYouAZombie()) ){
-                    if(tIndex + 1> entSize -1)
-                        tIndex = 0;
-                    else
-                        tIndex++;
-                }
-                tHost = peopleRef.get(tIndex);
-             }
-
-            if(LZombButtonPressed || RZombButtonPressed) {
-                 //need to change class id
-                 if (myIndex!=tIndex) {
-                     ((zombie) host).setCpuStatus(true);
-                     host = tHost;
-                     host.setCpuStatus(false);
-                     myIndex = tIndex;
-                 }
-            }
-*/
-
-        //if(peopleRef.get(myindex).classID == entityInfo.ZOMBIE)
-        //playCam.translate(host.getPosX(),host.getPosY());
         return true;
     }
 
-    private int getPlayerIndex() {
+    private int getZombieIndex() {
         int i;
-        for (i = 0; i < peopleRef.size(); i++) ;
-        peopleRef.get(i).equals(host);
+        for (i = 0; i < ZombieRef.size(); i++) ;
+        ZombieRef.get(i).equals(host);
         return i;
     }
 
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        //need to convert the screen coordinates to world coordinates
-      /*
-        touchUp = true;
-        host.setMoveLeft(false);
-        host.setMoveRight(false);
-        host.setMoveUp(false);
-        host.setMoveDown(false);
-        host.getBody().setLinearVelocity(getStopVec()); */
         return true;
     }
 

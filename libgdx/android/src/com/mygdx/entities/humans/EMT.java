@@ -30,6 +30,7 @@ public class EMT extends person {
     private int antiInfect = 5;
     private float healingTime= 1;
     private boolean healing = false;
+    private boolean busy = false;
 
     public EMT(entityInfo entityType, gameMap map) {
 
@@ -55,14 +56,19 @@ public class EMT extends person {
         person temp;
         if(getPrey().getClassID() == classIdEnum.Person) {
            temp = (person)getPrey();
-           temp.setInfected(false);
-           if(healingTime > 0 ) {
-               healing = true;
-               if (temp.getInfctTime() < 1)
-                   temp.setmInfctTime(temp.getInfctTime() + .2f);
-               temp.setHealth(temp.getHealth() + .2f);
-               healingTime -= .25;
-               healing = false;
+
+           if(temp != null) {
+               temp.setInfected(false);
+               if (healingTime > 0) {
+                   healing = true;
+                   busy = healing;
+                   if (temp.getInfctTime() < 1)
+                       temp.setmInfctTime(temp.getInfctTime() + .2f);
+                   temp.setHealth(temp.getHealth() + .2f);
+                   healingTime -= .25;
+                   healing = false;
+                   busy = healing;
+               }
            }
         }
     }
@@ -85,23 +91,25 @@ public class EMT extends person {
         //takeoutlistener
         // i think we should reply with the instance that sent the request so that if multiple instances are listening,
         // that one will know that it's request was denied and the rest can ignore
-        entity temp = (entity)msg.extraInfo;
+        person temp = (person) msg.extraInfo;
         float distance = getEntDistance(temp);
         //what should happen if the person asking for help turns into a zombie ?
         switch(msg.message) {
             case HELP_ZOMBIE_SPOTTED:
-                //if close enough tell authorities
+                //watch out for that zombie
+                setEvadeSB(
+                        (zombie)temp.getPrey()
+                );
                 break;
             case HELP_INFECTED:
                 // try to help the infected if it is safe to do so
-                if(distance < 100) {
+                if(!busy) {
                     ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, temp, HELP_INFECTED_REPLY);
-                    setPursueSB((person)temp);
+                    setPursueSB(temp);
                 }
                 else {
-                    //busy helping some one else so come to me
-                    ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, temp, HELP_INFECTED_REPLY_DENIED );
-                //busy helping some one else so come to me
+                    //busy helping some one else
+                    ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, temp, HELP_INFECTED_REPLY_DENIED);
                 }
                 break;
             case HELP_COP_NEEDS_EMT:
@@ -119,9 +127,10 @@ public class EMT extends person {
     }
 
     public void update(float dt){
-
+        super.update(dt);
         if(healing == false)
             healingTime += .15;
+
     }
 
     /*

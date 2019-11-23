@@ -16,7 +16,6 @@ import com.mygdx.entities.humans.zombie;
 import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
 
-
 import static java.lang.StrictMath.abs;
 
 public class bomb extends entity {
@@ -25,9 +24,6 @@ public class bomb extends entity {
     int infectRadius;
     int alertnedRadius;
     int nonEffectsRadius;
-
-
-
     int infecRatio;
     int healthRatio;
 
@@ -50,12 +46,10 @@ public class bomb extends entity {
     public boolean attack(){
         //set infection based on the distance,
         // anything around 30 is a zombie
+
         int entDist;
         entity tempEnt = null;
-
-
-
-        //((tileGameMap)mMap).getPlayerOne()
+		
         if(mMap.getPeople().size() == 0)
             return false;
 

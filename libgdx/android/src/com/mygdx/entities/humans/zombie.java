@@ -130,6 +130,7 @@ public class zombie extends entity {
          */
         this.isAlive = true;
         this.classID = entType.getId();
+        this.armorPts = entType.getArmor();
 
         if(classID == classIdEnum.Zombie || classID == classIdEnum.PZombie) {
             setImage("zombie.png");
@@ -348,7 +349,7 @@ public class zombie extends entity {
    // @Override
     public void render(SpriteBatch batch){
         Texture image = getImage();
-        if(image != null) {
+        if((image != null) && (mMap.getPlayerHealth() != null)) {
 
             batch.draw(image, mPos.x, mPos.y, getWidth(), getHeight());
 
@@ -363,56 +364,38 @@ public class zombie extends entity {
                     changeImage(false);
                     areWeBiting = false;
                 }
-                if(armorPts > 0 )
-
-                if(getHealth() > .8f)
-                    batch.setColor(Color.GREEN);
-                else if(getHealth() > .3f)
-                    batch.setColor(Color.ORANGE);
-                else
-                    batch.setColor(Color.RED);
-
-                batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +20, 22* getHealth(), 3);
-
-                if(armorPts > 0 ) {
-                    batch.setColor(Color.DARK_GRAY);
-                    batch.draw(mMap.getPlayerHealth(), getPosX() + 8, getPosY() + 20, 22 * getHealth(), 3);
-                }
-
 
                 // this puts the bar under the moving buttons
                 //batch.draw(mMap.getPlayerHealth(),  ((tileGameMap)mMap).getPlayerOne().getCamXPos(), ((tileGameMap)mMap).getPlayerOne().getCamYPos(), ((Gdx.graphics.getWidth() - 1300) / 3) * getHealth(), 6);
-                batch.setColor(Color.WHITE);
             } else if (getClassID() != classIdEnum.ConvertedPer) {
 
                 if(getHealth() > .8f)
                     batch.setColor(Color.WHITE);
-                else if(getHealth() > .5f)
+                else if(getHealth() > .3f)
                     batch.setColor(Color.YELLOW);
                 else
                     batch.setColor(Color.PURPLE);
                 batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +25, 22* mInfctTime, 3);
-
-                batch.setColor(Color.WHITE);
-                if(getHealth() > .8f)
-                    batch.setColor(Color.GREEN);
-                else if(getHealth() > .3f)
-                    batch.setColor(Color.ORANGE);
-                else
-                    batch.setColor(Color.RED);
-
-                batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +20, 22* getHealth(), 3);
-
-                if(armorPts > 0 ) {
-                    batch.setColor(Color.DARK_GRAY);
-                    batch.draw(mMap.getPlayerHealth(), getPosX() + 8, getPosY() + 20, 22 * getHealth(), 3);
-                }
-                batch.setColor(Color.WHITE);
             }
 
+            if(getHealth() > .8f)
+                batch.setColor(Color.GREEN);
+            else if(getHealth() > .3f)
+                batch.setColor(Color.ORANGE);
+            else
+                batch.setColor(Color.RED);
+
+            batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +20, 22* getHealth(), 3);
+
+            //TODO make sure armor points decrease first before health
+            if(armorPts > 0 ) {
+                batch.setColor(Color.DARK_GRAY);
+                batch.draw(mMap.getPlayerHealth(), getPosX() + 8, getPosY() + 20, 22 *armorPts, 3);
+            }
+            batch.setColor(Color.WHITE);
+            batch.draw(image, mPos.x, mPos.y, getWidth(), getHeight()); // had to add twice cause one of the chars wasnt showing the health bar
         }
     }
-
 
     public float getEntDistance() {
         mPos.x = super.getBody().getPosition().x;
@@ -462,6 +445,7 @@ public class zombie extends entity {
     public boolean iscpu() { return mIsCpu; }
 
     public void setCpuStatus(boolean IsCpu) {
+        this.doISeeANoneZombie = false;
         this.mIsCpu = IsCpu;
         this.stopMoving();
     }
