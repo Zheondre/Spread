@@ -38,6 +38,7 @@ import com.mygdx.game.WaveInfo;
 
 import java.util.ArrayList;
 
+import static com.mygdx.entities.classIdEnum.Cop;
 import static com.mygdx.entities.classIdEnum.Emt;
 import static com.mygdx.entities.entityInfo.CPlAYER;
 import static com.mygdx.entities.entityInfo.PBOMB;
@@ -49,9 +50,11 @@ public class tileGameMap extends gameMap {
 
     public static Texture playerHealth;
 
-    private classIdEnum DEBUGMODE = classIdEnum.PBomb;
-    //private classIdEnum DEBUGMODE = classIdEnum.PZombie;
-    //private classIdEnum DEBUGMODE = classIdEnum.PPerson;
+    private final classIdEnum DEBUGMODE = classIdEnum.PBomb;
+    //private final classIdEnum DEBUGMODE = classIdEnum.PZombie;
+    //private final classIdEnum DEBUGMODE = classIdEnum.PPerson;
+    //private final classIdEnum DEBUGMODE = classIdEnum.PEMT;
+    //private final classIdEnum DEBUGMODE = classIdEnum.PCOP;
 
     public static final int STATSCREEN_WIDTH = 400;
     public static final int STATSCREEN_HEIGHT = 208;
@@ -151,17 +154,23 @@ public class tileGameMap extends gameMap {
         //loadEnts();
 
         //debug
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < 0; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
-        //debug
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 3; i++)
             people.add(new person(entityInfo.PERSON,this));
+
+        for(int i = 0; i < 0; i++)
+            people.add(new EMT(entityInfo.EMT,this));
+
+        for(int i = 0; i < 0; i++)
+            people.add(new cop(entityInfo.COP,this));
+
 
         statsScreen = new libgdxSreen(batch, people.size());
         controller = new Controller(playerOne);
 
-        playerOne.setPeopleRef(people);
+        playerOne.setZombieRef(zombies);
 
         initMessage();
     }
@@ -198,13 +207,8 @@ public class tileGameMap extends gameMap {
         for(person ent: people)
             ent.render(batch);
 
-       /*
-        people.get(1).render(batch);//person
-        people.get(2).render(batch);//zombie
-        */
-
         //box2d Debug
-   //   b2dr.render(world,playerOne.getPlayCam().combined);
+        //b2dr.render(world,playerOne.getPlayCam().combined);
         controller.draw();
         batch.end();
     }
@@ -295,7 +299,7 @@ public class tileGameMap extends gameMap {
             people.add(new EMT(entityInfo.EMT,this));
 
         //clear ents on the game
-        //getPlayerOne().resetBomb();
+        getPlayerOne().resetBomb();
 
         if(levels.size() > 0)
              levels.remove(0);
