@@ -7,7 +7,11 @@ import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.steer.behaviors.Evade;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.Hide;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 import com.mygdx.AiStates.MessageType;
 import com.mygdx.entities.BehaviorEnum;
 import com.mygdx.entities.Box2dSteering;
@@ -30,6 +34,8 @@ public class person extends zombie {
 
     private boolean mInfected;
     private boolean mZombie;
+
+    boolean walk = true;
     protected int MessageMsk = 0;
     //protected int mAlerted;
     //private float mInfctTime;
@@ -148,8 +154,11 @@ public class person extends zombie {
             super.update(dTime);
         else
             processMoves(dTime);
+        if(((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+            changeImage(true);
+        else changeImage(false);
 
-        changeImage(((SystemClock.elapsedRealtime() % 2) == 1));
+
     }
 
     public void processMoves(float dTime)
@@ -220,6 +229,11 @@ public class person extends zombie {
     }
 
     public void turnIntoAZombie() {
+
+
+
+
+
 
         this.mInfctTime = 0;
         this.mInfected = false;
