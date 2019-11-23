@@ -349,7 +349,7 @@ public class zombie extends entity {
    // @Override
     public void render(SpriteBatch batch){
         Texture image = getImage();
-        if(image != null) {
+        if((image != null) && (mMap.getPlayerHealth() != null)) {
 
             batch.draw(image, mPos.x, mPos.y, getWidth(), getHeight());
 
@@ -393,10 +393,9 @@ public class zombie extends entity {
                 batch.draw(mMap.getPlayerHealth(), getPosX() + 8, getPosY() + 20, 22 *armorPts, 3);
             }
             batch.setColor(Color.WHITE);
-
+            batch.draw(image, mPos.x, mPos.y, getWidth(), getHeight()); // had to add twice cause one of the chars wasnt showing the health bar
         }
     }
-
 
     public float getEntDistance() {
         mPos.x = super.getBody().getPosition().x;
