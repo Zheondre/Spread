@@ -322,6 +322,11 @@ public class player implements InputProcessor {
         }
     }
 
+    public void resetBomb() {
+        //setPosition ??
+            host = bombRef;
+    }
+
     public void setTempHost(entity tempHost) {
         this.tempHost = tempHost;
     }
