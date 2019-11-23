@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.entities.classIdEnum;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 public class player implements InputProcessor {
 
     private int points;
+    private int HighScore;
     private int infects;
     private int kills;
     private int converts;
@@ -45,6 +47,8 @@ public class player implements InputProcessor {
 
     private Vector3 pos;
 
+    private Preferences prefs;
+
     public player(entity host) {
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
@@ -62,6 +66,20 @@ public class player implements InputProcessor {
 
         this.host = host;
         this.attackButton = false;
+
+        prefs = Gdx.app.getPreferences("Spread_Stats_FILE");
+
+        if (!prefs.contains("converts")) {
+            prefs.putInteger("converts", 0);
+            converts = 0;
+        }
+
+        if (prefs.contains("highScore")) {
+            HighScore = prefs.getInteger("highScore");
+        } else {
+            prefs.putInteger("highScore", 0);
+            HighScore = 0;
+        }
     }
 
     public player(int points, int infects, int kills, int converts, zombie host) {
@@ -77,6 +95,10 @@ public class player implements InputProcessor {
         this.converts = converts;
         this.host = host;
         Gdx.input.setInputProcessor(this);
+    }
+
+    public int getHighScore() {
+        return HighScore;
     }
 
     public void setBombRef(bomb bombRef) {
@@ -219,21 +241,29 @@ public class player implements InputProcessor {
 
         playCam.update();
 
-        saveTime-= .001;
+        saveTime-= .0001;
 
         //jSharedPreferences set = getSharedPreferences("GAME_DATA", Context.MODE_PRIVATE);
-        if (saveTime < 0 ) {
+        if (saveTime < 0) {
             saveTime = 1;
             /*
             totalkills += current kills
             totalplaytime += playtime;
-            totalconverter += converts;
+             */
+            int tempSize = host.getMap().getZombies().size();
 
-            if(HighScore < currentScore) {
-                HighScore = currentScore;
+            if(converts < tempSize) {
+                converts = tempSize;
+                tempSize = prefs.getInteger("converts");
+                tempSize+= converts;
+                prefs.putInteger("converts", converts);
             }
 
-             */
+            if(HighScore < points) {
+                HighScore = points;
+                prefs.putInteger("highScore", HighScore);
+                prefs.flush();
+            }
         }
     }
 
