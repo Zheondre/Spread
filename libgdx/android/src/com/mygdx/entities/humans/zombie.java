@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
+import com.badlogic.gdx.ai.steer.behaviors.BlendedSteering;
+import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
 import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.graphics.Color;
@@ -37,9 +39,11 @@ public class zombie extends entity {
     protected float armorPts;
 
     protected float health;
+
     protected float mInfctTime;
 
     protected classIdEnum weapon;
+
     protected BehaviorEnum mAlerted;
 
     private static final int biteTimeSetting = 5;
@@ -62,6 +66,9 @@ public class zombie extends entity {
     protected Pursue<Vector2>  pursueSB;
     protected Wander<Vector2>  wanderSB;
     protected Arrive<Vector2>  arriveSB;
+
+    public PrioritySteering<Vector2> combinedSB; // sb chosen based on the returned accelleration
+    public BlendedSteering<Vector2> blendedSB; //sb chosen based on the set weight
 
     public Wander<Vector2> getWanderSB() {
         return wanderSB;
@@ -108,8 +115,13 @@ public class zombie extends entity {
 
     public void setPursueSB(person prey) {
         if((prey != null)) {
-            pursueSB = new Pursue<Vector2>(steerEnt, prey.getSteerEnt(),.5f);
-            steerEnt.setBehavior(pursueSB);//might put this as its own function
+            if(this.pursueSB == null) {
+                pursueSB = new Pursue<Vector2>(steerEnt, prey.getSteerEnt(), .5f);
+                combinedSB.add(pursueSB);
+                //steerEnt.setBehavior(pursueSB);//might put this as its own function
+            } else {
+                this.pursueSB.setTarget(prey.getSteerEnt());
+            }
             this.prey = prey;
         }
     }
@@ -163,6 +175,10 @@ public class zombie extends entity {
                 .setWanderOrientation(1000f) //
                 .setWanderRadius(1000f) //
                 .setWanderRate(MathUtils.PI2 * 8);
+
+        //add raycasting object avoidence or object avoidence sb as default ?
+
+        this.combinedSB = new PrioritySteering<Vector2>(null);
 
         if(this.mIsCpu){
             //put player towards the beginning of map if its not a new game
@@ -485,5 +501,17 @@ public class zombie extends entity {
     public void setWeapon(classIdEnum weapon) { this.weapon = weapon; }
 
     public void decreaseHlth(float amount){ this.health -= amount; }
+
+    public void setmInfctTime(float mInfctTime) {
+        this.mInfctTime = mInfctTime;
+    }
+
+    public float getmInfctTime() {
+        return mInfctTime;
+    }
+
+    public void setmAlerted(BehaviorEnum mAlerted) {
+        this.mAlerted = mAlerted;
+    }
 
 }

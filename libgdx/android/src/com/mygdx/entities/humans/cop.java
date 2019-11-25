@@ -42,7 +42,6 @@ public class cop extends security {
                 FOLLOW_ME, FOLLOW_ME_REPLY,
                 GIVE_PER_LOCATION_REPLY
         );
-
     }
 
     public void update(float dt){
@@ -69,7 +68,7 @@ public class cop extends security {
         //zombies for now will now be listening for messages
         //if(areYouAZombie())
             //takeoutlistener
-        entity temp = (entity)msg.extraInfo;
+        entity temp = (entity)msg.sender;
 
         //what should happen if the person asking for help turns into a zombie ?
         switch(msg.message) {
