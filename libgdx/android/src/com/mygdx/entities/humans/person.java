@@ -98,7 +98,15 @@ public class person extends zombie {
 
         if(entityType.getId() == classIdEnum.Person || entityType.getId() == classIdEnum.PPerson) {
             this.setImage("player.png");
-            this.setImageB("player2.png");
+            setImageRight("player.png");
+            setImageRightWalk("player2.png");
+            setImageUp("playerUp.png");
+            setImageUpWalk("playerUp2.png");
+            setImageLeft("playerLeft.png");
+            setImageLeftWalk("playerLeft2.png");
+            setImageDown("playerDown.png");
+            setImageDownWalk("playerDown2.png");
+            //this.setImageB("player2.png");
             MessageManager.getInstance().addListeners(this,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY, GIVE_PER_LOCATION,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY_DENIED);
             this.mInfctTime = 1;
         } else if (entityType.getId() != classIdEnum.Emt) {
@@ -154,9 +162,30 @@ public class person extends zombie {
             super.update(dTime);
         else
             processMoves(dTime);
-        if(((SystemClock.elapsedRealtime() / 250) % 2) == 1)
-            changeImage(true);
-        else changeImage(false);
+        /*if(((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+            changeImage(true, 2);
+        else changeImage(false, 1);*/
+
+        if(this.isMoveRight()) {
+            if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+                changeImage(true, 1);
+            else changeImage(false, 1);
+        }
+        if(this.isMoveUp()) {
+            if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+                changeImage(true, 2);
+            else changeImage(false, 2);
+        }
+        if(this.isMoveLeft()) {
+            if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+                changeImage(true, 3);
+            else changeImage(false, 3);
+        }
+        if(this.isMoveDown()) {
+            if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+                changeImage(true, 4);
+            else changeImage(false, 4);
+        }
 
 
     }
@@ -237,7 +266,14 @@ public class person extends zombie {
         //this.setClsId(classIdEnum.Zombie);
         this.setClassID(classIdEnum.ConvertedPer);//Debug
         this.setImage("zombie.png");
-        this.setImageB("zombie2.png");
+        this.setImageRight("zombie.png");
+        this.setImageRightWalk("zombie2.png");
+        this.setImageUp("zombieUp.png");
+        this.setImageUpWalk("zombieUp2.png");
+        this.setImageLeft("zombieLeft.png");
+        this.setImageLeftWalk("zombieLeft2.png");
+        this.setImageDown("zombieDown.png");
+        this.setImageDownWalk("zombieDown2.png");
         this.setPrey(null);
 
         mMap.getZombies().add(this); // if we multi thread use a semiphore

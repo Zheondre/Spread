@@ -133,8 +133,15 @@ public class zombie extends entity {
         this.armorPts = entType.getArmor();
 
         if(classID == classIdEnum.Zombie || classID == classIdEnum.PZombie) {
-            setImage("zombie.png");
-            setImageB("zombie2.png");
+            setImage(new Texture("zombie.png"));
+            setImageRight("zombie.png");
+            setImageRightWalk("zombie2.png");
+            setImageUp("zombieUp.png");
+            setImageUpWalk("zombieUp2.png");
+            setImageLeft("zombieLeft.png");
+            setImageLeftWalk("zombieLeft2.png");
+            setImageDown("zombieDown.png");
+            setImageDownWalk("zombieDown2.png");
             mInfctTime = 0;
         }
         this.infections = 0;
@@ -275,8 +282,23 @@ public class zombie extends entity {
                     //loop through noinfected victums
                     //also need to see if they are in out view but for now we will base this off of ditance
                     //if close enough chase, if too close stop and attack
-                    if(((SystemClock.elapsedRealtime() * 1000) % 2) == 1)
-                    changeImage( (((SystemClock.elapsedRealtime() * 1000) % 2) == 1) ) ;
+                    if(this.isMoveRight()) {
+
+                        if (((SystemClock.elapsedRealtime() * 1000) % 2) == 1)
+                            changeImage((((SystemClock.elapsedRealtime() * 1000) % 2) == 1), 1);
+                    }
+                    if(this.isMoveUp()) {
+                        if (((SystemClock.elapsedRealtime() * 1000) % 2) == 1)
+                            changeImage((((SystemClock.elapsedRealtime() * 1000) % 2) == 1), 2);
+                    }
+                    if(this.isMoveLeft()) {
+                        if (((SystemClock.elapsedRealtime() * 1000) % 2) == 1)
+                            changeImage((((SystemClock.elapsedRealtime() * 1000) % 2) == 1), 3);
+                    }
+                    if(this.isMoveDown()) {
+                        if (((SystemClock.elapsedRealtime() * 1000) % 2) == 1)
+                            changeImage((((SystemClock.elapsedRealtime() * 1000) % 2) == 1), 4);
+                    }
 
                     if (doISeeANoneZombie) {
 
@@ -361,7 +383,7 @@ public class zombie extends entity {
                 //if there is armor show one bar for that then show grey once armor is at 0;
 
                 if(areWeBiting) {
-                    changeImage(false);
+                    changeImage(false, 1);
                     areWeBiting = false;
                 }
 
