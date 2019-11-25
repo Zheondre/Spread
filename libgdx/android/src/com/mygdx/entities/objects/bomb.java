@@ -16,6 +16,7 @@ import com.mygdx.entities.humans.zombie;
 import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
 
+import static com.mygdx.entities.BehaviorEnum.BOMB_EXPLODED;
 import static java.lang.StrictMath.abs;
 
 public class bomb extends entity {
@@ -80,14 +81,14 @@ public class bomb extends entity {
             } else if (entDist < alertnedRadius) {
                 //change alertness that a bomb went off
                 //to investage for authorities
-                //e
+                //victum.setmAlerted(BOMB_EXPLODED);
             } else  if(entDist < nonEffectsRadius) {
                 //dont set anything
             }
         }
 
-        if(tempEnt != null)
-            ((tileGameMap)mMap).getPlayerOne().setTempHost(tempEnt);
+        //if(tempEnt != null)
+            //((tileGameMap)mMap).getPlayerOne().setTempHost(tempEnt);
         return true;
     }
 

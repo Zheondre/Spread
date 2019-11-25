@@ -29,5 +29,8 @@ public final class MessageType {
     public static final int FOLLOW_ME_REPLY = 12;
     public static final int GIVE_PER_LOCATION_REPLY = 13;
     public static final int HELP_INFECTED_REPLY_DENIED = 14;
+    public static final int NO_HELP_NEEDED = 15;
+    public static final int HELP_BOMB_INFECTED = 16;
+    public static final int HELP_BOMB_INFECTED_REPLY = 17;
 
 }
