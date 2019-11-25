@@ -327,9 +327,9 @@ public class player implements InputProcessor {
             host = bombRef;
     }
 
-    public void setTempHost(entity tempHost) {
-        this.tempHost = tempHost;
-    }
+    //public void setTempHost(entity tempHost) {
+    //    this.tempHost = tempHost;
+    //}
 
     public void checkForSwitch(){
         if(tempHost != null) {
