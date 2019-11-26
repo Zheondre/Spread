@@ -55,7 +55,7 @@ public class player implements InputProcessor {
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
         playCam = new OrthographicCamera();
-        playCam.setToOrtho(false, wdth - 1300, hght - 800);
+        playCam.setToOrtho(false, wdth - 1400, hght - 900);
         playCam.update();
         this.points = 0;
         this.infects = 0;
