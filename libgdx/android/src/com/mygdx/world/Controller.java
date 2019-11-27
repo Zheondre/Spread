@@ -76,6 +76,7 @@ public class Controller {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 upPressed = false;
                 player1.getHost().setMoveUp(upPressed);
+                player1.getHost().setPrevDrct(1); // debug for shooting
                 upImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("up_button.png"))));
             }
         });
@@ -94,11 +95,11 @@ public class Controller {
                 downPressed = false;
                 downImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("down_button.png"))));
                 player1.getHost().setMoveDown(downPressed);
+                player1.getHost().setPrevDrct(3);
             }
         });
 
         leftImg.addListener(new InputListener() {
-
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -112,6 +113,7 @@ public class Controller {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 leftPressed = false;
                 player1.getHost().setMoveLeft(leftPressed);
+                player1.getHost().setPrevDrct(4);
                 leftImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("left_button.png"))));
             }
         });
@@ -131,6 +133,7 @@ public class Controller {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 rightPressed = false;
                 player1.getHost().setMoveRight(rightPressed);
+                player1.getHost().setPrevDrct(2);
                 rightImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("right_button.png"))));
             }
         });
