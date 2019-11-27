@@ -22,6 +22,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
@@ -50,11 +51,11 @@ public class tileGameMap extends gameMap {
 
     public static Texture playerHealth;
 
-    private final classIdEnum DEBUGMODE = classIdEnum.PBomb;
-    //private final classIdEnum DEBUGMODE = classIdEnum.PZombie;
+    //private final classIdEnum DEBUGMODE = classIdEnum.PBomb;
+    private final classIdEnum DEBUGMODE = classIdEnum.PZombie;
     //private final classIdEnum DEBUGMODE = classIdEnum.PPerson;
     //private final classIdEnum DEBUGMODE = classIdEnum.PEMT;
-    //private final classIdEnum DEBUGMODE = classIdEnum.PCOP;
+    //private final classIdEnum DEBUGMODE = classIdEnum.PCop;
 
     public static final int STATSCREEN_WIDTH = 400;
     public static final int STATSCREEN_HEIGHT = 208;
@@ -141,7 +142,7 @@ public class tileGameMap extends gameMap {
                 break;
             case PZombie:
                 playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
-                zombies.add((zombie) playerOne.getHost());
+                //zombies.add((zombie) playerOne.getHost());
                 break;
         }
 
@@ -208,9 +209,15 @@ public class tileGameMap extends gameMap {
             ent.render(batch);
 
         //box2d Debug
-        //b2dr.render(world,playerOne.getPlayCam().combined);
+        b2dr.render(world,playerOne.getPlayCam().combined);
         controller.draw();
         batch.end();
+
+        for(person ent: people)
+            if(ent.getClassID() == Emt)
+                ((EMT)ent).testLine();
+
+
     }
 
     @Override
@@ -252,6 +259,8 @@ public class tileGameMap extends gameMap {
                 case Zombie:
                     getZombies().remove(entToBeDeleted);
                     default:
+                case Bullet:
+                    break;
             }
             ReadyForDeletion.remove(entToBeDeleted);
             entToBeDeleted.dispose();// index one size one error ? 8.14pm 11.19.19

@@ -1,15 +1,22 @@
 package com.mygdx.entities.humans;
 
 import android.app.Person;
+import android.graphics.Color;
 import android.util.Log;
 
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.entities.Box2dSteering;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
+import com.mygdx.utils.viewQueryCallBack;
 import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
 
@@ -31,6 +38,7 @@ import static com.mygdx.entities.BehaviorEnum.ARRIVE_BOMB_INFECTED;
 import static com.mygdx.entities.BehaviorEnum.ARRIVE_INFECTED;
 import static com.mygdx.entities.BehaviorEnum.EVADE_ZOMBIE;
 import static com.mygdx.entities.BehaviorEnum.EVADE_ZOMBIE_ARRIVE_INFECTED;
+import static com.mygdx.entities.BehaviorEnum.TEST_DONT_MOVE;
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
 
 public class EMT extends person {
@@ -40,6 +48,12 @@ public class EMT extends person {
     private float healingTime = 1;
     private boolean healing = false;
     private boolean busy = false;
+
+    public Game g;
+
+    private viewQueryCallBack viewCB;
+    //https://stackoverflow.com/questions/21835062/libgdx-draw-line
+    private static ShapeRenderer debugRenderer;
 
     public EMT(entityInfo entityType, gameMap map) {
         super(entityType, map);
@@ -51,6 +65,9 @@ public class EMT extends person {
                 FOLLOW_ME, FOLLOW_ME_REPLY,
                 GIVE_PER_LOCATION_REPLY
         );
+       debugRenderer = new ShapeRenderer();
+        viewCB = new viewQueryCallBack();
+
     }
 
     public void heal(){
@@ -79,9 +96,9 @@ public class EMT extends person {
         if(healingTime > 0 ) {
             healing = true;
             if (getmInfctTime() < 1)
-                setmInfctTime(getmInfctTime() + .3f);
+                increaseInfcTime( .3f);
             if(getHealth() <1.5f)
-                setHealth(getHealth() + .3f);
+                increaseHlth( .3f);
             healingTime -= .25;
             healing = false;
         }
@@ -156,7 +173,119 @@ public class EMT extends person {
         return true;
     }
 
+//https://stackoverflow.com/questions/21835062/libgdx-draw-line
+    public static void DrawDebugLine(Vector2 start, Vector2 end, int lineWidth, Color color, Matrix4 projectionMatrix)
+    {
+        Gdx.gl.glLineWidth(lineWidth);
+        debugRenderer.setProjectionMatrix(projectionMatrix);
+        debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+        debugRenderer.setColor(com.badlogic.gdx.graphics.Color.BLACK);
+        debugRenderer.line(start, end);
+        debugRenderer.end();
+        Gdx.gl.glLineWidth(3);
+    }
+
+    public static void DrawDebugLine(Vector2 start, Vector2 end, Matrix4 projectionMatrix)
+    {
+        Gdx.gl.glLineWidth(3);
+        debugRenderer.setProjectionMatrix(projectionMatrix);
+        debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+        debugRenderer.setColor(com.badlogic.gdx.graphics.Color.BLACK);
+        debugRenderer.line(start, end);
+        debugRenderer.end();
+        Gdx.gl.glLineWidth(3);
+    }
+
+
+    public void testLine(){
+        //mAlerted = TEST_DONT_MOVE;
+        float tempX = getPosX();
+        float tempY = getPosY();
+        float radius = 5;
+        DrawDebugLine(new Vector2(tempX - radius*2,tempY - radius*5), new Vector2(tempX - radius*2, tempY), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined);
+        DrawDebugLine(new Vector2(tempX + radius*4,tempY - radius*5), new Vector2(tempX + radius*4, tempY), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined);
+        // DrawDebugLine(new Vector2(0,0), new Vector2(100,100), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined);
+        //DrawDebugLine(new Vector2(0,0), new Vector2(100,100), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined);
+//debug //////////
+        /*
+        mMap.getWorld().QueryAABB(viewCB,
+                getPosX() - radius*2,
+                getPosY(),
+                getPosX() + radius*4,
+                getPosY() - radius*5
+        );
+         */
+    }
     public void update(float dt){
+
+        float tempX = getPosX();
+        float tempY = getPosY();
+        float radius = 5;
+        mAlerted = TEST_DONT_MOVE;
+        mMap.getWorld().QueryAABB(viewCB,
+                tempX - radius*2,
+                tempY,
+                tempX + radius*4,
+                tempY - radius*5
+        );
+        //temp trying to get box ray cast to work
+        // need to check after we finish moving this might be set before we move
+      //  if(isMoveDown()) {
+ /*
+ mMap.getWorld().QueryAABB(viewCB,
+                    getPosX() - radius*2,
+                    getPosY(),
+                    getPosX() + radius*2,
+                    getPosY() - radius*5
+                    );
+    //    }else if(isMoveUp()) {
+
+
+        } else if (isMoveRight()) {
+            mMap.getWorld().QueryAABB(viewCB,
+                    getPosX() + radius,
+                    getPosY() + radius*2,
+                    getPosX() + radius*5,
+                    getPosY() - radius*2
+            );
+
+        }  else if(isMoveLeft()) {
+        } else {
+        }
+*/
+       // mAlerted = TEST_DONT_MOVE;
+        float tEndDis = -1;
+        float nextDis = 0;
+        entity closestZom = null;
+        if(viewCB.getFoundEnts().size() > 0) {
+            for (entity ent : viewCB.getFoundEnts()) {
+                if ((ent.getClassID() == classIdEnum.ConvertedPer)
+                        || (ent.getClassID() == classIdEnum.PZombie) ||
+                        (ent.getClassID() == classIdEnum.Zombie) || (ent != this))
+                    if (tEndDis == -1) {
+                        tEndDis = getEntDistance(ent);
+                        closestZom = ent;
+                    } else {
+                        nextDis = getEntDistance(ent);
+                        if (tEndDis > nextDis) {
+                            tEndDis = nextDis;
+                            closestZom = ent;
+                            if( (((Box2dSteering)getPursueSB().getTarget()).body == getPrey().getBody()) )
+                            {
+                                getPursueSB().setEnabled(false);
+                            }
+
+                            //what if the person you are trying to help is now a zombie
+                        }
+                    }
+            }
+
+            setEvadeSB((zombie)closestZom);
+            mAlerted = EVADE_ZOMBIE;
+            //tell others that an emt spotted a zombie
+        }
+
+
 
         // when should the emt heal its self ?
         if((getHealth() < 1f)||(getmInfctTime() < 1f))

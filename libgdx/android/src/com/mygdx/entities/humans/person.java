@@ -41,7 +41,6 @@ public class person extends zombie {
     private boolean mInfected;
     private boolean mZombie;
     private float wlkTime;
-    private int wlkDirection;
 
     protected int MessageMsk = 0;
     protected Evade<Vector2> evadeSB;
@@ -254,8 +253,6 @@ public class person extends zombie {
                 //if we dont have the correct steering ent change
                 break;
             case NEW_ZOMBIE:
-                //put a status bit here to make sure we only call once
-                MessageManager.getInstance().removeListener(this ,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY, GIVE_PER_LOCATION,HELP_ZOMBIE_SPOTTED_REPLY );
                 // turned into a zombie so act as such.
                 break;
             case ARRIVE_ZOMBIE:
@@ -269,13 +266,16 @@ public class person extends zombie {
 
         this.mInfctTime = 0;
         this.mInfected = false;
-        this.mAlerted = NEW_ZOMBIE;
+        this.mAlerted = WALK_RANDOMLY;
         this.mZombie = true;
         //this.setClsId(classIdEnum.Zombie);
         this.setClassID(classIdEnum.ConvertedPer);//Debug
         this.setImage("zombie.png");
         this.setImageB("zombie2.png");
         this.setPrey(null);
+
+        //put a status bit here to make sure we only call once
+        MessageManager.getInstance().removeListener(this,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY, GIVE_PER_LOCATION,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY_DENIED);
 
         mMap.getZombies().add(this); // if we multi thread use a semiphore
         mMap.setCnvrtdEntRdy(this);
