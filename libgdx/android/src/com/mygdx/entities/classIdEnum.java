@@ -23,6 +23,7 @@ public enum classIdEnum {
         SEMIAUTORIFLE,
         BATON,
         MAZE,
+        Bullet,
         NOWEAPON,
         STATIC_OBJECT,
         PBomb,

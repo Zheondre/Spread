@@ -20,9 +20,13 @@ import com.mygdx.entities.Box2dSteering;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
+import com.mygdx.entities.objects.bullet;
 import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
 
+import java.util.ArrayList;
+
+import static com.mygdx.entities.BehaviorEnum.TEST_DONT_MOVE;
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
 import static com.mygdx.utils.entUtils.getZombieAttack;
 import static com.mygdx.utils.entUtils.stopDownVec;
@@ -36,6 +40,7 @@ public class zombie extends entity {
     protected int peopleConverted;
     protected int infections;
     protected float attackPt;
+
     protected float armorPts;
 
     protected float health;
@@ -47,7 +52,6 @@ public class zombie extends entity {
     protected BehaviorEnum mAlerted;
 
     private static final int biteTimeSetting = 5;
-    private int wlkDirection;
 
     private float reviveTime = 20;
     private float bitetime = biteTimeSetting;
@@ -62,6 +66,8 @@ public class zombie extends entity {
     private entity prey;
 
    //protected Box2dSteering steerEnt;
+
+    protected ArrayList<bullet> bullets;
 
     protected Pursue<Vector2>  pursueSB;
     protected Wander<Vector2>  wanderSB;
@@ -156,9 +162,8 @@ public class zombie extends entity {
         this.mIsCpu = entType.isCpu();
 
         this.doISeeANoneZombie = false;
-        //this.randomWalkTime;
         //this.steerEnt = new Box2dSteering(super.getBody(),10);
-
+/*
         this.wanderSB = new Wander<Vector2>(steerEnt) //
                 .setFaceEnabled(true) // We want to use Face internally (independent facing is on)
                 .setAlignTolerance(1f) // Used by Face
@@ -168,7 +173,7 @@ public class zombie extends entity {
                 .setWanderOrientation(1000f) //
                 .setWanderRadius(1000f) //
                 .setWanderRate(MathUtils.PI2 * 8);
-
+*/
         //add raycasting object avoidence or object avoidence sb as default ?
 
         this.combinedSB = new PrioritySteering<Vector2>(null);
@@ -176,7 +181,7 @@ public class zombie extends entity {
         if(this.mIsCpu){
             //put player towards the beginning of map if its not a new game
             //if its a new game dont draw the spite yet we got to set a bomb before hand
-            steerEnt.setBehavior(wanderSB);
+           // steerEnt.setBehavior(wanderSB);
         }
     }
 
@@ -224,7 +229,8 @@ public class zombie extends entity {
        if(per != null)
            if(preyDistance < 20) {
                biteNonZombie(per);
-
+                //debug shoot;
+               //shoot();
                return true;
            }
 
@@ -269,12 +275,17 @@ public class zombie extends entity {
         if(this.mIsCpu) {
             //check if there are any special messages
             switch(this.classID) {
+
                 case Person:
                 case Security:
                 case Cop:
                 case Emt:
                     if(mAlerted == WALK_RANDOMLY)
                         super.update(dTime);
+                    else if(mAlerted == TEST_DONT_MOVE) {
+                        stopMoving();
+                        super.update(dTime);
+                    }
                      else
                          steerEnt.update(dTime);
                     break;
@@ -480,6 +491,12 @@ public class zombie extends entity {
 
     public void decreaseHlth(float amount){ this.health -= amount; }
 
+    public void increaseHlth(float amount) {this.health += amount;}
+
+    public void decreaseInfcTime(float amount){this.mInfctTime -= amount;}
+
+    public void increaseInfcTime(float amount){this.mInfctTime += amount;}
+
     public void setmInfctTime(float mInfctTime) {
         this.mInfctTime = mInfctTime;
     }
@@ -490,6 +507,13 @@ public class zombie extends entity {
 
     public void setmAlerted(BehaviorEnum mAlerted) {
         this.mAlerted = mAlerted;
+    }
+
+    public float getArmorPts() {
+        return armorPts;
+    }
+    public void dcrseArmor(float pts){
+        this.armorPts -= pts;
     }
 
 }

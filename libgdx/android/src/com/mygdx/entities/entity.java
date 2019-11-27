@@ -45,6 +45,8 @@ public abstract class entity implements Telegraph {
 
     protected classIdEnum classID;
 
+    private boolean livingObject;
+
     private Body body;
 
     protected Box2dSteering steerEnt;
@@ -56,6 +58,10 @@ public abstract class entity implements Telegraph {
     private boolean moveDown;
 
     protected boolean validPath;
+
+    protected int wlkDirection;
+
+    protected int prevDrct;
 
     private int mapXMax;
     private int mapYMax;
@@ -89,6 +95,7 @@ public abstract class entity implements Telegraph {
         this.mMap = Map;
         this.amIOnTheGound = true; // every thing will be on the ground for now
         this.classID = entType.getId();
+        this.livingObject = entType.isLivingObject();
 
         this.moveLeft = false;
         this.moveRight = false;
@@ -111,18 +118,24 @@ public abstract class entity implements Telegraph {
         if (classID == classIdEnum.PZombie) {
             tx = entType.getXpos();
             ty = entType.getYpos();
-        } else {
-            while (!goodposition) {
-                tx = (float) (Math.random() * ((300 - 50) + 50)) + 1;
-                ty = (float) (Math.random() * ((300 - 50) + 50)) + 1;
+        } else if (classID == classIdEnum.Emt) {
+           // tx = (float) (Math.random() * ((200 - 100) + 100)) + 1;
+            //ty = (float) (Math.random() * ((200 - 100) + 100)) + 1;
+            tx = 250;
+            ty = 100;
+        }else if(classID != classIdEnum.Bullet){
+                while (!goodposition) {
+                    tx = (float) (Math.random() * ((200 - 100) + 100)) + 1;
+                    ty = (float) (Math.random() * ((200 - 100) + 100)) + 1;
 
-                goodposition = true;
-                TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int) ((tx) / tileW), (int) (ty / tileH));
+                    goodposition = true;
+                    TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int) ((tx) / tileW), (int) (ty / tileH));
 
-                if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty)/tileH)) != null)
-                    goodposition = false;
+                    if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty)/tileH)) != null)
+                        goodposition = false;
+                }
             }
-        }
+
 
         collisionLayer = null;
         this.mPos = new Vector3(tx, ty, 0);
@@ -132,15 +145,24 @@ public abstract class entity implements Telegraph {
 
         CircleShape cs = new CircleShape();
         cs.setRadius(5);
-        fd.density = .01f;
+        fd.density = .05f;
         fd.friction = .5f;
         fd.shape = cs;
 
-        this.body = mMap.getWorld().createBody(entBody);
-        this.steerEnt = new Box2dSteering(this.body,10);
+        if (classID == classIdEnum.Bullet) {
+            entBody.bullet = true;
+        }
 
+
+        this.body = mMap.getWorld().createBody(entBody);
+       if (classID != classIdEnum.PZombie) {
+           // this.steerEnt = new Box2dSteering(this.body, 5); // this is not allowing the fixute call back to fire not sure why
+        }
         //fd.filter.groupIndex = 0;
-        this.body.createFixture(fd);
+
+        this.body.createFixture(fd).setUserData(this);
+
+        //this.body.setUserData();
         badPath = false;
     }
 
@@ -168,7 +190,8 @@ public abstract class entity implements Telegraph {
         entBody.position.set(mPos.x, mPos.y);
         fd.shape = shape;
         this.body = mMap.getWorld().createBody(entBody);
-        this.body.createFixture(fd);
+        //need this for raycast detection.. should we include static objects ...?
+        this.body.createFixture(fd).setUserData(this);
         badPath = false;
     }
 
@@ -284,6 +307,10 @@ public abstract class entity implements Telegraph {
         if (amount > 0) {
             if (body.getLinearVelocity().x <= 55)
                 body.applyLinearImpulse(getMoveLeftVec(), body.getWorldCenter(), true);
+            //body.getAngle();
+            //body.appl
+
+
         } else {
             if (body.getLinearVelocity().x >= -55)
                 body.applyLinearImpulse(getMoveRightVec(), body.getWorldCenter(), true);
@@ -399,6 +426,21 @@ public abstract class entity implements Telegraph {
         float tempx = abs(target.getPosX() - this.mPos.x);
         float tempy = abs(target.getPosY() - this.mPos.y);
         return (float) Math.sqrt(tempx * tempx + tempy * tempy);
+    }
+    public boolean isLivingObject() {
+        return livingObject;
+    }
+
+    public int getWlkDirection() {
+        return wlkDirection;
+    }
+
+    public int getPrevDrct() {
+        return prevDrct;
+    }
+
+    public void setPrevDrct(int prevDrct) {
+        this.prevDrct = prevDrct;
     }
 
 }
