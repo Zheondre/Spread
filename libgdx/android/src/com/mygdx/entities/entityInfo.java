@@ -24,7 +24,9 @@ public enum entityInfo {
     ZOMBIE(classIdEnum.Zombie),
     STATIC_OBJECT(classIdEnum.STATIC_OBJECT),
     EMT(classIdEnum.Emt),
-    PBOMB(classIdEnum.PBomb);
+    PBOMB(classIdEnum.PBomb),
+    BULLET(classIdEnum.Bullet),
+    ;
 
     private classIdEnum weapon;
     private classIdEnum id;
@@ -51,6 +53,7 @@ public enum entityInfo {
 
     private boolean zombie;
     private boolean infected;
+    private boolean  livingObject;
 
     private Texture Image;
 
@@ -68,10 +71,18 @@ public enum entityInfo {
         this.zombie = false;
         this.infected = false;
         this.isCpu = true;
+        this.livingObject = true;
 
         switch(id){
+            case Bullet:
+                this.armor = 0;
+                this.health = 0;
+                this.attackPt = 0;
+                this.livingObject = false;
+                break;
             case Emt:
                 this.health = 2;
+                break;
             case PBomb:
                 this.isCpu = false;
                 this.blastRadius = 40;
@@ -80,6 +91,7 @@ public enum entityInfo {
                 this.nonEffectsRadius  = 550;
                 this.infecRatio = 350;
                 this.healthRatio = 300;
+                this.livingObject = false;
                 break;
             case PZombie:
                 this.xpos = 70;
@@ -96,7 +108,6 @@ public enum entityInfo {
             case Zombie:
                 this.xpos = 30;
                 this.ypos = 50;
-
                 //this.infectPts = 3;
                 this.zombie = true;
                 this.infected = true;
@@ -122,6 +133,7 @@ public enum entityInfo {
                 this.zombie = false;
                 this.infected = false;
                 this.isCpu = true;
+                this.livingObject = false;
                 break;
 				default:
                 //throw an error, unknown type
@@ -198,6 +210,10 @@ public enum entityInfo {
     public boolean isZombie() {
         return this.zombie;
     }
+    public boolean isLivingObject() {
+        return livingObject;
+    }
+
 
 
 }
