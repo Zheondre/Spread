@@ -34,6 +34,14 @@ public abstract class entity implements Telegraph {
     private Texture imageB;
     private Texture imageC;
 
+    public void setmWidth(int mWidth) {
+        this.mWidth = mWidth;
+    }
+
+    public void setmHeight(int mHeight) {
+        this.mHeight = mHeight;
+    }
+
     private  int mWidth = 13;
     private  int mHeight = 18;
     private static final float mWeight = 40;
@@ -90,47 +98,19 @@ public abstract class entity implements Telegraph {
         this.validPath = false;
     }
 
-    public entity(entityInfo entType, zombie req, gameMap Map) {
+    public entity(entityInfo entType, zombie ent, gameMap Map) {
 // bullet constructor
         this.mVelocityY = 0;
         this.mMap = Map;
-        this.amIOnTheGound = true; // every thing will be on the ground for now
+        this.amIOnTheGound = false; // every thing will be on the ground for now
         this.classID = entType.getId();
         this.livingObject = entType.isLivingObject();
-
         this.moveLeft = false;
         this.moveRight = false;
         this.moveUp = false;
         this.moveDown = false;
         this.validPath = false;
-
-        float tx = 0, ty = 0;
-
-        tx = req.getPosX() +10;
-        ty = req.getPosY();
-
-        //mario tutorial youtube libgdx box2d
-        BodyDef entBody = new BodyDef();
-        FixtureDef fd = new FixtureDef();
-
-        boolean goodposition = false;
-
-        this.mPos = new Vector3(tx, ty, 0);
-
-        entBody.position.set(mPos.x, mPos.y);
-        entBody.type = BodyDef.BodyType.DynamicBody;
-
-        CircleShape cs = new CircleShape();
-        cs.setRadius(1);
-        fd.density = .05f;
-        fd.friction = 0;
-        fd.shape = cs;
-        entBody.bullet = true;
-        mWidth = 2;
-        mHeight = 2;
-        this.body = mMap.getWorld().createBody(entBody);
-        this.body.createFixture(fd).setUserData(this);
-        badPath = false;
+        this.badPath = false;
     }
     public entity(entityInfo entType, gameMap Map) {
 
@@ -165,7 +145,7 @@ public abstract class entity implements Telegraph {
            // tx = (float) (Math.random() * ((200 - 100) + 100)) + 1;
             //ty = (float) (Math.random() * ((200 - 100) + 100)) + 1;
             tx = 250;
-            ty = 75;
+            ty = 60;
         }else {
                 while (!goodposition) {
                     tx = (float) (Math.random() * ((200 - 100) + 100)) + 1;
@@ -388,6 +368,7 @@ public abstract class entity implements Telegraph {
         return mPos;
     }
 
+    public void setBody(Body body) { this.body = body; }
     public Body getBody() {
         return body;
     }
@@ -461,6 +442,12 @@ public abstract class entity implements Telegraph {
         mPos.y = getBody().getPosition().y;
         float tempx = abs(target.getPosX() - this.mPos.x);
         float tempy = abs(target.getPosY() - this.mPos.y);
+        return (float) Math.sqrt(tempx * tempx + tempy * tempy);
+    }
+
+    public float getEntDistance(Vector3 vpos, entity target) {
+        float tempx = abs(target.getPosX() - vpos.x);
+        float tempy = abs(target.getPosY() - vpos.y);
         return (float) Math.sqrt(tempx * tempx + tempy * tempy);
     }
     public boolean isLivingObject() {

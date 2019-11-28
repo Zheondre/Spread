@@ -41,12 +41,11 @@ public class zombie extends entity {
 
     protected int peopleConverted;
     protected int infections;
+
     protected float attackPt;
-
     protected float armorPts;
-
+    protected float shootingRadius;
     protected float health;
-
     protected float mInfctTime;
 
     protected classIdEnum weapon;
@@ -230,12 +229,11 @@ public class zombie extends entity {
         //preyDistance
 
         //debug shoot;
-       bullet tbullet = new bullet(entityInfo.BULLET, this, mMap);
+       bullet tbullet = new bullet(entityInfo.BULLET, this, (zombie)mMap.getPeople().get(1), mMap);
        //only add if we were able to shoot
         ((tileGameMap)mMap).getBullets().add(tbullet);
         //tbullet.shoot(null);
-        tbullet.shoot((zombie)mMap.getPeople().get(1));
-
+        tbullet.shoot();
 
 
        if(per != null)
