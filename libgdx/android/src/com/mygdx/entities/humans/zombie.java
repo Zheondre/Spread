@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.mygdx.entities.BehaviorEnum;
 import com.mygdx.entities.Box2dSteering;
 import com.mygdx.entities.classIdEnum;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 
 import static com.mygdx.entities.BehaviorEnum.TEST_DONT_MOVE;
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
+import static com.mygdx.entities.entityInfo.BULLET;
 import static com.mygdx.utils.entUtils.getZombieAttack;
 import static com.mygdx.utils.entUtils.stopDownVec;
 import static com.mygdx.utils.entUtils.stopLeftVec;
@@ -226,11 +228,19 @@ public class zombie extends entity {
         // TODO make sure the person we are attacking is in the direction we are looking
         person per = findSomeOneToChase();
         //preyDistance
+
+        //debug shoot;
+       bullet tbullet = new bullet(entityInfo.BULLET, this, mMap);
+       //only add if we were able to shoot
+        ((tileGameMap)mMap).getBullets().add(tbullet);
+        //tbullet.shoot(null);
+        tbullet.shoot((zombie)mMap.getPeople().get(1));
+
+
+
        if(per != null)
            if(preyDistance < 20) {
                biteNonZombie(per);
-                //debug shoot;
-               //shoot();
                return true;
            }
 
@@ -402,7 +412,8 @@ public class zombie extends entity {
                     batch.setColor(Color.YELLOW);
                 else
                     batch.setColor(Color.PURPLE);
-                batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +25, 22* mInfctTime, 3);
+                if(mInfctTime > 0)
+                    batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +25, 22* mInfctTime, 3);
             }
 
             if(getHealth() > .8f)
@@ -412,7 +423,8 @@ public class zombie extends entity {
             else
                 batch.setColor(Color.RED);
 
-            batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +20, 22* getHealth(), 3);
+            if(getHealth() > 0)
+                batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +20, 22* getHealth(), 3);
 
             //TODO make sure armor points decrease first before health
             if(armorPts > 0 ) {
@@ -420,6 +432,7 @@ public class zombie extends entity {
                 batch.draw(mMap.getPlayerHealth(), getPosX() + 8, getPosY() + 20, 22 *armorPts, 3);
             }
             batch.setColor(Color.WHITE);
+
             batch.draw(image, mPos.x, mPos.y, getWidth(), getHeight()); // had to add twice cause one of the chars wasnt showing the health bar
         }
     }

@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.mygdx.entities.humans.zombie;
 import com.mygdx.world.gameMap;
 
 import static com.mygdx.utils.entUtils.getMoveDownVec;
@@ -33,8 +34,8 @@ public abstract class entity implements Telegraph {
     private Texture imageB;
     private Texture imageC;
 
-    private final static int mWidth = 13;
-    private final static int mHeight = 18;
+    private  int mWidth = 13;
+    private  int mHeight = 18;
     private static final float mWeight = 40;
 
     protected float mVelocityY;
@@ -89,6 +90,48 @@ public abstract class entity implements Telegraph {
         this.validPath = false;
     }
 
+    public entity(entityInfo entType, zombie req, gameMap Map) {
+// bullet constructor
+        this.mVelocityY = 0;
+        this.mMap = Map;
+        this.amIOnTheGound = true; // every thing will be on the ground for now
+        this.classID = entType.getId();
+        this.livingObject = entType.isLivingObject();
+
+        this.moveLeft = false;
+        this.moveRight = false;
+        this.moveUp = false;
+        this.moveDown = false;
+        this.validPath = false;
+
+        float tx = 0, ty = 0;
+
+        tx = req.getPosX() +10;
+        ty = req.getPosY();
+
+        //mario tutorial youtube libgdx box2d
+        BodyDef entBody = new BodyDef();
+        FixtureDef fd = new FixtureDef();
+
+        boolean goodposition = false;
+
+        this.mPos = new Vector3(tx, ty, 0);
+
+        entBody.position.set(mPos.x, mPos.y);
+        entBody.type = BodyDef.BodyType.DynamicBody;
+
+        CircleShape cs = new CircleShape();
+        cs.setRadius(1);
+        fd.density = .05f;
+        fd.friction = 0;
+        fd.shape = cs;
+        entBody.bullet = true;
+        mWidth = 2;
+        mHeight = 2;
+        this.body = mMap.getWorld().createBody(entBody);
+        this.body.createFixture(fd).setUserData(this);
+        badPath = false;
+    }
     public entity(entityInfo entType, gameMap Map) {
 
         this.mVelocityY = 0;
@@ -122,8 +165,8 @@ public abstract class entity implements Telegraph {
            // tx = (float) (Math.random() * ((200 - 100) + 100)) + 1;
             //ty = (float) (Math.random() * ((200 - 100) + 100)) + 1;
             tx = 250;
-            ty = 100;
-        }else if(classID != classIdEnum.Bullet){
+            ty = 75;
+        }else {
                 while (!goodposition) {
                     tx = (float) (Math.random() * ((200 - 100) + 100)) + 1;
                     ty = (float) (Math.random() * ((200 - 100) + 100)) + 1;
@@ -149,20 +192,13 @@ public abstract class entity implements Telegraph {
         fd.friction = .5f;
         fd.shape = cs;
 
-        if (classID == classIdEnum.Bullet) {
-            entBody.bullet = true;
-        }
-
-
         this.body = mMap.getWorld().createBody(entBody);
        if (classID != classIdEnum.PZombie) {
-           // this.steerEnt = new Box2dSteering(this.body, 5); // this is not allowing the fixute call back to fire not sure why
+           // this.steerEnt = new Box2dSteering(this.body, 5);
         }
         //fd.filter.groupIndex = 0;
 
         this.body.createFixture(fd).setUserData(this);
-
-        //this.body.setUserData();
         badPath = false;
     }
 

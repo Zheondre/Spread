@@ -325,7 +325,7 @@ public class EMT extends person {
 
         if(healing == false)
             if(healingTime < 1)
-                healingTime += .25;
+                healingTime += .01;
 
         //if we view a zombie closer then the one we have set avoid that one
     }

@@ -18,33 +18,41 @@ public class contListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
 
-        if( ((entity)fixA.getUserData() ).getClassID() == classIdEnum.Bullet)
-            ((bullet)fixA.getUserData() ).setRemove(true);
+        boolean didIGetShot = false;
 
-        if( ((entity)fixB.getUserData()).getClassID() == classIdEnum.Bullet)
-            ((bullet)fixB.getUserData()).setRemove(true);
+        if (((entity) fixA.getUserData()).getClassID() == classIdEnum.Bullet) {
+            ((bullet) fixA.getUserData()).setRemove(true);
+            didIGetShot = true;
+        }
+        if (((entity) fixB.getUserData()).getClassID() == classIdEnum.Bullet) {
+            ((bullet) fixB.getUserData()).setRemove(true);
+            didIGetShot = true;
+        }
 
-        if(((entity)fixA.getUserData()).isLivingObject()
+        if(didIGetShot){
+        if (((entity) fixA.getUserData()).isLivingObject()
                 ||
-                ((entity)fixB.getUserData()).isLivingObject()) {
+                ((entity) fixB.getUserData()).isLivingObject()) {
 
-            entity ent = ((entity)fixA.getUserData()).isLivingObject() == true ?  ((entity)fixA.getUserData()) : ((entity)fixB.getUserData());
+            entity ent = ((entity) fixA.getUserData()).isLivingObject() == true ? ((entity) fixA.getUserData()) : ((entity) fixB.getUserData());
 
-            float t1 = ((zombie)ent).getArmorPts();
-            float temp = ((zombie)ent).getArmorPts() -.4f;
+            float t1 = ((zombie) ent).getArmorPts();
+            float temp = ((zombie) ent).getArmorPts() - .4f;
 
-            if(t1> 0) {
+            if (t1 > 0) {
                 if (temp < 0) {
                     temp += t1;
-                    ((zombie)ent).dcrseArmor(temp);
-                    ((zombie)ent).decreaseHlth(t1 - temp);
-                }else {
-                    ((zombie)ent).dcrseArmor(.4f);
+                    ((zombie) ent).dcrseArmor(temp);
+                    ((zombie) ent).decreaseHlth(t1 - temp);
+                } else {
+                    ((zombie) ent).dcrseArmor(.4f);
                 }
             } else {
-                ((zombie)ent).decreaseHlth(.4f);
+                ((zombie) ent).decreaseHlth(.4f);
             }
         }
+    }
+
     }
 
     @Override

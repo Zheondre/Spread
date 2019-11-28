@@ -31,11 +31,13 @@ import com.mygdx.entities.humans.EMT;
 import com.mygdx.entities.humans.cop;
 import com.mygdx.entities.humans.security;
 import com.mygdx.entities.objects.bomb;
+import com.mygdx.entities.objects.bullet;
 import com.mygdx.entities.objects.gameBlocks;
 import com.mygdx.entities.humans.person;
 import com.mygdx.entities.humans.player;
 import com.mygdx.entities.humans.zombie;
 import com.mygdx.game.WaveInfo;
+import com.mygdx.utils.contListener;
 
 import java.util.ArrayList;
 
@@ -90,6 +92,17 @@ public class tileGameMap extends gameMap {
     private ArrayList<entity> ReadyForDeletion;
     private zombie convertedEnt;
 
+    public ArrayList<bullet> getBullets() {
+        return bullets;
+    }
+
+    public void setBullets(ArrayList<bullet> bullets) {
+        this.bullets = bullets;
+    }
+
+    private ArrayList<bullet> bullets;
+
+
     private player playerOne;
     private static Controller controller;
 
@@ -131,6 +144,7 @@ public class tileGameMap extends gameMap {
         zombies = new ArrayList<zombie>();
         levels = new ArrayList<WaveInfo>();
         ReadyForDeletion = new ArrayList<>();
+        bullets = new ArrayList<bullet>();
 
         switch (DEBUGMODE) {
             case PBomb:
@@ -174,6 +188,8 @@ public class tileGameMap extends gameMap {
         playerOne.setZombieRef(zombies);
 
         initMessage();
+
+        world.setContactListener(new contListener());
     }
 
     private void initMessage(){
@@ -208,6 +224,9 @@ public class tileGameMap extends gameMap {
         for(person ent: people)
             ent.render(batch);
 
+        for(bullet ent:bullets)
+            ent.render(batch);
+
         //box2d Debug
         b2dr.render(world,playerOne.getPlayCam().combined);
         controller.draw();
@@ -225,13 +244,17 @@ public class tileGameMap extends gameMap {
 
        world.step(1/60f,6,2);// need to read docs on this
 
+        playerOne.update(deltaT);
+
         for(zombie ent: zombies) //if ready for clean up skip
             ent.update(deltaT);
 
         for(person ent: people) //if ready for clean up skip
             ent.update(deltaT);
 
-        playerOne.update(deltaT);
+        for(bullet ent:bullets)
+            ent.update(deltaT);
+
 
         int lastEntPos = CnvrtdEntRdy.size() - 1;
         // becarefull bellow here
@@ -244,7 +267,7 @@ public class tileGameMap extends gameMap {
 
         lastEntPos = ReadyForDeletion.size()-1;
         entity entToBeDeleted;
-        while(lastEntPos > 0) {
+        while(lastEntPos > -1) {
             entToBeDeleted = ReadyForDeletion.get(lastEntPos);
             switch(entToBeDeleted.getClassID()) {
                 case Emt:
@@ -260,11 +283,13 @@ public class tileGameMap extends gameMap {
                     getZombies().remove(entToBeDeleted);
                     default:
                 case Bullet:
+                    bullets.remove(entToBeDeleted);
                     break;
             }
             ReadyForDeletion.remove(entToBeDeleted);
             entToBeDeleted.dispose();// index one size one error ? 8.14pm 11.19.19
             entToBeDeleted = null;
+            lastEntPos--;
         }
 
         /*

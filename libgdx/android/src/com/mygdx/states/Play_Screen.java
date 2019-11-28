@@ -16,6 +16,7 @@ public class Play_Screen extends GameState {
     TiledMap m_TileMap;
     OrthogonalTiledMapRenderer m_TileMapRender;
     gameMap m_GameMap;
+    public boolean pauseScreen = false;
 
     public Play_Screen(GameStateManager gsm)
     {
@@ -32,10 +33,13 @@ public class Play_Screen extends GameState {
 
     @Override
     public void render(SpriteBatch batch) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        m_GameMap.render();
-        m_GameMap.update(Gdx.graphics.getDeltaTime());
+
+        if(!pauseScreen) {
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            m_GameMap.render();
+            m_GameMap.update(Gdx.graphics.getDeltaTime());
+        }
     }
 
 

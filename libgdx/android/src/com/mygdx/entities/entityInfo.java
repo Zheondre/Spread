@@ -25,8 +25,7 @@ public enum entityInfo {
     STATIC_OBJECT(classIdEnum.STATIC_OBJECT),
     EMT(classIdEnum.Emt),
     PBOMB(classIdEnum.PBomb),
-    BULLET(classIdEnum.Bullet),
-    ;
+    BULLET(classIdEnum.Bullet);
 
     private classIdEnum weapon;
     private classIdEnum id;
@@ -94,7 +93,7 @@ public enum entityInfo {
                 this.livingObject = false;
                 break;
             case PZombie:
-                this.xpos = 70;
+                this.xpos = 160;
                 this.ypos = 70;
                 this.infected = true;
                 this.zombie = true;
@@ -118,8 +117,8 @@ public enum entityInfo {
                 //this.ypos = 25;
                 break;
             case Security:
-            this.armor = .50f;
-               this.weapon = classIdEnum.BATON;
+                this.armor = .50f;
+                this.weapon = classIdEnum.BATON;
                 break;
             case Cop:
                 this.armor = .70f;
