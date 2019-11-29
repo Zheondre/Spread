@@ -235,7 +235,6 @@ public class zombie extends entity {
         //tbullet.shoot(null);
         tbullet.shoot();
 
-
        if(per != null)
            if(preyDistance < 20) {
                biteNonZombie(per);
@@ -404,9 +403,9 @@ public class zombie extends entity {
                 //batch.draw(mMap.getPlayerHealth(),  ((tileGameMap)mMap).getPlayerOne().getCamXPos(), ((tileGameMap)mMap).getPlayerOne().getCamYPos(), ((Gdx.graphics.getWidth() - 1300) / 3) * getHealth(), 6);
             } else if (getClassID() != classIdEnum.ConvertedPer) {
 
-                if(getHealth() > .8f)
+                if(getmInfctTime() > .8f)
                     batch.setColor(Color.WHITE);
-                else if(getHealth() > .3f)
+                else if(getmInfctTime()  > .3f)
                     batch.setColor(Color.YELLOW);
                 else
                     batch.setColor(Color.PURPLE);
