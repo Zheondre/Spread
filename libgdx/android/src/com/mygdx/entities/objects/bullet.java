@@ -49,43 +49,42 @@ public class bullet extends entity {
        this.target = target;
        this.shooter = shooter;
 
-       float tx = 0, ty = 0, radius =1, tarR, shotR ,tangle;
+       float tx = 0, ty = 0, radius =1, tarR, shotR ,tangle, obs, adj;
 
        fired = false;
 
        if(target == null) {
 ;
        }else{
-
-           tx = (target.getPosX() + (float)target.getWidth()/2)  - shooter.getPosX();
-           ty = (target.getPosY() + (float)target.getHeight()/2) - shooter.getPosY();
-           this.mPos = new Vector3(tx, ty, 0);
-           tarR = getEntDistance(mPos, target);
-           shotR = tarR - 5; //ent radius - shooters' body radius
+           adj = (target.getPosX() + (float)target.getWidth()/2)  - (shooter.getPosX() + (float)shooter.getWidth()/2);
+           obs = (target.getPosY() + (float)target.getHeight()/2) - (shooter.getPosY() + (float)shooter.getHeight()/2);
+           tarR = getEntDistance(shooter, target);
+           shotR = tarR - 3; //ent radius - shooters' body radius
 // might want to put catch throw here...
-           tangle = (float)Math.atan(ty/tx);
+           tangle = (float)Math.atan(obs/adj);
            ty = (float)(shotR * Math.sin(tangle));
            tx = (float)(shotR * Math.cos(tangle));
            vy = (float)(vSpeed * Math.sin(tangle));
            vx = (float)(vSpeed * Math.cos(tangle));
-           if(tx < 0) {
+           if(adj < 0) {
                tx *= -1;
                ty *= -1;
                vx *= -1;
                vy *= -1;
            }
-           tx = (target.getPosX() + (float)target.getWidth()/2) - tx ;
-           ty = (target.getPosY() + (float)target.getHeight()/2) - ty ;
 
+         float posx = (shooter.getPosX() + (float)shooter.getWidth()/2)  + (adj - tx);
+         float posy = (shooter.getPosY() + (float)shooter.getHeight()/2) + (obs - ty);
+
+         this.mPos = new Vector3(posx, posy, 0);
        }
 
        //mario tutorial youtube libgdx box2d
        BodyDef entBody = new BodyDef();
        FixtureDef fd = new FixtureDef();
 
-      // this.mPos = new Vector3(tx, ty, 0);
-       this.mPos.x = tx;
-       this.mPos.y = ty;
+      // this.mPos.x = tx;
+       //this.mPos.y = ty;
 
        entBody.position.set(mPos.x, mPos.y);
        entBody.type = BodyDef.BodyType.DynamicBody;
@@ -96,7 +95,7 @@ public class bullet extends entity {
        fd.friction = 0;
        fd.shape = cs;
        entBody.bullet = true;
-       this.mPos = new Vector3(tx, ty, 0);
+      // this.mPos = new Vector3(tx, ty, 0);
 
        setmHeight(2);
        setmWidth(2);
@@ -132,7 +131,8 @@ public class bullet extends entity {
     public void render(SpriteBatch batch){
        //shoot requested draw image
         Texture image = getImage();
-        if((image != null) && (!remove))
+        //if((image != null) && (!remove))
+        if(image != null)
             batch.draw(image,mPos.x, mPos.y, getWidth(), getHeight());
     }
 

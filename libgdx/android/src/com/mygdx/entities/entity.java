@@ -440,14 +440,19 @@ public abstract class entity implements Telegraph {
     public float getEntDistance(entity target) {
         mPos.x = getBody().getPosition().x;
         mPos.y = getBody().getPosition().y;
-        float tempx = abs(target.getPosX() - this.mPos.x);
-        float tempy = abs(target.getPosY() - this.mPos.y);
+        float tempx = abs((target.getPosX() + target.getWidth()) -(this.mPos.x + this.getWidth()/2));
+        float tempy = abs((target.getPosY() + target.getHeight()) - (this.mPos.y + this.getHeight()/2));
         return (float) Math.sqrt(tempx * tempx + tempy * tempy);
     }
 
-    public float getEntDistance(Vector3 vpos, entity target) {
-        float tempx = abs(target.getPosX() - vpos.x);
-        float tempy = abs(target.getPosY() - vpos.y);
+    public float getEntDistance(zombie shooter, entity target) {
+
+        float tempx = abs((target.getPosX() + (float)target.getWidth()/2)
+                - (shooter.getPosX() + (float)shooter.getWidth()/2));
+
+        float tempy = abs((target.getPosY() + (float)target.getHeight()/2)
+                - (shooter.getPosY() + (float)shooter.getHeight()/2));
+
         return (float) Math.sqrt(tempx * tempx + tempy * tempy);
     }
     public boolean isLivingObject() {
