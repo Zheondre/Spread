@@ -93,14 +93,16 @@ public class EMT extends person {
 
     public void healMySelf(){
         setInfected(false);
-        if(healingTime > 0 ) {
-            healing = true;
-            if (getmInfctTime() < 1)
-                increaseInfcTime( .3f);
-            if(getHealth() <1.5f)
-                increaseHlth( .3f);
-            healingTime -= .25;
-            healing = false;
+        if(getHealth() > 0) {
+            if (healingTime > 0) {
+                healing = true;
+                if (getmInfctTime() < 1)
+                    increaseInfcTime(.3f);
+                if (getHealth() < 1.5f)
+                    increaseHlth(.3f);
+                healingTime -= .25;
+                healing = false;
+            }
         }
     }
 
