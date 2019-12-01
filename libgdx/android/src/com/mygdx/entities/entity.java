@@ -213,11 +213,14 @@ public abstract class entity implements Telegraph {
 
     public void dispose(){
         image = null;
-        imageA.dispose();
-        imageB.dispose();
+        if(imageA != null)
+            imageA.dispose();
+        if(imageB != null)
+            imageB.dispose();
         mPos = null;
         // becarefull bellow if some one is stilling pointing to this object it wont be freed
         steerEnt = null;
+        body.destroyFixture(body.getFixtureList().first());
         body = null;  // check on this
 
     }

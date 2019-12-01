@@ -56,6 +56,8 @@ public class cop extends security {
 
         } else {
 
+            //if(target != null)
+              //  shoot();
             //if its safe to shoot, than shoot
             // might have to use raycasting here
         }

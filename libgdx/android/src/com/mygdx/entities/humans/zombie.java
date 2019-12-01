@@ -227,14 +227,15 @@ public class zombie extends entity {
         // TODO make sure the person we are attacking is in the direction we are looking
         person per = findSomeOneToChase();
         //preyDistance
-
+        bullet tbullet = null;
         //debug shoot;
-       bullet tbullet = new bullet(entityInfo.BULLET, this, (zombie)mMap.getPeople().get(1), mMap);
-       //only add if we were able to shoot
-        ((tileGameMap)mMap).getBullets().add(tbullet);
-        //tbullet.shoot(null);
-        tbullet.shoot();
-
+        if (mMap.getPeople().size() > 1) {
+            tbullet = new bullet(entityInfo.BULLET, this, (zombie) mMap.getPeople().get(1), mMap);
+            //only add if we were able to shoot
+            ((tileGameMap) mMap).getBullets().add(tbullet);
+            //tbullet.shoot(null);
+            tbullet.shoot();
+        }
        if(per != null)
            if(preyDistance < 20) {
                biteNonZombie(per);
@@ -268,15 +269,28 @@ public class zombie extends entity {
         return true;
     }
 
+   public void dispose(){
+
+       pursueSB = null;
+       arriveSB = null;
+       combinedSB = null;
+        super.dispose();
+    }
+
         //  @Override
     public void update(float dTime){
 
         if(health < 0) {
+            // DEATH LOGIC
             isAlive = false;
             reviveTime -= .05;
-            if(reviveTime < 0) {
+            stopMoving();
+            mPos.x = this.getBody().getPosition().x - 7;
+            mPos.y = this.getBody().getPosition().y - 7.5f;
+            if(reviveTime < 0) {// crashed
                 ((tileGameMap)mMap).getReadyForDeletion().add(this);
             }
+            super.update(dTime);
             return;
         }
         if(this.mIsCpu) {
