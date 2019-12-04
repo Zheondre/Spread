@@ -50,8 +50,7 @@ public class Controller {
 
         Table table = new Table();
         table.left().bottom();
-
-
+        
 
         upImg.setSize(50, 50);
         downImg.setSize(50, 50);
@@ -119,8 +118,6 @@ public class Controller {
         });
 
         rightImg.addListener(new InputListener() {
-
-
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 rightPressed = true;
@@ -128,7 +125,6 @@ public class Controller {
                 rightImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("right_button_purple.png"))));
                 return true;
             }
-
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 rightPressed = false;
@@ -139,21 +135,43 @@ public class Controller {
         });
 
         attackImg.addListener(new InputListener() {
-
-
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 attackPressed = true;
                 player1.setAttackPressed(attackPressed);
                 return true;
             }
-
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 attackPressed = false;
                 player1.setAttackPressed(attackPressed);
             }
         });
+
+        leftCycle.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                player1.setLeftCyclePressed(true);
+                return true;
+            }
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+               // player1.setLeftCyclePressed(false);
+            }
+        });
+
+        rightCycle.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                player1.setRightCyclePressed(true);
+                return true;
+            }
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                //player1.setRightCyclePressed(false);
+            }
+        });
+
 
         table.add();
         table.add(upImg).size(upImg.getWidth(), upImg.getHeight());
