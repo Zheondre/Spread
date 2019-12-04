@@ -406,8 +406,9 @@ public class zombie extends entity {
                 // this puts the bar under the moving buttons
                 //batch.draw(mMap.getPlayerHealth(),  ((tileGameMap)mMap).getPlayerOne().getCamXPos(), ((tileGameMap)mMap).getPlayerOne().getCamYPos(), ((Gdx.graphics.getWidth() - 1300) / 3) * getHealth(), 6);
             } else if (getClassID() != classIdEnum.ConvertedPer) {
-
-                if(getHealth() > .8f)
+                if(getHealth() > .95f)
+                    batch.setColor(Color.CLEAR);
+                else if(getHealth() > .8f)
                     batch.setColor(Color.WHITE);
                 else if(getHealth() > .3f)
                     batch.setColor(Color.YELLOW);
@@ -415,8 +416,9 @@ public class zombie extends entity {
                     batch.setColor(Color.PURPLE);
                 batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +25, 22* mInfctTime, 3);
             }
-
-            if(getHealth() > .8f)
+            if(getHealth() > .95f)
+                batch.setColor(Color.CLEAR);
+            else if(getHealth() > .8f)
                 batch.setColor(Color.GREEN);
             else if(getHealth() > .3f)
                 batch.setColor(Color.ORANGE);

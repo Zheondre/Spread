@@ -29,11 +29,14 @@ import static com.mygdx.AiStates.MessageType.HELP_ZOMBIE_SPOTTED;
 import static com.mygdx.AiStates.MessageType.HELP_ZOMBIE_SPOTTED_REPLY;
 import static com.mygdx.entities.BehaviorEnum.INFECTED;
 import static com.mygdx.entities.BehaviorEnum.NEW_ZOMBIE;
+import com.mygdx.utils.bombAnimation;
 
 public class person extends zombie {
 
     private boolean mInfected;
     private boolean mZombie;
+    public boolean firstVictim = false;
+    public bombAnimation bombDrop = new bombAnimation();
 
     boolean walk = true;
     protected int MessageMsk = 0;
@@ -171,20 +174,26 @@ public class person extends zombie {
                 changeImage(true, 1);
             else changeImage(false, 1);
         }
-        if(this.isMoveUp()) {
+        else if(this.isMoveUp()) {
             if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
                 changeImage(true, 2);
             else changeImage(false, 2);
         }
-        if(this.isMoveLeft()) {
+        else if(this.isMoveLeft()) {
             if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
                 changeImage(true, 3);
             else changeImage(false, 3);
         }
-        if(this.isMoveDown()) {
+        else if(this.isMoveDown()) {
             if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
                 changeImage(true, 4);
             else changeImage(false, 4);
+        }
+        else changeImage(true, 1);
+
+        if(firstVictim)
+        {
+            bombDrop.render(100, 100, 2000);
         }
 
 
