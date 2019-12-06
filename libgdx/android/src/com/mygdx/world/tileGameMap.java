@@ -156,7 +156,7 @@ public class tileGameMap extends gameMap {
                 break;
             case PZombie:
                 playerOne = new player(new zombie(entityInfo.ZPLAYER,this));
-                //zombies.add((zombie) playerOne.getHost());
+                zombies.add((zombie) playerOne.getHost());
                 break;
         }
 
@@ -169,7 +169,7 @@ public class tileGameMap extends gameMap {
         //loadEnts();
 
         //debug
-        for(int i = 0; i < 0; i++)
+        for(int i = 0; i < 1; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
         for(int i = 0; i < 1; i++)
@@ -211,12 +211,7 @@ public class tileGameMap extends gameMap {
         batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
         batch.begin();
 
-        playerOne.getHost().render(batch);
-
-        //batch.draw(up_button, Gdx.graphics.getWidth() - (up_button.getWidth() * 2), Gdx.graphics.getHeight()/5);
-        //batch.draw(right_button, Gdx.graphics.getWidth() - right_button.getWidth(), Gdx.graphics.getHeight()/5 - right_button.getHeight());
-        //batch.draw(down_button, Gdx.graphics.getWidth() - (down_button.getWidth() * 2), Gdx.graphics.getHeight()/5 - (down_button.getHeight() * 2));
-        //batch.draw(left_button, Gdx.graphics.getWidth() - (left_button.getWidth() * 2), Gdx.graphics.getHeight()/5 - left_button.getHeight());
+        //playerOne.getHost().render(batch);
 
        for(zombie ent: zombies)
            ent.render(batch);
@@ -292,15 +287,13 @@ public class tileGameMap extends gameMap {
             lastEntPos--;
         }
 
-        /*
+
         if(people.size() == 0) {
-            //
             zombies.clear();
             getPlayerOne().addPoints(currentLevel * 10);
             getPlayerOne().resetBomb();
             loadEnts();
         }
-        */
 
         if(zombies.size() == 0) {
             ; //all zombied were killed or no one was converted say game over

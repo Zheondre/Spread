@@ -16,6 +16,7 @@ import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 import com.mygdx.entities.objects.bomb;
+import com.mygdx.entities.objects.gun;
 import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
 
@@ -38,7 +39,9 @@ public class person extends zombie {
     private boolean mZombie;
     private float wlkTime;
 
-    protected int MessageMsk = 0;
+    protected entity selectedWeapon;
+
+    protected int MessageMsk = 0; // reminder only 32 messages can be placed in the mask
     protected Evade<Vector2> evadeSB;
     protected Flee<Vector2>  fleeSB;
     protected Hide<Vector2>  hideSB;
@@ -106,6 +109,11 @@ public class person extends zombie {
         }
         this.mInfctTime = 1;
         this.weapon = entityType.getWeapon();
+
+        // need to support sords but just gonna put guns for now if we choose this
+        if(weapon != classIdEnum.NOWEAPON)
+            selectedWeapon = new gun(classIdEnum.PISTOL, this);
+
         this.mZombie =  entityType.isZombie();
         this.mInfected = entityType.isInfected();
         this.mAlerted = BehaviorEnum.WALK_RANDOMLY;
@@ -115,7 +123,7 @@ public class person extends zombie {
 
     public boolean handleMessage(Telegram msg){
         entity temp;
-
+// TODO need to clear help messages when help has arrived
         switch(msg.message) {
             case HELP_ZOMBIE_SPOTTED:
                 //zombie is in raycast view flee but allet athoreties to location
@@ -160,6 +168,11 @@ public class person extends zombie {
             return false;
     }
 
+    public boolean attack(){
+        if(selectedWeapon != null)
+            selectedWeapon.attack();
+        return true;
+    }
    // @Override
     public void update(float dTime){
 

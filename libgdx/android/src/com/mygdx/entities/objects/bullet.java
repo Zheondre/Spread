@@ -147,22 +147,6 @@ public class bullet extends entity {
         float xforce = 25.8f * 10000;
 
         if(target != null) {
-            //need to test
-            //if we have a clear shot shoot zombie
-  /*
-            getEntDistance(target);
-            tempx = (target.getPosX() + (float)target.getWidth()/2)  - this.mPos.x;
-            tempy = (target.getPosY() + (float)target.getHeight()/2) - this.mPos.y;
-
-            tangle = (float)Math.atan(tempy/tempx);
-            vy = (float)(vSpeed * Math.sin(tangle));
-            vx = (float)(vSpeed * Math.cos(tangle));
-
-            if(tempx < 0) {
-                vx *= -1;
-                vy *= -1;
-            }
-*/
             Vector2 tv = new Vector2(vx,vy); //this might slow things down, change later
             getBody().applyLinearImpulse(tv, getBody().getWorldCenter(), true);
         } else {
@@ -200,16 +184,5 @@ public class bullet extends entity {
     }
     public boolean handleMessage(Telegram msg) {
         return true;
-    }
-  /*  public void shoot(Vector2 vPos){
-// a gun should be shooting a bullet but leave this here for debug
-    }
-*/
-    public void shootDebug(player play){
-
-//play.getHost().
-
-
-
     }
 }

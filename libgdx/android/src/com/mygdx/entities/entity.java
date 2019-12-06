@@ -72,6 +72,8 @@ public abstract class entity implements Telegraph {
 
     protected int prevDrct;
 
+    protected classIdEnum weapon;
+
     private int mapXMax;
     private int mapYMax;
 
@@ -99,7 +101,7 @@ public abstract class entity implements Telegraph {
     }
 
     public entity(entityInfo entType, zombie ent, gameMap Map) {
-// bullet constructor
+    // bullet constructor
         this.mVelocityY = 0;
         this.mMap = Map;
         this.amIOnTheGound = false; // every thing will be on the ground for now
@@ -147,43 +149,44 @@ public abstract class entity implements Telegraph {
             tx = 250;
             ty = 60;
         }else {
-                while (!goodposition) {
-                    tx = (float) (Math.random() * ((200 - 100) + 100)) + 1;
-                    ty = (float) (Math.random() * ((200 - 100) + 100)) + 1;
+            while (!goodposition) {
+                tx = (float) (Math.random() * ((200 - 100) + 100)) + 1;
+                ty = (float) (Math.random() * ((200 - 100) + 100)) + 1;
 
-                    goodposition = true;
-                    TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int) ((tx) / tileW), (int) (ty / tileH));
+                goodposition = true;
+                TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int) ((tx) / tileW), (int) (ty / tileH));
 
-                    if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty)/tileH)) != null)
-                        goodposition = false;
-                }
+                if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty)/tileH)) != null)
+                    goodposition = false;
             }
-
+        }
 
         collisionLayer = null;
         this.mPos = new Vector3(tx, ty, 0);
 
-        entBody.position.set(mPos.x, mPos.y);
         entBody.type = BodyDef.BodyType.DynamicBody;
+
+        entBody.position.set(mPos.x, mPos.y);
 
         CircleShape cs = new CircleShape();
         cs.setRadius(5);
+
         fd.density = .05f;
         fd.friction = .5f;
         fd.shape = cs;
 
         this.body = mMap.getWorld().createBody(entBody);
-       if (classID != classIdEnum.PZombie) {
-           // this.steerEnt = new Box2dSteering(this.body, 5);
+        if (classID != classIdEnum.PZombie) {
+            this.steerEnt = new Box2dSteering(this.body, 5);
         }
         //fd.filter.groupIndex = 0;
-
+        this.body.setActive(true);
         this.body.createFixture(fd).setUserData(this);
         badPath = false;
     }
 
     public entity(entityInfo entType, gameMap Map, Rectangle rec) {
-
+        // Buildings
         this.mPos = new Vector3(rec.getX() + rec.getWidth() / 2, rec.getY() + rec.getHeight() / 2, 0);
         this.mVelocityY = 0;
         this.mMap = Map;

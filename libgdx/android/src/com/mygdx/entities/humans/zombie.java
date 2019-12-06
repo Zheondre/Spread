@@ -22,6 +22,7 @@ import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 import com.mygdx.entities.objects.bullet;
+import com.mygdx.utils.viewQueryCallBack;
 import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
 
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import static com.mygdx.entities.BehaviorEnum.TEST_DONT_MOVE;
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
 import static com.mygdx.entities.entityInfo.BULLET;
+import static com.mygdx.entities.humans.EMT.DrawDebugLine;
 import static com.mygdx.utils.entUtils.getZombieAttack;
 import static com.mygdx.utils.entUtils.stopDownVec;
 import static com.mygdx.utils.entUtils.stopLeftVec;
@@ -38,6 +40,8 @@ import static com.mygdx.utils.entUtils.stopUpVec;
 import static java.lang.StrictMath.abs;
 
 public class zombie extends entity {
+
+    private viewQueryCallBack viewCB;
 
     protected int peopleConverted;
     protected int infections;
@@ -56,6 +60,11 @@ public class zombie extends entity {
 
     private float reviveTime = 20;
     private float bitetime = biteTimeSetting;
+
+    public void setWlkTime(float wlkTime) {
+        this.wlkTime = wlkTime;
+    }
+
     private float wlkTime;
     private float preyDistance;
 
@@ -183,6 +192,8 @@ public class zombie extends entity {
             //put player towards the beginning of map if its not a new game
             //if its a new game dont draw the spite yet we got to set a bomb before hand
            // steerEnt.setBehavior(wanderSB);
+        } else {
+            viewCB = new viewQueryCallBack();
         }
     }
 
@@ -226,16 +237,7 @@ public class zombie extends entity {
     public boolean attack(){
         // TODO make sure the person we are attacking is in the direction we are looking
         person per = findSomeOneToChase();
-        //preyDistance
-        bullet tbullet = null;
-        //debug shoot;
-        if (mMap.getPeople().size() > 1) {
-            tbullet = new bullet(entityInfo.BULLET, this, (zombie) mMap.getPeople().get(1), mMap);
-            //only add if we were able to shoot
-            ((tileGameMap) mMap).getBullets().add(tbullet);
-            //tbullet.shoot(null);
-            tbullet.shoot();
-        }
+
        if(per != null)
            if(preyDistance < 20) {
                biteNonZombie(per);
@@ -270,7 +272,6 @@ public class zombie extends entity {
     }
 
    public void dispose(){
-
        pursueSB = null;
        arriveSB = null;
        combinedSB = null;
@@ -362,7 +363,8 @@ public class zombie extends entity {
                         } else {
 
                             if(this.getPrey() != null)
-                                steerEnt.update(dTime);
+                                if(steerEnt != null)
+                                    steerEnt.update(dTime);
                         }
                         //goAfterNonZombie if we are close enough attack
                         // or follow the leader if instructed on oding so
@@ -386,6 +388,24 @@ public class zombie extends entity {
                         super.update(dTime);
                 }
         } else {
+
+            ///// temp /////
+            float tempX = this.getPosX();
+            float tempY = this.getPosY();
+            float radius = 5;
+            //mAlerted = TEST_DONT_MOVE;
+            DrawDebugLine(new Vector2(tempX - radius*2,tempY - radius*5), new Vector2(tempX - radius*2, tempY- 3), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined); //left line
+            DrawDebugLine(new Vector2(tempX + radius*4,tempY - radius*5), new Vector2(tempX + radius*4, tempY-3), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined);
+
+
+            mMap.getWorld().QueryAABB(viewCB,
+                    tempX - radius*2,
+                    tempY - radius*5,
+                    tempX + radius*4,
+                    tempY - 3
+            );
+            ///// temp /////
+
             //player has control
             super.update(dTime);
         }
@@ -417,14 +437,16 @@ public class zombie extends entity {
                 //batch.draw(mMap.getPlayerHealth(),  ((tileGameMap)mMap).getPlayerOne().getCamXPos(), ((tileGameMap)mMap).getPlayerOne().getCamYPos(), ((Gdx.graphics.getWidth() - 1300) / 3) * getHealth(), 6);
             } else if (getClassID() != classIdEnum.ConvertedPer) {
 
-                if(getmInfctTime() > .8f)
-                    batch.setColor(Color.WHITE);
-                else if(getmInfctTime()  > .3f)
-                    batch.setColor(Color.YELLOW);
-                else
-                    batch.setColor(Color.PURPLE);
-                if(mInfctTime > 0)
-                    batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +25, 22* mInfctTime, 3);
+                //if((getHealth() > 0) ) {
+                    if (getmInfctTime() > .8f)
+                        batch.setColor(Color.WHITE);
+                    else if (getmInfctTime() > .3f)
+                        batch.setColor(Color.YELLOW);
+                    else
+                        batch.setColor(Color.PURPLE);
+                    if (mInfctTime > 0)
+                        batch.draw(mMap.getPlayerHealth(), getPosX() + 8, getPosY() + 25, 22 * mInfctTime, 3);
+                //}
             }
 
             if(getHealth() > .8f)

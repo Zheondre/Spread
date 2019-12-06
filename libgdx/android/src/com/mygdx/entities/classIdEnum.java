@@ -17,6 +17,7 @@ public enum classIdEnum {
         Hazmat,
         Master,
         Debug,
+        Gun,
         PISTOL,
         SHOTTI,
         UZI,

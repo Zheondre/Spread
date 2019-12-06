@@ -234,12 +234,13 @@ public class EMT extends person {
         // need to check after we finish moving this might be set before we move
       //  if(isMoveDown()) {
  /*
- mMap.getWorld().QueryAABB(viewCB,
-                    getPosX() - radius*2,
-                    getPosY(),
-                    getPosX() + radius*2,
-                    getPosY() - radius*5
-                    );
+            // this fires for any object bellow the entity
+            mMap.getWorld().QueryAABB(viewCB,
+                    tempX - radius*2,
+                    tempY - radius*5,
+                    tempX + radius*4,
+                    tempY - 3
+            );
     //    }else if(isMoveUp()) {
 
 
@@ -286,8 +287,6 @@ public class EMT extends person {
             mAlerted = EVADE_ZOMBIE;
             //tell others that an emt spotted a zombie
         }
-
-
 
         // when should the emt heal its self ?
         if((getHealth() < 1f)||(getmInfctTime() < 1f))

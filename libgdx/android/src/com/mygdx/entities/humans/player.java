@@ -340,19 +340,6 @@ public class player implements InputProcessor {
             host = bombRef;
     }
 
-    //public void setTempHost(entity tempHost) {
-    //    this.tempHost = tempHost;
-    //}
-
-    public void checkForSwitch(){
-        if(tempHost != null) {
-            host = tempHost;
-            //if bomb instance, dipose of it after the switch
-            // we should wait after the bomb animation is done then call dispose
-            //tempHost.disPose();
-            //tempHost = null;
-        }
-    }
     public OrthographicCamera getPlayCam() {
         return playCam;
     }

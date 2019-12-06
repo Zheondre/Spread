@@ -98,6 +98,7 @@ public enum entityInfo {
                 this.infected = true;
                 this.zombie = true;
                 this.isCpu = false;
+
                 break;
             case PPerson:
                 this.xpos = 250;
