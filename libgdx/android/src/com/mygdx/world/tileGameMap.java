@@ -172,10 +172,10 @@ public class tileGameMap extends gameMap {
         for(int i = 0; i < 1; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < 1; i++)
             people.add(new person(entityInfo.PERSON,this));
 
-        for(int i = 0; i < 0; i++)
+        for(int i = 0; i < 1; i++)
             people.add(new EMT(entityInfo.EMT,this));
 
         for(int i = 0; i < 0; i++)
@@ -211,7 +211,8 @@ public class tileGameMap extends gameMap {
         batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
         batch.begin();
 
-        //playerOne.getHost().render(batch);
+        if(playerOne.getHost().getClassID() == classIdEnum.PBomb)
+            playerOne.getHost().render(batch);
 
        for(zombie ent: zombies)
            ent.render(batch);
@@ -239,7 +240,9 @@ public class tileGameMap extends gameMap {
 
        world.step(1/60f,6,2);// need to read docs on this
 
-        playerOne.update(deltaT);
+
+        if(playerOne.getHost().getClassID() == classIdEnum.PBomb)
+            playerOne.getHost().update(deltaT);
 
         for(zombie ent: zombies) //if ready for clean up skip
             ent.update(deltaT);

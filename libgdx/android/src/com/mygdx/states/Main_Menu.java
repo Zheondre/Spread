@@ -26,7 +26,7 @@ public class Main_Menu extends GameState {
     public Main_Menu(GameStateManager gsm)
     {
         super(gsm);
-        settings_button = new Texture("settingsButton.png");
+        settings_button = new Texture("statsButton.png");
         about_button = new Texture("aboutButton.png");
         level_select_button = new Texture("levelSelectButton.png");
         spreadLogo = new Texture("spreadLogo.png");

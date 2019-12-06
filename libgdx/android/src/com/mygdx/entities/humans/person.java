@@ -60,13 +60,8 @@ public class person extends zombie {
 
     boolean walk = true;
 
-
     private float wlkTime;
     private int wlkDirection;
-
-    public Evade<Vector2> getEvadeSB() {
-        return evadeSB;
-    }
 
     public void setEvadeSB(Evade<Vector2> evadeSB) {
         if(evadeSB!= null)
@@ -137,7 +132,7 @@ public class person extends zombie {
             //this.setImageB("player2.png");
             MessageManager.getInstance().addListeners(this,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY, GIVE_PER_LOCATION,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY_DENIED);
         }
-/*
+
         /////https://github.com/libgdx/gdx-ai/blob/master/tests/src/com/badlogic/gdx/ai/tests/steer/box2d/tests/Box2dRaycastObstacleAvoidanceTest.java
         /////////
         RayConfigurationBase<Vector2> rayConfiguration = new CentralRayWithWhiskersConfiguration<Vector2>(steerEnt, SteeringUtils.pixelsToMeters(100),
@@ -148,12 +143,10 @@ public class person extends zombie {
                 raycastCollisionDetector, SteeringUtils.pixelsToMeters(1000));
 
         combinedSB.add(raycastObstacleAvoidanceSB);
-*/
-        /////////////////////////////
-        //this.mInfctTime = 1;
-         else if (entityType.getId() != classIdEnum.Emt) {
 
-        }
+        /////////////////////////////
+        this.mInfctTime = 1;
+
         this.weapon = entityType.getWeapon();
 
         // need to support sords but just gonna put guns for now if we choose this
@@ -395,7 +388,9 @@ public class person extends zombie {
         this.mAlerted = BOMB_INFECTED;
     }
 
-
+    public Evade<Vector2> getEvadeSB() {
+        return evadeSB;
+    }
 
     public void decreaseInfectTime(float InfctTime){ this.mInfctTime -= InfctTime; }
 
