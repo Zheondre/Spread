@@ -30,8 +30,6 @@ public class Box2dSteering implements Steerable<Vector2> {
 
     boolean independentFacing;
 
-
-
     SteeringBehavior<Vector2> behavior; //might have to put these in the entity class
 
     private static final SteeringAcceleration<Vector2> steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
@@ -51,7 +49,7 @@ public class Box2dSteering implements Steerable<Vector2> {
 
         this.independentFacing = true; // will change later
         //this.independentFacing = independentFacing;
-     this.body.setUserData(this);
+      //this.body.setUserData(this); set in entity
     }
 
 
@@ -76,7 +74,7 @@ public class Box2dSteering implements Steerable<Vector2> {
             Vector2 linVel = getLinearVelocity();
             if (!linVel.isZero(getZeroLinearSpeedThreshold())) {
                 float newOrientation = vectorToAngle(linVel);
-                body.setAngularVelocity((newOrientation - getAngularVelocity()) * dt); // this is superfluous if independentFacing is always true
+                //body.setAngularVelocity((newOrientation - getAngularVelocity()) * dt); // this is superfluous if independentFacing is always true
                 body.setTransform(body.getPosition(), newOrientation);
             }
         }

@@ -15,4 +15,5 @@ public enum BehaviorEnum {
     PATROL,
     INVESTIGATE,
     TEST_WANDER_SB,
+    TEST_DONT_MOVE,
 }

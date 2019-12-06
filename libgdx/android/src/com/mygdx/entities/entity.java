@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.mygdx.entities.humans.zombie;
 import com.mygdx.world.gameMap;
 
 import static com.mygdx.utils.entUtils.getMoveDownVec;
@@ -38,8 +39,16 @@ public abstract class entity implements Telegraph {
     private Texture imageDown;
     private Texture imageDownWalk;
 
-    private final static int mWidth = 13;
-    private final static int mHeight = 18;
+    public void setmWidth(int mWidth) {
+        this.mWidth = mWidth;
+    }
+
+    public void setmHeight(int mHeight) {
+        this.mHeight = mHeight;
+    }
+
+    private  int mWidth = 13;
+    private  int mHeight = 18;
     private static final float mWeight = 40;
 
     protected float mVelocityY;
@@ -49,6 +58,8 @@ public abstract class entity implements Telegraph {
     protected Vector3 mPos;
 
     protected classIdEnum classID;
+
+    private boolean livingObject;
 
     private Body body;
 
@@ -61,6 +72,12 @@ public abstract class entity implements Telegraph {
     private boolean moveDown;
 
     protected boolean validPath;
+
+    protected int wlkDirection;
+
+    protected int prevDrct;
+
+    protected classIdEnum weapon;
 
     private int mapXMax;
     private int mapYMax;
@@ -88,12 +105,27 @@ public abstract class entity implements Telegraph {
         this.validPath = false;
     }
 
+    public entity(entityInfo entType, zombie ent, gameMap Map) {
+    // bullet constructor
+        this.mVelocityY = 0;
+        this.mMap = Map;
+        this.amIOnTheGound = false; // every thing will be on the ground for now
+        this.classID = entType.getId();
+        this.livingObject = entType.isLivingObject();
+        this.moveLeft = false;
+        this.moveRight = false;
+        this.moveUp = false;
+        this.moveDown = false;
+        this.validPath = false;
+        this.badPath = false;
+    }
     public entity(entityInfo entType, gameMap Map) {
 
         this.mVelocityY = 0;
         this.mMap = Map;
         this.amIOnTheGound = true; // every thing will be on the ground for now
         this.classID = entType.getId();
+        this.livingObject = entType.isLivingObject();
 
         this.moveLeft = false;
         this.moveRight = false;
@@ -116,10 +148,15 @@ public abstract class entity implements Telegraph {
         if (classID == classIdEnum.PZombie) {
             tx = entType.getXpos();
             ty = entType.getYpos();
-        } else {
+        } else if (classID == classIdEnum.Emt) {
+           // tx = (float) (Math.random() * ((200 - 100) + 100)) + 1;
+            //ty = (float) (Math.random() * ((200 - 100) + 100)) + 1;
+            tx = 250;
+            ty = 60;
+        }else {
             while (!goodposition) {
-                tx = (float) (Math.random() * ((300 - 50) + 50)) + 1;
-                ty = (float) (Math.random() * ((300 - 50) + 50)) + 1;
+                tx = (float) (Math.random() * ((200 - 100) + 100)) + 1;
+                ty = (float) (Math.random() * ((200 - 100) + 100)) + 1;
 
                 goodposition = true;
                 TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int) ((tx) / tileW), (int) (ty / tileH));
@@ -132,25 +169,29 @@ public abstract class entity implements Telegraph {
         collisionLayer = null;
         this.mPos = new Vector3(tx, ty, 0);
 
-        entBody.position.set(mPos.x, mPos.y);
         entBody.type = BodyDef.BodyType.DynamicBody;
+
+        entBody.position.set(mPos.x, mPos.y);
 
         CircleShape cs = new CircleShape();
         cs.setRadius(5);
-        fd.density = .01f;
+
+        fd.density = .05f;
         fd.friction = .5f;
         fd.shape = cs;
 
         this.body = mMap.getWorld().createBody(entBody);
-        this.steerEnt = new Box2dSteering(this.body,10);
-
+        if (classID != classIdEnum.PZombie) {
+            this.steerEnt = new Box2dSteering(this.body, 5);
+        }
         //fd.filter.groupIndex = 0;
-        this.body.createFixture(fd);
+        this.body.setActive(true);
+        this.body.createFixture(fd).setUserData(this);
         badPath = false;
     }
 
     public entity(entityInfo entType, gameMap Map, Rectangle rec) {
-
+        // Buildings
         this.mPos = new Vector3(rec.getX() + rec.getWidth() / 2, rec.getY() + rec.getHeight() / 2, 0);
         this.mVelocityY = 0;
         this.mMap = Map;
@@ -173,7 +214,8 @@ public abstract class entity implements Telegraph {
         entBody.position.set(mPos.x, mPos.y);
         fd.shape = shape;
         this.body = mMap.getWorld().createBody(entBody);
-        this.body.createFixture(fd);
+        //need this for raycast detection.. should we include static objects ...?
+        this.body.createFixture(fd).setUserData(this);
         badPath = false;
     }
 
@@ -190,6 +232,7 @@ public abstract class entity implements Telegraph {
         mPos = null;
         // becarefull bellow if some one is stilling pointing to this object it wont be freed
         steerEnt = null;
+        body.destroyFixture(body.getFixtureList().first());
         body = null;  // check on this
 
     }
@@ -366,6 +409,10 @@ public abstract class entity implements Telegraph {
         if (amount > 0) {
             if (body.getLinearVelocity().x <= 55)
                 body.applyLinearImpulse(getMoveLeftVec(), body.getWorldCenter(), true);
+            //body.getAngle();
+            //body.appl
+
+
         } else {
             if (body.getLinearVelocity().x >= -55)
                 body.applyLinearImpulse(getMoveRightVec(), body.getWorldCenter(), true);
@@ -407,6 +454,7 @@ public abstract class entity implements Telegraph {
         return mPos;
     }
 
+    public void setBody(Body body) { this.body = body; }
     public Body getBody() {
         return body;
     }
@@ -478,9 +526,35 @@ public abstract class entity implements Telegraph {
     public float getEntDistance(entity target) {
         mPos.x = getBody().getPosition().x;
         mPos.y = getBody().getPosition().y;
-        float tempx = abs(target.getPosX() - this.mPos.x);
-        float tempy = abs(target.getPosY() - this.mPos.y);
+        float tempx = abs((target.getPosX() + target.getWidth()) -(this.mPos.x + this.getWidth()/2));
+        float tempy = abs((target.getPosY() + target.getHeight()) - (this.mPos.y + this.getHeight()/2));
         return (float) Math.sqrt(tempx * tempx + tempy * tempy);
+    }
+
+    public float getEntDistance(zombie shooter, entity target) {
+
+        float tempx = abs((target.getPosX() + (float)target.getWidth()/2)
+                - (shooter.getPosX() + (float)shooter.getWidth()/2));
+
+        float tempy = abs((target.getPosY() + (float)target.getHeight()/2)
+                - (shooter.getPosY() + (float)shooter.getHeight()/2));
+
+        return (float) Math.sqrt(tempx * tempx + tempy * tempy);
+    }
+    public boolean isLivingObject() {
+        return livingObject;
+    }
+
+    public int getWlkDirection() {
+        return wlkDirection;
+    }
+
+    public int getPrevDrct() {
+        return prevDrct;
+    }
+
+    public void setPrevDrct(int prevDrct) {
+        this.prevDrct = prevDrct;
     }
 
 }

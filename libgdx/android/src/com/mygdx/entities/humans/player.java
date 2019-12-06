@@ -8,6 +8,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
+import com.mygdx.entities.BehaviorEnum;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.objects.bomb;
@@ -44,6 +45,23 @@ public class player implements InputProcessor {
     private boolean attackButton;
     private boolean bombExploded = false;
     private boolean isAttackPressed = false;
+
+    public boolean isLeftCyclePressed() {
+        return leftCyclePressed;
+    }
+
+    public void setLeftCyclePressed(boolean leftCyclePressed) {
+        this.leftCyclePressed = leftCyclePressed;
+    }
+
+    public boolean isRightCyclePressed() {
+        return rightCyclePressed;
+    }
+
+    public void setRightCyclePressed(boolean rightCyclePressed) {
+        this.rightCyclePressed = rightCyclePressed;
+    }
+
     private boolean leftCyclePressed = false;
     private boolean rightCyclePressed = false;
 
@@ -55,7 +73,7 @@ public class player implements InputProcessor {
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
         playCam = new OrthographicCamera();
-        playCam.setToOrtho(false, wdth - 1300, hght - 800);
+        playCam.setToOrtho(false, wdth - 1400, hght - 900);
         playCam.update();
         this.points = 0;
         this.infects = 0;
@@ -206,7 +224,7 @@ public class player implements InputProcessor {
     }
 
     public void update(float dTime) {
-        host.update(dTime);
+       // host.update(dTime);
 
         if(isAttackPressed)
         {
@@ -232,12 +250,6 @@ public class player implements InputProcessor {
             if(tIndex < 0)
                 tIndex = entSize-1;
 
-            while( (!((person)ZombieRef.get(tIndex)).areYouAZombie()) ){
-                if(tIndex - 1 < 0)
-                    tIndex = entSize - 1;
-                else
-                    tIndex--;
-            }
             tHost = ZombieRef.get(tIndex);
         }
 
@@ -251,12 +263,6 @@ public class player implements InputProcessor {
             if(tIndex > entSize - 1)
                 tIndex = 0;
 
-            while( (!((person)ZombieRef.get(tIndex)).areYouAZombie()) ){
-                if(tIndex + 1> entSize -1)
-                    tIndex = 0;
-                else
-                    tIndex++;
-            }
             tHost = ZombieRef.get(tIndex);
         }
 
@@ -266,12 +272,19 @@ public class player implements InputProcessor {
                 if(tHost != null) {
                     ((zombie) host).setClassID(classIdEnum.ConvertedPer);
                     ((zombie) host).setCpuStatus(true);
+                    ((zombie) host).setmAlerted(BehaviorEnum.WALK_RANDOMLY);
+                    ((zombie) host).setWlkTime(0);
                     host = tHost;
                     ((zombie) host).setCpuStatus(false);
 
                     myIndex = tIndex;
                 }
             }
+
+            if(leftCyclePressed)
+                leftCyclePressed = false;
+            if(rightCyclePressed)
+                rightCyclePressed = false;
         }
 
         if(bombExploded) {
@@ -327,19 +340,6 @@ public class player implements InputProcessor {
             host = bombRef;
     }
 
-    //public void setTempHost(entity tempHost) {
-    //    this.tempHost = tempHost;
-    //}
-
-    public void checkForSwitch(){
-        if(tempHost != null) {
-            host = tempHost;
-            //if bomb instance, dipose of it after the switch
-            // we should wait after the bomb animation is done then call dispose
-            //tempHost.disPose();
-            //tempHost = null;
-        }
-    }
     public OrthographicCamera getPlayCam() {
         return playCam;
     }
@@ -374,9 +374,10 @@ public class player implements InputProcessor {
 
     private int getZombieIndex() {
         int i;
-        for (i = 0; i < ZombieRef.size(); i++) ;
-        ZombieRef.get(i).equals(host);
-        return i;
+        for (i = 0; i < ZombieRef.size(); i++)
+            if(ZombieRef.get(i).equals(host))
+                return i;
+            return -1;
     }
 
 

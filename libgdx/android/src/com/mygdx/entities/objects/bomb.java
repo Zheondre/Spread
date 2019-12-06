@@ -52,7 +52,7 @@ public class bomb extends entity {
 
         int entDist;
         entity tempEnt = null;
-
+        bombDrop.render(300,300,300);
 
 		
         if(mMap.getPeople().size() == 0)

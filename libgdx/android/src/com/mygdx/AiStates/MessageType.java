@@ -10,6 +10,7 @@ public final class MessageType {
     public static final int HELP_INFECTED = 1;
     public static final int HELP_COP_NEEDS_EMT = 2;
     public static final int HELP_BACKUP_COPS = 3;
+    public static final int HELP_ALLOCATE_MORE_COPS = 18;
     public static final int HELP_BACKUP_ARMY = 4;
     public static final int FOLLOW_ME = 5;
     public static final int FOLLOW_ME_COP = 5;
