@@ -204,19 +204,11 @@ public class EMT extends person {
         float tempX = getPosX();
         float tempY = getPosY();
         float radius = 5;
-        DrawDebugLine(new Vector2(tempX - radius*2,tempY - radius*5), new Vector2(tempX - radius*2, tempY), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined);
-        DrawDebugLine(new Vector2(tempX + radius*4,tempY - radius*5), new Vector2(tempX + radius*4, tempY), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined);
+        //DrawDebugLine(new Vector2(tempX - radius*2,tempY - radius*5), new Vector2(tempX - radius*2, tempY), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined);
+        //DrawDebugLine(new Vector2(tempX + radius*4,tempY - radius*5), new Vector2(tempX + radius*4, tempY), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined);
         // DrawDebugLine(new Vector2(0,0), new Vector2(100,100), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined);
         //DrawDebugLine(new Vector2(0,0), new Vector2(100,100), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined);
 //debug //////////
-        /*
-        mMap.getWorld().QueryAABB(viewCB,
-                getPosX() - radius*2,
-                getPosY(),
-                getPosX() + radius*4,
-                getPosY() - radius*5
-        );
-         */
     }
     public void update(float dt){
 
