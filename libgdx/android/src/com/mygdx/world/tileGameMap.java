@@ -53,8 +53,8 @@ public class tileGameMap extends gameMap {
 
     public static Texture playerHealth;
 
-    //private final classIdEnum DEBUGMODE = classIdEnum.PBomb;
-    private final classIdEnum DEBUGMODE = classIdEnum.PZombie;
+    private final classIdEnum DEBUGMODE = classIdEnum.PBomb;
+    //private final classIdEnum DEBUGMODE = classIdEnum.PZombie;
     //private final classIdEnum DEBUGMODE = classIdEnum.PPerson;
     //private final classIdEnum DEBUGMODE = classIdEnum.PEMT;
     //private final classIdEnum DEBUGMODE = classIdEnum.PCop;
@@ -211,7 +211,8 @@ public class tileGameMap extends gameMap {
         batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
         batch.begin();
 
-        //playerOne.getHost().render(batch);
+        if(playerOne.getHost().getClassID() == classIdEnum.PBomb)
+            playerOne.getHost().render(batch);
 
        for(zombie ent: zombies)
            ent.render(batch);
@@ -239,7 +240,9 @@ public class tileGameMap extends gameMap {
 
        world.step(1/60f,6,2);// need to read docs on this
 
-        playerOne.update(deltaT);
+
+        if(playerOne.getHost().getClassID() == classIdEnum.PBomb)
+            playerOne.getHost().update(deltaT);
 
         for(zombie ent: zombies) //if ready for clean up skip
             ent.update(deltaT);

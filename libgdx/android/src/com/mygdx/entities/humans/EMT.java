@@ -198,7 +198,6 @@ public class EMT extends person {
         Gdx.gl.glLineWidth(3);
     }
 
-
     public void testLine(){
         //mAlerted = TEST_DONT_MOVE;
         float tempX = getPosX();
@@ -215,12 +214,12 @@ public class EMT extends person {
         float tempX = getPosX();
         float tempY = getPosY();
         float radius = 5;
-        mAlerted = TEST_DONT_MOVE;
+        //mAlerted = TEST_DONT_MOVE;
         mMap.getWorld().QueryAABB(viewCB,
                 tempX - radius*2,
-                tempY,
+                tempY - radius*5,
                 tempX + radius*4,
-                tempY - radius*5
+                tempY - 3
         );
         //temp trying to get box ray cast to work
         // need to check after we finish moving this might be set before we move
@@ -322,10 +321,6 @@ public class EMT extends person {
 
         //if we view a zombie closer then the one we have set avoid that one
     }
-
-    /*
-    public void provessMoves();
-    */
 
     @Override
     public void dispose(){
