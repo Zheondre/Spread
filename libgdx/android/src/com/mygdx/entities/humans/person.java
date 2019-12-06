@@ -40,14 +40,13 @@ import static com.mygdx.entities.BehaviorEnum.BOMB_INFECTED;
 import static com.mygdx.entities.BehaviorEnum.INFECTED;
 import static com.mygdx.entities.BehaviorEnum.NEW_ZOMBIE;
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
+import com.mygdx.utils.bombAnimation;
 
 
 public class person extends zombie {
 
     private boolean mInfected;
     private boolean mZombie;
-    private float wlkTime;
-
     protected entity selectedWeapon;
 
     protected int MessageMsk = 0; // reminder only 32 messages can be placed in the mask
@@ -56,7 +55,18 @@ public class person extends zombie {
     protected Hide<Vector2>  hideSB;
     protected RaycastObstacleAvoidance<Vector2> raycastObstacleAvoidanceSB;
 
+    public boolean firstVictim = false;
+    public bombAnimation bombDrop = new bombAnimation();
+
     boolean walk = true;
+    protected int MessageMsk = 0;
+
+    private float wlkTime;
+    private int wlkDirection;
+
+    public Evade<Vector2> getEvadeSB() {
+        return evadeSB;
+    }
 
     public void setEvadeSB(Evade<Vector2> evadeSB) {
         if(evadeSB!= null)
@@ -108,14 +118,23 @@ public class person extends zombie {
     }
 
     protected RaycastCollisionDetector<Vector2> raycastCollisionDetector;
-
+	
     //seek or flee evad, face
     public person(entityInfo entityType, gameMap map) {
+
         super(entityType, map);
 
         if(entityType.getId() == classIdEnum.Person || entityType.getId() == classIdEnum.PPerson) {
             this.setImage("player.png");
-            this.setImageB("player2.png");
+            setImageRight("player.png");
+            setImageRightWalk("player2.png");
+            setImageUp("playerUp.png");
+            setImageUpWalk("playerUp2.png");
+            setImageLeft("playerLeft.png");
+            setImageLeftWalk("playerLeft2.png");
+            setImageDown("playerDown.png");
+            setImageDownWalk("playerDown2.png");
+            //this.setImageB("player2.png");
             MessageManager.getInstance().addListeners(this,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY, GIVE_PER_LOCATION,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY_DENIED);
         }
 
@@ -132,6 +151,9 @@ public class person extends zombie {
 
         /////////////////////////////
         this.mInfctTime = 1;
+        } else if (entityType.getId() != classIdEnum.Emt) {
+
+        }
         this.weapon = entityType.getWeapon();
 
         // need to support sords but just gonna put guns for now if we choose this
@@ -183,7 +205,7 @@ public class person extends zombie {
         return true;
     }
 
-    public boolean callForHelp(int msVal){
+    public boolean callForHelp( int msVal){
         if( (0) == (MessageMsk & (1 <<msVal)) ) { // ask for help every like 10 seconds until help arrives ?
             MessageMsk = (MessageMsk | (1 <<msVal));
             ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, msVal);
@@ -191,7 +213,7 @@ public class person extends zombie {
         } else
             return false;
     }
-
+	
     public boolean attack(){
         if(selectedWeapon != null)
             selectedWeapon.attack();
@@ -206,9 +228,38 @@ public class person extends zombie {
             super.update(dTime);
         else
             processMoves(dTime);
-        if(((SystemClock.elapsedRealtime() / 250) % 2) == 1)
-            changeImage(true);
-        else changeImage(false);
+        /*if(((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+            changeImage(true, 2);
+        else changeImage(false, 1);*/
+
+        if(this.isMoveRight()) {
+            if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+                changeImage(true, 1);
+            else changeImage(false, 1);
+        }
+        else if(this.isMoveUp()) {
+            if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+                changeImage(true, 2);
+            else changeImage(false, 2);
+        }
+        else if(this.isMoveLeft()) {
+            if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+                changeImage(true, 3);
+            else changeImage(false, 3);
+        }
+        else if(this.isMoveDown()) {
+            if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+                changeImage(true, 4);
+            else changeImage(false, 4);
+        }
+        else changeImage(true, 1);
+
+        if(firstVictim)
+        {
+            bombDrop.render(100, 100, 2000);
+        }
+
+
     }
 
     public void processMoves(float dTime)
@@ -220,13 +271,13 @@ public class person extends zombie {
                 mInfctTime -= .001;
                 if (mInfctTime < 0)
                     turnIntoAZombie();
-            } else {
-                if(mInfctTime >= 1)
-                    MessageMsk = 0; // temp for now
-                   // MessageMsk = (MessageMsk | (1 <<HELP_INFECTED)); set this bit to 0
-
             }
-        }
+        } else {
+			if(mInfctTime >= 1)
+				MessageMsk = 0; // temp for now
+			   // MessageMsk = (MessageMsk | (1 <<HELP_INFECTED)); set this bit to 0
+
+		}
         switch(mAlerted) {  //change steering ent based on alertness
             case TEST_WANDER_SB:
                 // test wander steering ent
@@ -294,7 +345,6 @@ public class person extends zombie {
         }
         super.update(dTime);
     }
-
     public void turnIntoAZombie() {
 
         this.mInfctTime = 0;
@@ -304,7 +354,14 @@ public class person extends zombie {
         //this.setClsId(classIdEnum.Zombie);
         this.setClassID(classIdEnum.ConvertedPer);//Debug
         this.setImage("zombie.png");
-        this.setImageB("zombie2.png");
+        this.setImageRight("zombie.png");
+        this.setImageRightWalk("zombie2.png");
+        this.setImageUp("zombieUp.png");
+        this.setImageUpWalk("zombieUp2.png");
+        this.setImageLeft("zombieLeft.png");
+        this.setImageLeftWalk("zombieLeft2.png");
+        this.setImageDown("zombieDown.png");
+        this.setImageDownWalk("zombieDown2.png");
         this.setPrey(null);
 
         //put a status bit here to make sure we only call once

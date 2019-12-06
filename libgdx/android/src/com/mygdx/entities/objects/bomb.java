@@ -15,6 +15,7 @@ import com.mygdx.entities.humans.person;
 import com.mygdx.entities.humans.zombie;
 import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
+import com.mygdx.utils.bombAnimation;
 
 import static com.mygdx.entities.BehaviorEnum.BOMB_EXPLODED;
 import static java.lang.StrictMath.abs;
@@ -27,6 +28,7 @@ public class bomb extends entity {
     int nonEffectsRadius;
     int infecRatio;
     int healthRatio;
+    bombAnimation bombDrop = new bombAnimation();
 
     public bomb(entityInfo entType, gameMap Map){
         super(entType, Map);
@@ -50,14 +52,24 @@ public class bomb extends entity {
 
         int entDist;
         entity tempEnt = null;
+
+
 		
         if(mMap.getPeople().size() == 0)
             return false;
+
+        int flag = 0;
 
         for (person victum : mMap.getPeople()) {
             entDist = (int) getEntDistance(victum);
             if (entDist < blastRadius) {
                 ((tileGameMap) mMap).getPlayerOne().addPoints(5);
+                if(flag == 0)
+                {
+                    victum.firstVictim = true;
+                    victum.turnIntoAZombie();
+                    flag = 1;
+                }
                 victum.turnIntoAZombie();
                 if(tempEnt == null) {
                     tempEnt = victum;

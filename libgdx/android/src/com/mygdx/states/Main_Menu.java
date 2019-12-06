@@ -3,7 +3,9 @@ package com.mygdx.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.managers.GameStateManager;
@@ -15,6 +17,11 @@ public class Main_Menu extends GameState {
     private Texture about_button;
     private Texture level_select_button;
     private Texture spreadLogo;
+    Animation<TextureRegion> walkAnimation; // Must declare frame type (TextureRegion)
+    Texture walkSheet;
+    SpriteBatch spriteBatch;
+    float stateTime;
+    int animationX = -150;
 
     public Main_Menu(GameStateManager gsm)
     {
@@ -23,6 +30,29 @@ public class Main_Menu extends GameState {
         about_button = new Texture("aboutButton.png");
         level_select_button = new Texture("levelSelectButton.png");
         spreadLogo = new Texture("spreadLogo.png");
+        walkSheet = new Texture("zombieAnimationSheet.png");
+
+        TextureRegion[][] tmp = TextureRegion.split(walkSheet,
+                walkSheet.getWidth() / 9,
+                walkSheet.getHeight());
+
+        // Place the regions into a 1D array in the correct order, starting from the top
+        // left, going across first. The Animation constructor requires a 1D array.
+        TextureRegion[] walkFrames = new TextureRegion[9];
+        int index = 0;
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < 9; j++) {
+                walkFrames[index++] = tmp[i][j];
+            }
+        }
+
+
+        walkAnimation = new Animation<TextureRegion>(0.1f, walkFrames);
+
+        // Instantiate a SpriteBatch for drawing and reset the elapsed animation
+        // time to 0
+        spriteBatch = new SpriteBatch();
+        stateTime = 0f;
 
     }
 
@@ -40,6 +70,12 @@ public class Main_Menu extends GameState {
         spriteBatch.draw(about_button, Gdx.graphics.getWidth() / 2 - (about_button.getWidth() / 2), Gdx.graphics.getHeight() / 3 - (about_button.getHeight()/2));
         spriteBatch.draw(level_select_button, Gdx.graphics.getWidth() / 2 - (level_select_button.getWidth() / 2), Gdx.graphics.getHeight() - (Gdx.graphics.getHeight() / 2) - (level_select_button.getHeight()/2));
         spriteBatch.draw(spreadLogo, Gdx.graphics.getWidth() / 2 - (spreadLogo.getWidth() / 2), Gdx.graphics.getHeight() - spreadLogo.getHeight() - 50);
+        stateTime += Gdx.graphics.getDeltaTime();
+        TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+
+        if(animationX > Gdx.graphics.getWidth() + 10) animationX = -150;
+        animationX += 7;
+        spriteBatch.draw(currentFrame, animationX, -32);
         spriteBatch.end();
     }
 
