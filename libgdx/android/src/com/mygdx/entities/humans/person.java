@@ -59,14 +59,9 @@ public class person extends zombie {
     public bombAnimation bombDrop = new bombAnimation();
 
     boolean walk = true;
-    protected int MessageMsk = 0;
 
     private float wlkTime;
     private int wlkDirection;
-
-    public Evade<Vector2> getEvadeSB() {
-        return evadeSB;
-    }
 
     public void setEvadeSB(Evade<Vector2> evadeSB) {
         if(evadeSB!= null)
@@ -151,9 +146,7 @@ public class person extends zombie {
 
         /////////////////////////////
         this.mInfctTime = 1;
-        } else if (entityType.getId() != classIdEnum.Emt) {
 
-        }
         this.weapon = entityType.getWeapon();
 
         // need to support sords but just gonna put guns for now if we choose this

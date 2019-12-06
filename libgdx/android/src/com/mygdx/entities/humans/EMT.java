@@ -218,9 +218,9 @@ public class EMT extends person {
         mAlerted = TEST_DONT_MOVE;
         mMap.getWorld().QueryAABB(viewCB,
                 tempX - radius*2,
-                tempY,
+                tempY - radius*5,
                 tempX + radius*4,
-                tempY - radius*5
+                tempY - 3
         );
         //temp trying to get box ray cast to work
         // need to check after we finish moving this might be set before we move
