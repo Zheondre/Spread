@@ -11,4 +11,7 @@ public final class SteeringUtils {
         vec.y = (float)Math.cos(angle);
         return vec;
     }
+    public static float pixelsToMeters (int pixels) {
+        return (float)pixels * 0.02f;
+    }
 }

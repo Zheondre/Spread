@@ -8,17 +8,25 @@ import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.steer.behaviors.Evade;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.Hide;
+import com.badlogic.gdx.ai.steer.utils.rays.CentralRayWithWhiskersConfiguration;
+import com.badlogic.gdx.ai.steer.utils.rays.RayConfigurationBase;
+import com.badlogic.gdx.ai.utils.RaycastCollisionDetector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.AiStates.MessageType;
 import com.mygdx.entities.BehaviorEnum;
+import com.mygdx.entities.Box2dRaycastCollisionDetector;
 import com.mygdx.entities.Box2dSteering;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 import com.mygdx.entities.objects.bomb;
 import com.mygdx.entities.objects.gun;
+import com.mygdx.utils.SteeringUtils;
 import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
+
+import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance;
 
 import static com.mygdx.AiStates.MessageType.GIVE_PER_LOCATION;
 import static com.mygdx.AiStates.MessageType.HELP_BOMB_INFECTED;
@@ -33,6 +41,7 @@ import static com.mygdx.entities.BehaviorEnum.INFECTED;
 import static com.mygdx.entities.BehaviorEnum.NEW_ZOMBIE;
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
 
+
 public class person extends zombie {
 
     private boolean mInfected;
@@ -45,6 +54,7 @@ public class person extends zombie {
     protected Evade<Vector2> evadeSB;
     protected Flee<Vector2>  fleeSB;
     protected Hide<Vector2>  hideSB;
+    protected RaycastObstacleAvoidance<Vector2> raycastObstacleAvoidanceSB;
 
     boolean walk = true;
 
@@ -97,6 +107,8 @@ public class person extends zombie {
         }
     }
 
+    protected RaycastCollisionDetector<Vector2> raycastCollisionDetector;
+
     //seek or flee evad, face
     public person(entityInfo entityType, gameMap map) {
         super(entityType, map);
@@ -105,8 +117,20 @@ public class person extends zombie {
             this.setImage("player.png");
             this.setImageB("player2.png");
             MessageManager.getInstance().addListeners(this,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY, GIVE_PER_LOCATION,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY_DENIED);
-
         }
+
+        /////https://github.com/libgdx/gdx-ai/blob/master/tests/src/com/badlogic/gdx/ai/tests/steer/box2d/tests/Box2dRaycastObstacleAvoidanceTest.java
+        /////////
+        RayConfigurationBase<Vector2> rayConfiguration = new CentralRayWithWhiskersConfiguration<Vector2>(steerEnt, SteeringUtils.pixelsToMeters(100),
+                SteeringUtils.pixelsToMeters(114), 22.5f * MathUtils.degreesToRadians);
+
+        RaycastCollisionDetector<Vector2> raycastCollisionDetector = new Box2dRaycastCollisionDetector(mMap.getWorld());
+        raycastObstacleAvoidanceSB = new RaycastObstacleAvoidance<Vector2>(steerEnt, rayConfiguration,
+                raycastCollisionDetector, SteeringUtils.pixelsToMeters(1000));
+
+        combinedSB.add(raycastObstacleAvoidanceSB);
+
+        /////////////////////////////
         this.mInfctTime = 1;
         this.weapon = entityType.getWeapon();
 
