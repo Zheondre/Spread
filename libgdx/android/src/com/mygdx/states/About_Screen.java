@@ -13,6 +13,7 @@ import com.mygdx.managers.GameStateManager;
 public class About_Screen extends GameState {
 
     private Texture main_menu_button;
+    private Texture aboutInfo;
     Animation<TextureRegion> walkAnimation; // Must declare frame type (TextureRegion)
     Texture walkSheet;
     SpriteBatch spriteBatch;
@@ -23,7 +24,8 @@ public class About_Screen extends GameState {
     public About_Screen(GameStateManager gsm)
     {
         super(gsm);
-        main_menu_button = new Texture("button_main-menu.png");
+        main_menu_button = new Texture("mainmenuButton.png");
+        aboutInfo = new Texture("aboutInfo.png");
         walkSheet = new Texture("zombieAnimationSheet.png");
 
         TextureRegion[][] tmp = TextureRegion.split(walkSheet,
@@ -68,13 +70,14 @@ public class About_Screen extends GameState {
         spriteBatch.draw(currentFrame, animationX, -32);
 
 
-        spriteBatch.draw(main_menu_button, Gdx.graphics.getWidth() / 2 - (main_menu_button.getWidth() / 2), Gdx.graphics.getHeight() / 2 - (main_menu_button.getHeight()/2));
+        spriteBatch.draw(main_menu_button, Gdx.graphics.getWidth() / 2 - (main_menu_button.getWidth() / 2), Gdx.graphics.getHeight() / 18 - (main_menu_button.getHeight()/2));
+        spriteBatch.draw(aboutInfo, Gdx.graphics.getWidth() / 2 - (aboutInfo.getWidth() / 2), Gdx.graphics.getHeight() / 2 - (aboutInfo.getHeight()/2));
         spriteBatch.end();
     }
 
     @Override
     public void dispose() {
-
+        aboutInfo.dispose();
     }
 
     @Override
@@ -84,7 +87,7 @@ public class About_Screen extends GameState {
             Vector2 tmp = new Vector2(Gdx.input.getX(), Gdx.input.getY());
             Rectangle textureBounds = new Rectangle(
                     Gdx.graphics.getWidth() / 2 -(main_menu_button.getWidth() / 2),
-                    Gdx.graphics.getHeight() / 2 - (main_menu_button.getHeight()/2),
+                    Gdx.graphics.getHeight() - (main_menu_button.getHeight()),
                     main_menu_button.getWidth() * 2,
                     main_menu_button.getHeight() * 2);
             if(textureBounds.contains(tmp.x, tmp.y))
