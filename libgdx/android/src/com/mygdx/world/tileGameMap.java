@@ -22,6 +22,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
@@ -30,11 +31,13 @@ import com.mygdx.entities.humans.EMT;
 import com.mygdx.entities.humans.cop;
 import com.mygdx.entities.humans.security;
 import com.mygdx.entities.objects.bomb;
+import com.mygdx.entities.objects.bullet;
 import com.mygdx.entities.objects.gameBlocks;
 import com.mygdx.entities.humans.person;
 import com.mygdx.entities.humans.player;
 import com.mygdx.entities.humans.zombie;
 import com.mygdx.game.WaveInfo;
+import com.mygdx.utils.contListener;
 
 import java.util.ArrayList;
 
@@ -50,11 +53,11 @@ public class tileGameMap extends gameMap {
 
     public static Texture playerHealth;
 
-    private final classIdEnum DEBUGMODE = classIdEnum.PBomb;
-    //private final classIdEnum DEBUGMODE = classIdEnum.PZombie;
+    //private final classIdEnum DEBUGMODE = classIdEnum.PBomb;
+    private final classIdEnum DEBUGMODE = classIdEnum.PZombie;
     //private final classIdEnum DEBUGMODE = classIdEnum.PPerson;
     //private final classIdEnum DEBUGMODE = classIdEnum.PEMT;
-    //private final classIdEnum DEBUGMODE = classIdEnum.PCOP;
+    //private final classIdEnum DEBUGMODE = classIdEnum.PCop;
 
     public static final int STATSCREEN_WIDTH = 400;
     public static final int STATSCREEN_HEIGHT = 208;
@@ -88,6 +91,17 @@ public class tileGameMap extends gameMap {
     private ArrayList<WaveInfo> levels;
     private ArrayList<entity> ReadyForDeletion;
     private zombie convertedEnt;
+
+    public ArrayList<bullet> getBullets() {
+        return bullets;
+    }
+
+    public void setBullets(ArrayList<bullet> bullets) {
+        this.bullets = bullets;
+    }
+
+    private ArrayList<bullet> bullets;
+
 
     private player playerOne;
     private static Controller controller;
@@ -130,6 +144,7 @@ public class tileGameMap extends gameMap {
         zombies = new ArrayList<zombie>();
         levels = new ArrayList<WaveInfo>();
         ReadyForDeletion = new ArrayList<>();
+        bullets = new ArrayList<bullet>();
 
         switch (DEBUGMODE) {
             case PBomb:
@@ -154,13 +169,13 @@ public class tileGameMap extends gameMap {
         //loadEnts();
 
         //debug
-        for(int i = 0; i < 0; i++)
+        for(int i = 0; i < 1; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
-        for(int i = 0; i < 25; i++)
+        for(int i = 0; i < 1; i++)
             people.add(new person(entityInfo.PERSON,this));
 
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 1; i++)
             people.add(new EMT(entityInfo.EMT,this));
 
         for(int i = 0; i < 0; i++)
@@ -173,6 +188,8 @@ public class tileGameMap extends gameMap {
         playerOne.setZombieRef(zombies);
 
         initMessage();
+
+        world.setContactListener(new contListener());
     }
 
     private void initMessage(){
@@ -194,12 +211,7 @@ public class tileGameMap extends gameMap {
         batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
         batch.begin();
 
-        playerOne.getHost().render(batch);
-
-        //batch.draw(up_button, Gdx.graphics.getWidth() - (up_button.getWidth() * 2), Gdx.graphics.getHeight()/5);
-        //batch.draw(right_button, Gdx.graphics.getWidth() - right_button.getWidth(), Gdx.graphics.getHeight()/5 - right_button.getHeight());
-        //batch.draw(down_button, Gdx.graphics.getWidth() - (down_button.getWidth() * 2), Gdx.graphics.getHeight()/5 - (down_button.getHeight() * 2));
-        //batch.draw(left_button, Gdx.graphics.getWidth() - (left_button.getWidth() * 2), Gdx.graphics.getHeight()/5 - left_button.getHeight());
+        //playerOne.getHost().render(batch);
 
        for(zombie ent: zombies)
            ent.render(batch);
@@ -207,18 +219,27 @@ public class tileGameMap extends gameMap {
         for(person ent: people)
             ent.render(batch);
 
+        for(bullet ent:bullets)
+            ent.render(batch);
+
         //box2d Debug
-        //b2dr.render(world,playerOne.getPlayCam().combined);
+        b2dr.render(world,playerOne.getPlayCam().combined);
         controller.draw();
         batch.end();
+
+        for(person ent: people)
+            if(ent.getClassID() == Emt)
+                ((EMT)ent).testLine();
+
+
     }
 
     @Override
     public void update(float deltaT){
 
-
-
        world.step(1/60f,6,2);// need to read docs on this
+
+        playerOne.update(deltaT);
 
         for(zombie ent: zombies) //if ready for clean up skip
             ent.update(deltaT);
@@ -226,7 +247,9 @@ public class tileGameMap extends gameMap {
         for(person ent: people) //if ready for clean up skip
             ent.update(deltaT);
 
-        playerOne.update(deltaT);
+        for(bullet ent:bullets)
+            ent.update(deltaT);
+
 
         int lastEntPos = CnvrtdEntRdy.size() - 1;
         // becarefull bellow here
@@ -239,7 +262,7 @@ public class tileGameMap extends gameMap {
 
         lastEntPos = ReadyForDeletion.size()-1;
         entity entToBeDeleted;
-        while(lastEntPos > 0) {
+        while(lastEntPos > -1) {
             entToBeDeleted = ReadyForDeletion.get(lastEntPos);
             switch(entToBeDeleted.getClassID()) {
                 case Emt:
@@ -254,21 +277,23 @@ public class tileGameMap extends gameMap {
                 case Zombie:
                     getZombies().remove(entToBeDeleted);
                     default:
+                case Bullet:
+                    bullets.remove(entToBeDeleted);
+                    break;
             }
             ReadyForDeletion.remove(entToBeDeleted);
             entToBeDeleted.dispose();// index one size one error ? 8.14pm 11.19.19
             entToBeDeleted = null;
+            lastEntPos--;
         }
 
-        /*
+
         if(people.size() == 0) {
-            //
             zombies.clear();
             getPlayerOne().addPoints(currentLevel * 10);
             getPlayerOne().resetBomb();
             loadEnts();
         }
-        */
 
         if(zombies.size() == 0) {
             ; //all zombied were killed or no one was converted say game over

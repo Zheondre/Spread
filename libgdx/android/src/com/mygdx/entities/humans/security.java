@@ -22,7 +22,6 @@ public class security extends person {
 
     @Override
     public boolean attack() {
-        //return super.attack();
-        return true;
+        return super.attack();
     }
 }
