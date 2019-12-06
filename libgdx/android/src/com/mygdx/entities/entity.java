@@ -29,9 +29,14 @@ public abstract class entity implements Telegraph {
     //private static int yspeed = 80;
 
     private Texture image;
-    private Texture imageA;
-    private Texture imageB;
-    private Texture imageC;
+    private Texture imageRight;
+    private Texture imageRightWalk;
+    private Texture imageUp;
+    private Texture imageUpWalk;
+    private Texture imageLeft;
+    private Texture imageLeftWalk;
+    private Texture imageDown;
+    private Texture imageDownWalk;
 
     private final static int mWidth = 13;
     private final static int mHeight = 18;
@@ -174,8 +179,14 @@ public abstract class entity implements Telegraph {
 
     public void dispose(){
         image = null;
-        imageA.dispose();
-        imageB.dispose();
+        imageRight.dispose();
+        imageRightWalk.dispose();
+        imageUp.dispose();
+        imageUpWalk.dispose();
+        imageLeft.dispose();
+        imageLeftWalk.dispose();
+        imageDown.dispose();
+        imageDownWalk.dispose();
         mPos = null;
         // becarefull bellow if some one is stilling pointing to this object it wont be freed
         steerEnt = null;
@@ -207,32 +218,103 @@ public abstract class entity implements Telegraph {
         image = null;
     }
 
-    public void setImage(Texture txt){
-        if(txt != null)
-            image = txt;
-    }
-
     public void setImage(String path) {
         //anamation #1
         if (image != null)
             image.dispose();
         image = new Texture(path);
-        imageA = image;
+        imageRight = image;
 
     }
-    public void setImageB(String path) {
+
+    public void setImage(Texture txt){
+        if(txt != null)
+            image = txt;
+    }
+
+    public void setImageRight(String path) {
+        //anamation #1
+        if (imageRight != null)
+            imageRight.dispose();
+        imageRight = new Texture(path);
+
+
+    }
+    public void setImageRightWalk(String path) {
         //anamation #2
-        if (imageB != null)
-            imageB.dispose();
-        imageB = new Texture(path);
+        if (imageRightWalk != null)
+            imageRightWalk.dispose();
+        imageRightWalk = new Texture(path);
     }
 
-    public void changeImage(boolean chngeim){
-        if((image != null) && (imageB != null)) {
-            if (chngeim)
-                image = imageB;
-            else
-                image = imageA;
+    public void setImageUp(String path) {
+        //anamation #2
+        if (imageUp != null)
+            imageUp.dispose();
+        imageUp = new Texture(path);
+    }
+
+    public void setImageUpWalk(String path) {
+        //anamation #2
+        if (imageUpWalk != null)
+            imageUpWalk.dispose();
+        imageUpWalk = new Texture(path);
+    }
+
+    public void setImageLeft(String path) {
+        //anamation #2
+        if (imageLeft != null)
+            imageLeft.dispose();
+        imageLeft = new Texture(path);
+    }
+
+    public void setImageLeftWalk(String path) {
+        //anamation #2
+        if (imageLeftWalk != null)
+            imageLeftWalk.dispose();
+        imageLeftWalk = new Texture(path);
+    }
+
+    public void setImageDown(String path) {
+        //anamation #2
+        if (imageDown != null)
+            imageDown.dispose();
+        imageDown = new Texture(path);
+    }
+
+    public void setImageDownWalk(String path) {
+        //anamation #2
+        if (imageDownWalk != null)
+            imageDownWalk.dispose();
+        imageDownWalk = new Texture(path);
+    }
+
+    public void changeImage(boolean chngeim, int state){
+        if((imageRight != null)) {
+            if (state == 1) {
+                if (chngeim)
+                    image = imageRight;
+                else
+                    image = imageRightWalk;
+            }
+            if (state == 2) {
+                if (chngeim)
+                    image = imageUp;
+                else
+                    image = imageUpWalk;
+            }
+            if (state == 3) {
+                if (chngeim)
+                    image = imageLeft;
+                else
+                    image = imageLeftWalk;
+            }
+            if (state == 4) {
+                if (chngeim)
+                    image = imageDown;
+                else
+                    image = imageDownWalk;
+            }
         }
     }
     public void update(float dTime) {

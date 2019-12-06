@@ -157,10 +157,10 @@ public class tileGameMap extends gameMap {
         for(int i = 0; i < 0; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
-        for(int i = 0; i < 1; i++)
+        for(int i = 0; i < 25; i++)
             people.add(new person(entityInfo.PERSON,this));
 
-        for(int i = 0; i < 1; i++)
+        for(int i = 0; i < 5; i++)
             people.add(new EMT(entityInfo.EMT,this));
 
         for(int i = 0; i < 0; i++)
@@ -215,6 +215,8 @@ public class tileGameMap extends gameMap {
 
     @Override
     public void update(float deltaT){
+
+
 
        world.step(1/60f,6,2);// need to read docs on this
 

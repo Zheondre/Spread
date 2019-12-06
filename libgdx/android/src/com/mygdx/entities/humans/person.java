@@ -1,7 +1,6 @@
 package com.mygdx.entities.humans;
 
 import android.os.SystemClock;
-import android.util.Log;
 
 import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.ai.msg.Telegram;
@@ -24,31 +23,32 @@ import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
 
 import static com.mygdx.AiStates.MessageType.GIVE_PER_LOCATION;
-import static com.mygdx.AiStates.MessageType.HELP_BOMB_INFECTED;
-import static com.mygdx.AiStates.MessageType.HELP_BOMB_INFECTED_REPLY;
-import static com.mygdx.AiStates.MessageType.HELP_INFECTED;
 import static com.mygdx.AiStates.MessageType.HELP_INFECTED_REPLY;
 import static com.mygdx.AiStates.MessageType.HELP_INFECTED_REPLY_DENIED;
 import static com.mygdx.AiStates.MessageType.HELP_ZOMBIE_SPOTTED;
 import static com.mygdx.AiStates.MessageType.HELP_ZOMBIE_SPOTTED_REPLY;
-import static com.mygdx.entities.BehaviorEnum.BOMB_INFECTED;
 import static com.mygdx.entities.BehaviorEnum.INFECTED;
 import static com.mygdx.entities.BehaviorEnum.NEW_ZOMBIE;
-import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
+import com.mygdx.utils.bombAnimation;
 
 public class person extends zombie {
 
     private boolean mInfected;
     private boolean mZombie;
+    public boolean firstVictim = false;
+    public bombAnimation bombDrop = new bombAnimation();
+
+    boolean walk = true;
+    protected int MessageMsk = 0;
+    //protected int mAlerted;
+    //private float mInfctTime;
+
     private float wlkTime;
     private int wlkDirection;
 
-    protected int MessageMsk = 0;
-    protected Evade<Vector2> evadeSB;
-    protected Flee<Vector2>  fleeSB;
-    protected Hide<Vector2>  hideSB;
-
-    boolean walk = true;
+    public Evade<Vector2> getEvadeSB() {
+        return evadeSB;
+    }
 
     public void setEvadeSB(Evade<Vector2> evadeSB) {
         if(evadeSB!= null)
@@ -58,32 +58,19 @@ public class person extends zombie {
 
     public void setEvadeSB(zombie target) {
         if(target!= null) {
-            if(this.evadeSB == null) {
-                //this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt(), .5f);
-                this.evadeSB = new Evade<>(this.steerEnt, target.getSteerEnt());
-                combinedSB.add(this.evadeSB);
-                steerEnt.setBehavior(evadeSB);
-
-            } else{
-                this.evadeSB.setTarget(target.getSteerEnt());
-            }
-            steerEnt.setBehavior(evadeSB);
+            //this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt(), .5f);
+            this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt());
             this.setPrey(target);// temp
-            evadeSB.setEnabled(true);
+            steerEnt.setBehavior(evadeSB);
         }
     }
 
     public void setEvadeSB(bomb target) {
         if(target!= null) {
-            if (this.evadeSB == null){
-                //this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt(), .5f);
-                this.evadeSB = new Evade<>(this.steerEnt, target.getSteerEnt());
-                combinedSB.add(evadeSB);
-                steerEnt.setBehavior(evadeSB);
-             } else {
-                this.pursueSB.setTarget(target.getSteerEnt());
-            }
+            //this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt(), .5f);
+            this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt());
             this.setPrey(target);// temp
+            steerEnt.setBehavior(evadeSB);
         }
     }
 
@@ -99,17 +86,35 @@ public class person extends zombie {
         }
     }
 
+    public entity whoBitMe(){
+       return this.getPrey();
+    }
+
+    protected Evade<Vector2> evadeSB;
+    protected Flee<Vector2>  fleeSB;
+    protected Hide<Vector2>  hideSB;
+
     //seek or flee evad, face
     public person(entityInfo entityType, gameMap map) {
+
         super(entityType, map);
 
         if(entityType.getId() == classIdEnum.Person || entityType.getId() == classIdEnum.PPerson) {
             this.setImage("player.png");
-            this.setImageB("player2.png");
+            setImageRight("player.png");
+            setImageRightWalk("player2.png");
+            setImageUp("playerUp.png");
+            setImageUpWalk("playerUp2.png");
+            setImageLeft("playerLeft.png");
+            setImageLeftWalk("playerLeft2.png");
+            setImageDown("playerDown.png");
+            setImageDownWalk("playerDown2.png");
+            //this.setImageB("player2.png");
             MessageManager.getInstance().addListeners(this,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY, GIVE_PER_LOCATION,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY_DENIED);
+            this.mInfctTime = 1;
+        } else if (entityType.getId() != classIdEnum.Emt) {
 
         }
-        this.mInfctTime = 1;
         this.weapon = entityType.getWeapon();
         this.mZombie =  entityType.isZombie();
         this.mInfected = entityType.isInfected();
@@ -119,33 +124,15 @@ public class person extends zombie {
     }
 
     public boolean handleMessage(Telegram msg){
-        entity temp;
 
         switch(msg.message) {
             case HELP_ZOMBIE_SPOTTED:
                 //zombie is in raycast view flee but allet athoreties to location
                 break;
             case HELP_ZOMBIE_SPOTTED_REPLY:
-                if(msg.receiver == this)
-                    Log.d("Person", "EMT Replied to owner's Email");
                 break;
             case HELP_INFECTED_REPLY:
-
-                if(getPursueSB() == null) {
-                    // add to combined
-                } else {
-                    // change the entity the steering behavoir is pointing at
-                }
-
                 //ask for help
-                break;
-            case HELP_BOMB_INFECTED_REPLY:
-                if(msg.receiver == this) { //make a functoin of this so we dont duplicate code this is getting messy
-                    //walk towards the emt or cop and  evade the position of the blast
-                    temp = (entity)msg.sender;
-                    setPursueSB((person)temp);
-                    Log.d("Person", "EMT Replied to owner's Email");
-                }
                 break;
             case HELP_INFECTED_REPLY_DENIED:
                 //if I didnt make the request just ignore
@@ -156,13 +143,17 @@ public class person extends zombie {
         return true;
     }
 
-    public boolean callForHelp(int msVal){
+    public boolean callForHelp( int msVal){
         if( (0) == (MessageMsk & (1 <<msVal)) ) { // ask for help every like 10 seconds until help arrives ?
             MessageMsk = (MessageMsk | (1 <<msVal));
             ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, msVal);
             return true;
         } else
             return false;
+    }
+
+    public void dispose(){
+        super.dispose();
     }
 
    // @Override
@@ -174,9 +165,38 @@ public class person extends zombie {
             super.update(dTime);
         else
             processMoves(dTime);
-        if(((SystemClock.elapsedRealtime() / 250) % 2) == 1)
-            changeImage(true);
-        else changeImage(false);
+        /*if(((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+            changeImage(true, 2);
+        else changeImage(false, 1);*/
+
+        if(this.isMoveRight()) {
+            if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+                changeImage(true, 1);
+            else changeImage(false, 1);
+        }
+        else if(this.isMoveUp()) {
+            if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+                changeImage(true, 2);
+            else changeImage(false, 2);
+        }
+        else if(this.isMoveLeft()) {
+            if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+                changeImage(true, 3);
+            else changeImage(false, 3);
+        }
+        else if(this.isMoveDown()) {
+            if (((SystemClock.elapsedRealtime() / 250) % 2) == 1)
+                changeImage(true, 4);
+            else changeImage(false, 4);
+        }
+        else changeImage(true, 1);
+
+        if(firstVictim)
+        {
+            bombDrop.render(100, 100, 2000);
+        }
+
+
     }
 
     public void processMoves(float dTime)
@@ -185,14 +205,9 @@ public class person extends zombie {
         //check if hurt or if infected
         if(!mZombie) {
             if (mInfected) {
-                mInfctTime -= .001;
+                mInfctTime -= .03;
                 if (mInfctTime < 0)
                     turnIntoAZombie();
-            } else {
-                if(mInfctTime >= 1)
-                    MessageMsk = 0; // temp for now
-                   // MessageMsk = (MessageMsk | (1 <<HELP_INFECTED)); set this bit to 0
-
             }
         }
         switch(mAlerted) {  //change steering ent based on alertness
@@ -211,33 +226,15 @@ public class person extends zombie {
                 //run away or attack at a safe distance
                 //if we dont have the correct steering ent change
                 callForHelp(MessageType.HELP_ZOMBIE_SPOTTED);
-
                 if(getSteerEnt().getBehavior() != getEvadeSB()){
                     getSteerEnt().setBehavior(getEvadeSB());
                 }
-
             break;
-            case EVADE_ZOMBIE_ARRIVE_INFECTED:
-                //combine both steering behavoir
-               break ;
-
-            case BOMB_INFECTED:
-                callForHelp(HELP_BOMB_INFECTED);
-                Log.d("Person", "Infected By bomb I need an Emt !");
-                getSteerEnt().setBehavior(blendedSB);
-                /*
-                if(getSteerEnt().getBehavior() != getEvadeSB()){
-                    // make sure to check if we have the evade sb allocated
-                    getSteerEnt().setBehavior(getEvadeSB());
-                }
-                */
-
-            break;
-
             case INFECTED:
+
                 //if a zombie is too close evade
-                callForHelp(HELP_INFECTED);
-                Log.d("Person", "I need an Emt !");
+                callForHelp(MessageType.HELP_INFECTED);
+
                 if(false)
                     if(getSteerEnt().getBehavior() != getEvadeSB()){
                         // make sure to check if we have the evade sb allocated
@@ -265,6 +262,10 @@ public class person extends zombie {
         super.update(dTime);
     }
 
+    public boolean areYouAZombie() {
+        return mZombie;
+    }
+
     public void turnIntoAZombie() {
 
         this.mInfctTime = 0;
@@ -274,20 +275,33 @@ public class person extends zombie {
         //this.setClsId(classIdEnum.Zombie);
         this.setClassID(classIdEnum.ConvertedPer);//Debug
         this.setImage("zombie.png");
-        this.setImageB("zombie2.png");
+        this.setImageRight("zombie.png");
+        this.setImageRightWalk("zombie2.png");
+        this.setImageUp("zombieUp.png");
+        this.setImageUpWalk("zombieUp2.png");
+        this.setImageLeft("zombieLeft.png");
+        this.setImageLeftWalk("zombieLeft2.png");
+        this.setImageDown("zombieDown.png");
+        this.setImageDownWalk("zombieDown2.png");
         this.setPrey(null);
 
         mMap.getZombies().add(this); // if we multi thread use a semiphore
         mMap.setCnvrtdEntRdy(this);
     }
 
-    public void setInfected(boolean Infected) {
-        if(Infected)
-            this.mAlerted = INFECTED;
-        else
-            this.mAlerted = WALK_RANDOMLY;
+    public boolean isInfected() {
+        return mInfected;
+    }
 
+    public void setInfected(boolean Infected) {
         this.mInfected = Infected;
+        this.mAlerted = INFECTED;
+    }
+
+    public void setInfected(boolean Infected, bomb zom) {
+        this.setEvadeSB(zom);
+        this.mInfected = Infected;
+        this.mAlerted = INFECTED;
     }
 
     public void setInfected(boolean Infected, zombie zom) {
@@ -296,31 +310,16 @@ public class person extends zombie {
         this.mAlerted = INFECTED;
     }
 
-    public void setInfected(boolean Infected, bomb Bomb) {
-        if(classID != classIdEnum.Emt){
-        } else{
-            this.setEvadeSB(Bomb);
-        }
-        this.mInfected = Infected;
-        this.mAlerted = BOMB_INFECTED;
+    public float getInfctTime() {
+        return mInfctTime;
     }
 
-    public Evade<Vector2> getEvadeSB() {
-        return evadeSB;
+    public void setmInfctTime(float InfctTime) {
+        this.mInfctTime = InfctTime;
     }
 
-    public void decreaseInfectTime(float InfctTime){ this.mInfctTime -= InfctTime; }
-
-    public void dispose(){ super.dispose(); }
-
-    public entity whoBitMe(){ return this.getPrey(); }
-
-    public boolean isInfected() {
-        return mInfected;
-    }
-
-    public boolean areYouAZombie() {
-        return mZombie;
+    public void decreaseInfectTime(float InfctTime){
+        this.mInfctTime -= InfctTime;
     }
 }
 
