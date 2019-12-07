@@ -95,8 +95,6 @@ public abstract class entity implements Telegraph {
 
     public entity() {
         this.mVelocityY = 0;
-        this.mPos.x = 0;
-        this.mPos.y = 0;
         this.amIOnTheGound = true;
         this.moveLeft = false;
         this.moveRight = false;
