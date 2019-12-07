@@ -5,6 +5,7 @@ import android.util.Log;
 import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.msg.Telegraph;
+import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.AiStates.MessageType;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
@@ -39,8 +40,18 @@ public class cop extends security {
     public cop(entityInfo entityType, gameMap map) {
         super(entityType, map);
 
-        if(entityType.getId() == classIdEnum.Cop)
+        if(entityType.getId() == classIdEnum.Cop) {
             this.setImage("cop.png");
+            setImage(new Texture("cop.png"));
+            setImageRight("cop.png");
+            setImageRightWalk("copWalk.png");
+            setImageUp("copUp.png");
+            setImageUpWalk("copUp2.png");
+            setImageLeft("copLeft.png");
+            setImageLeftWalk("copLeft2.png");
+            setImageDown("copDown.png");
+            setImageDownWalk("copDown2.png");
+        }
 
         // mmap has an instance to messagemaneger use that instea
         MessageManager.getInstance().addListeners(this,

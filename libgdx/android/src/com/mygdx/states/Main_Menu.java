@@ -26,7 +26,7 @@ public class Main_Menu extends GameState {
     public Main_Menu(GameStateManager gsm)
     {
         super(gsm);
-        settings_button = new Texture("settingsButton.png");
+        settings_button = new Texture("statsButton.png");
         about_button = new Texture("aboutButton.png");
         level_select_button = new Texture("levelSelectButton.png");
         spreadLogo = new Texture("spreadLogo.png");
@@ -89,19 +89,19 @@ public class Main_Menu extends GameState {
         if(Gdx.input.justTouched())
         {
             Vector2 tmp = new Vector2(Gdx.input.getX(),Gdx.input.getY());
-            Rectangle textureBounds_settings = new Rectangle(Gdx.graphics.getWidth() / 2 -(settings_button.getWidth() / 2), Gdx.graphics.getHeight() / 2 - (settings_button.getHeight()/2), settings_button.getWidth() * 2, settings_button.getHeight() * 2);
+            Rectangle textureBounds_settings = new Rectangle(Gdx.graphics.getWidth() / 2 -(about_button.getWidth() / 2), (Gdx.graphics.getHeight()) - (Gdx.graphics.getHeight() / 6) - (about_button.getHeight()/2), settings_button.getWidth() * 2, settings_button.getHeight());
             if(textureBounds_settings.contains(tmp.x, tmp.y))
             {
                 gsm.setState(GameStateManager.State.SETTINGS);
                 dispose();
             }
-            Rectangle textureBounds_about = new Rectangle(Gdx.graphics.getWidth() / 2 - (about_button.getWidth() / 2), (Gdx.graphics.getHeight()) - (Gdx.graphics.getHeight() / 3) - (about_button.getHeight()/2), about_button.getWidth() * 2, about_button.getHeight() * 2);
+            Rectangle textureBounds_about = new Rectangle(Gdx.graphics.getWidth() / 2 - (about_button.getWidth() / 2), (Gdx.graphics.getHeight()) - (Gdx.graphics.getHeight() / 3) - (about_button.getHeight()/2), about_button.getWidth() * 2, about_button.getHeight());
             if(textureBounds_about.contains(tmp.x, tmp.y))
             {
                 gsm.setState(GameStateManager.State.ABOUT);
                 dispose();
             }
-            Rectangle textureBounds_play = new Rectangle(Gdx.graphics.getWidth() / 2 - (level_select_button.getWidth() / 2), (Gdx.graphics.getHeight() / 3) - (level_select_button.getHeight()/2), level_select_button.getWidth() * 2, level_select_button.getHeight() * 2);
+            Rectangle textureBounds_play = new Rectangle(Gdx.graphics.getWidth() / 2 - (level_select_button.getWidth() / 2), (Gdx.graphics.getHeight() / 2) - (level_select_button.getHeight()/2), level_select_button.getWidth() * 2, level_select_button.getHeight());
             if(textureBounds_play.contains(tmp.x, tmp.y))
             {
                 gsm.setState(GameStateManager.State.PLAY);

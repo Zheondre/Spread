@@ -152,10 +152,12 @@ public class Controller {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 player1.setLeftCyclePressed(true);
+                leftCycle.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("left_button_purple.png"))));
                 return true;
             }
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                leftCycle.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("left_button.png"))));
                // player1.setLeftCyclePressed(false);
             }
         });
@@ -164,10 +166,12 @@ public class Controller {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 player1.setRightCyclePressed(true);
+                rightCycle.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("right_button_purple.png"))));
                 return true;
             }
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                rightCycle.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("right_button.png"))));
                 //player1.setRightCyclePressed(false);
             }
         });
