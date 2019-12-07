@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.utils.SteeringUtils;
+import com.mygdx.world.tileGameMap;
 
 import java.util.ArrayList;
 
@@ -18,7 +20,13 @@ import java.util.ArrayList;
 
 public class Box2dRaycastCollisionDetector implements RaycastCollisionDetector <Vector2>{
     World world;
+    tileGameMap map;
     Box2dRaycastCallback callback;
+
+    public Box2dRaycastCollisionDetector (tileGameMap map) {
+        this(map.getWorld(), new Box2dRaycastCallback());
+        this.map = map;
+    }
 
     public Box2dRaycastCollisionDetector (World world) {
         this(world, new Box2dRaycastCallback());
@@ -41,6 +49,8 @@ public class Box2dRaycastCollisionDetector implements RaycastCollisionDetector <
     @Override
     public boolean findCollision (Collision<Vector2> outputCollision, Ray<Vector2> inputRay) {
         callback.collided = false;
+        SteeringUtils.DrawDebugLine(inputRay.start, inputRay.end, map.getPlayerOne().getPlayCam().combined);
+
         if (!inputRay.start.epsilonEquals(inputRay.end, MathUtils.FLOAT_ROUNDING_ERROR)) {
             callback.outputCollision = outputCollision;
             world.rayCast(callback, inputRay.start, inputRay.end);
@@ -55,7 +65,6 @@ public class Box2dRaycastCollisionDetector implements RaycastCollisionDetector <
 
         private static ArrayList<entity> foundEnts;
 
-
         public Box2dRaycastCallback () {
             this.foundEnts = new ArrayList<entity>();
         }
@@ -64,11 +73,18 @@ public class Box2dRaycastCollisionDetector implements RaycastCollisionDetector <
         public float reportRayFixture (Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
             //check the fixture if a zombie attack or evade depending on the class
             if (outputCollision != null) outputCollision.set(point, normal);
-            Log.d("Fixture Detected", "distance is " + fraction);
+            //Log.d("Fixture Detected", "distance is " + fraction);
             collided = true;
             if(fixture.getUserData() != null) {
-                if (((entity) fixture.getUserData()).getClassID() == classIdEnum.ConvertedPer|| (((entity) fixture.getUserData()).getClassID() == classIdEnum.PZombie))
-                    this.foundEnts.add((entity) fixture.getUserData());
+                switch(((entity)fixture.getUserData()).getClassID()) {
+                    case Zombie:
+                    case PZombie:
+                    case ConvertedPer:
+                        this.foundEnts.add((entity) fixture.getUserData());
+                        Log.d("Zombie Fixture Detected", "distance is " + fraction);
+                    break;
+                }
+                Log.d("Fixt Detected", "distance " + fraction);
             }
             return fraction;
         }

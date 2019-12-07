@@ -22,6 +22,7 @@ import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 import com.mygdx.entities.objects.bullet;
+import com.mygdx.utils.SteeringUtils;
 import com.mygdx.utils.viewQueryCallBack;
 import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
@@ -30,8 +31,6 @@ import java.util.ArrayList;
 
 import static com.mygdx.entities.BehaviorEnum.TEST_DONT_MOVE;
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
-import static com.mygdx.entities.entityInfo.BULLET;
-import static com.mygdx.entities.humans.EMT.DrawDebugLine;
 import static com.mygdx.utils.entUtils.getZombieAttack;
 import static com.mygdx.utils.entUtils.stopDownVec;
 import static com.mygdx.utils.entUtils.stopLeftVec;
@@ -133,6 +132,7 @@ public class zombie extends entity {
                 //steerEnt.setBehavior(pursueSB);//might put this as its own function
             } else {
                 this.pursueSB.setTarget(prey.getSteerEnt());
+                this.pursueSB.setEnabled(true);
             }
             this.prey = prey;
         }
@@ -145,10 +145,7 @@ public class zombie extends entity {
 
     public zombie(entityInfo entType, gameMap map) {
         super(entType, map);
-        /*
-        we will need to position characters in different locations based on the map and class  id
-        we can figure this out later
-         */
+
         this.isAlive = true;
         this.classID = entType.getId();
         this.armorPts = entType.getArmor();
@@ -172,7 +169,7 @@ public class zombie extends entity {
         this.mIsCpu = entType.isCpu();
 
         this.doISeeANoneZombie = false;
-        //this.steerEnt = new Box2dSteering(super.getBody(),10);
+
 /*
         this.wanderSB = new Wander<Vector2>(steerEnt) //
                 .setFaceEnabled(true) // We want to use Face internally (independent facing is on)
@@ -180,20 +177,20 @@ public class zombie extends entity {
                 .setDecelerationRadius(10f) // Used by Face
                 .setTimeToTarget(.5f) // Used by Face
                 .setWanderOffset(50f) //
-                .setWanderOrientation(1000f) //
-                .setWanderRadius(1000f) //
+                .setWanderOrientation(400f) //
+                .setWanderRadius(300f) //
                 .setWanderRate(MathUtils.PI2 * 8);
 */
         //add raycasting object avoidence or object avoidence sb as default ?
 
-        this.combinedSB = new PrioritySteering<Vector2>(steerEnt);
+        this.combinedSB = new PrioritySteering<Vector2>(steerEnt, .001f);
         steerEnt.setBehavior(combinedSB);
         if(this.mIsCpu){
             //put player towards the beginning of map if its not a new game
             //if its a new game dont draw the spite yet we got to set a bomb before hand
            // steerEnt.setBehavior(wanderSB);
         } else {
-            viewCB = new viewQueryCallBack();
+           // viewCB = new viewQueryCallBack();
         }
     }
 
@@ -294,9 +291,7 @@ public class zombie extends entity {
             return;
         }
         if(this.mIsCpu) {
-            //check if there are any special messages
             switch(this.classID) {
-
                 case Person:
                 case Security:
                 case Cop:
@@ -353,20 +348,10 @@ public class zombie extends entity {
                                 // if we multi thread use a semiphore // i dont think this should be handled here
                                 this.setPrey(null);
                                 doISeeANoneZombie = false;
+                                pursueSB.setEnabled(false);
                                 //increment score count
                             }  else {
-                                if (steerEnt.getLinearVelocity().x > 0)
-                                    steerEnt.body.applyLinearImpulse(stopLeftVec(), steerEnt.body.getWorldCenter(), true);
-
-                                if (steerEnt.getLinearVelocity().x < 0)
-                                    steerEnt.body.applyLinearImpulse(stopRightVec(), steerEnt.body.getWorldCenter(), true);
-
-                                if (steerEnt.getLinearVelocity().y > 0)
-                                    steerEnt.body.applyLinearImpulse(stopDownVec(), steerEnt.body.getWorldCenter(), true);
-
-                                if (steerEnt.getLinearVelocity().y < 0)
-                                    steerEnt.body.applyLinearImpulse(stopUpVec(), steerEnt.body.getWorldCenter(), true);
-
+                                stopMovingEnt();
                                 if (bitetime == biteTimeSetting)
                                     biteNonZombie((person) this.getPrey());
                                 else {
@@ -412,15 +397,6 @@ public class zombie extends entity {
             //Debug
            // DrawDebugLine(new Vector2(tempX - radius*2,tempY - radius*5), new Vector2(tempX - radius*2, tempY- 3), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined); //left line
             //DrawDebugLine(new Vector2(tempX + radius*4,tempY - radius*5), new Vector2(tempX + radius*4, tempY-3), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined);
-
-            //Debug
-            mMap.getWorld().QueryAABB(viewCB,
-                    tempX - radius*2,
-                    tempY - radius*5,
-                    tempX + radius*4,
-                    tempY - 3
-            );
-            ///// temp /////
 
             //player has control
             super.update(dTime);
@@ -581,6 +557,21 @@ public class zombie extends entity {
     }
     public void setPrey(entity prey){ this.prey = prey; }
     public entity getPrey(){ return this.prey; }
+
+   public void stopMovingEnt(){
+
+    if (steerEnt.getLinearVelocity().x > 0)
+        steerEnt.body.applyLinearImpulse(stopLeftVec(), steerEnt.body.getWorldCenter(), true);
+
+    if (steerEnt.getLinearVelocity().x < 0)
+        steerEnt.body.applyLinearImpulse(stopRightVec(), steerEnt.body.getWorldCenter(), true);
+
+    if (steerEnt.getLinearVelocity().y > 0)
+        steerEnt.body.applyLinearImpulse(stopDownVec(), steerEnt.body.getWorldCenter(), true);
+
+    if (steerEnt.getLinearVelocity().y < 0)
+        steerEnt.body.applyLinearImpulse(stopUpVec(), steerEnt.body.getWorldCenter(), true);
+    }
 
 
 }

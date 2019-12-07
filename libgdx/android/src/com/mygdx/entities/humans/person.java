@@ -37,8 +37,10 @@ import static com.mygdx.AiStates.MessageType.HELP_INFECTED_REPLY_DENIED;
 import static com.mygdx.AiStates.MessageType.HELP_ZOMBIE_SPOTTED;
 import static com.mygdx.AiStates.MessageType.HELP_ZOMBIE_SPOTTED_REPLY;
 import static com.mygdx.entities.BehaviorEnum.BOMB_INFECTED;
+import static com.mygdx.entities.BehaviorEnum.EVADE_ZOMBIE;
 import static com.mygdx.entities.BehaviorEnum.INFECTED;
 import static com.mygdx.entities.BehaviorEnum.NEW_ZOMBIE;
+import static com.mygdx.entities.BehaviorEnum.PURSUE_ZOMBIE;
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
 import com.mygdx.utils.bombAnimation;
 
@@ -133,11 +135,11 @@ public class person extends zombie {
         }
 
         /////https://github.com/libgdx/gdx-ai/blob/master/tests/src/com/badlogic/gdx/ai/tests/steer/box2d/tests/Box2dRaycastObstacleAvoidanceTest.java
-        RayConfigurationBase<Vector2> rayConfiguration = new CentralRayWithWhiskersConfiguration<Vector2>(steerEnt, SteeringUtils.pixelsToMeters(4000),
-                SteeringUtils.pixelsToMeters(4000), 22.5f * MathUtils.degreesToRadians);
-        raycastCollisionDetector = new Box2dRaycastCollisionDetector(mMap.getWorld());
+        RayConfigurationBase<Vector2> rayConfiguration = new CentralRayWithWhiskersConfiguration<Vector2>(steerEnt, SteeringUtils.pixelsToMeters(2300),
+                SteeringUtils.pixelsToMeters(2000), 22.5f * MathUtils.degreesToRadians);
+        raycastCollisionDetector = new Box2dRaycastCollisionDetector((tileGameMap)mMap);
         raycastObstacleAvoidanceSB = new RaycastObstacleAvoidance<Vector2>(steerEnt, rayConfiguration,
-                raycastCollisionDetector, SteeringUtils.pixelsToMeters(5000));
+                raycastCollisionDetector, SteeringUtils.pixelsToMeters(2000));
         combinedSB.add(raycastObstacleAvoidanceSB);
 
         /////////////////////////////
@@ -217,21 +219,10 @@ public class person extends zombie {
             super.update(dTime);
         else {
             processMoves(dTime);
-            //try to cast and see what happens if we are moving
-/*
-             if(raycastCollisionDetector.getCallback().getFoundEnts().size() > 0)
-                raycastCollisionDetector.getCallback().getFoundEnts().clear();
-
-             steerEnt.update(dTime);
-
-             zombie tEnt;
-            if(raycastCollisionDetector.getCallback().getFoundEnts().size() > 0) {
-                tEnt = (zombie)raycastCollisionDetector.getCallback().getFoundEnts().get(0);
-            }
-*/
-
         }
+        //breakpoint
 
+        // i think the ray cast gets the closest entity..
         if(raycastCollisionDetector.getCallback().getFoundEnts().size() > 0)
             raycastCollisionDetector.getCallback().getFoundEnts().clear();
 
@@ -240,8 +231,25 @@ public class person extends zombie {
         zombie tEnt;
         if(raycastCollisionDetector.getCallback().getFoundEnts().size() > 0) {
             tEnt = (zombie)raycastCollisionDetector.getCallback().getFoundEnts().get(0);
-        }
 
+            switch(classID) {
+                case Emt:
+                case Person:
+
+                    if(weapon == classIdEnum.NOWEAPON) {
+                        mAlerted = EVADE_ZOMBIE;
+                        setEvadeSB(tEnt);
+                    } else {
+
+                    }
+                    break;
+                case Cop:
+                    mAlerted = PURSUE_ZOMBIE;
+                    setPursueSB((person)tEnt);
+            }
+
+            raycastCollisionDetector.getCallback().getFoundEnts().clear();
+        }
 
 
         /*if(((SystemClock.elapsedRealtime() / 250) % 2) == 1)
