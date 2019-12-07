@@ -32,6 +32,8 @@ public class cop extends security {
     private boolean  allocateMoreCops;
     private int mags; // assume infinit ammo for now ?
 
+    private boolean shotIsClear;
+
     //call for back up for cops or security
     // call for emt if some one needs help
     public cop(entityInfo entityType, gameMap map) {
@@ -67,9 +69,12 @@ public class cop extends security {
         if(iscpu()) {
             //if its safe to shoot, than shoot
             // might have to use raycasting here
-            attack();
+            if(shotIsClear)
+                attack();
         } else
             attack();
+
+        super.update(dt);
 
     }
 
@@ -116,5 +121,13 @@ public class cop extends security {
         //can call for back up
 
         return true;
+    }
+
+    public boolean isShotIsClear() {
+        return shotIsClear;
+    }
+
+    public void setShotIsClear(boolean shotIsClear) {
+        this.shotIsClear = shotIsClear;
     }
 }
