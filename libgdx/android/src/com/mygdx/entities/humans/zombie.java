@@ -468,7 +468,8 @@ public class zombie extends entity {
                     batch.setColor(Color.YELLOW);
                 else
                     batch.setColor(Color.PURPLE);
-                batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +25, 22* mInfctTime, 3);
+                if(mInfctTime > 0)
+                    batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +25, 22* mInfctTime, 3);
 
             }
             if(getHealth() > .95f)
