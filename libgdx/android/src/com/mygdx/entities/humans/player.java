@@ -24,11 +24,11 @@ public class player implements InputProcessor {
     private int converts;
     private int myIndex;
     private int tIndex;
-private float gameOverTime = 1;
+
+    private float gameOverTime = 1;
     private float saveTime = 1;
     private float screenX;
     private float screenY;
-
     private float CamXPos;
     private float CamYPos;
 
