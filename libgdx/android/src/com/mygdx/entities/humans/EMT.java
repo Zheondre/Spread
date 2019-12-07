@@ -28,7 +28,9 @@ import static com.mygdx.AiStates.MessageType.HELP_BACKUP_ARMY;
 import static com.mygdx.AiStates.MessageType.HELP_BACKUP_COPS;
 import static com.mygdx.AiStates.MessageType.HELP_BACKUP_COPS_REPLY;
 import static com.mygdx.AiStates.MessageType.HELP_BOMB_INFECTED;
+import static com.mygdx.AiStates.MessageType.HELP_BOMB_INFECTED_REPLY;
 import static com.mygdx.AiStates.MessageType.HELP_COP_NEEDS_EMT;
+import static com.mygdx.AiStates.MessageType.HELP_COP_NEEDS_EMT_REPLY;
 import static com.mygdx.AiStates.MessageType.HELP_INFECTED;
 import static com.mygdx.AiStates.MessageType.HELP_INFECTED_REPLY;
 import static com.mygdx.AiStates.MessageType.HELP_INFECTED_REPLY_DENIED;
@@ -53,8 +55,6 @@ public class EMT extends person {
     public Game g;
 
     private viewQueryCallBack viewCB;
-    //https://stackoverflow.com/questions/21835062/libgdx-draw-line
-    private static ShapeRenderer debugRenderer;
 
     public EMT(entityInfo entityType, gameMap map) {
         super(entityType, map);
@@ -76,7 +76,7 @@ public class EMT extends person {
                 FOLLOW_ME, FOLLOW_ME_REPLY,
                 GIVE_PER_LOCATION_REPLY
         );
-       debugRenderer = new ShapeRenderer();
+       //debugRenderer = new ShapeRenderer();
         viewCB = new viewQueryCallBack();
 
     }
@@ -130,83 +130,67 @@ public class EMT extends person {
         //if we are close enough and we seen that person changed into a zombie evade
         //only change the evad steering behavoir if zombie is closer than the reported zombie
 
-        switch(msg.message) {
-            case NO_HELP_NEEDED:
-                break;
-           // case HELP_BOMB_EXPLODED;
-            //break;
-            case HELP_ZOMBIE_SPOTTED:
-                //watch out for that zombie
+        if(busy) {
 
-                zombie ztemp = (zombie) temp.getPrey();
-
-                if(getPrey() != ztemp) {
-                    // check to see which one is closer
-                    setEvadeSB(ztemp);
-                    combinedSB.add(getEvadeSB());
-                }
-
-                mAlerted = EVADE_ZOMBIE;
-                break;
-            case HELP_INFECTED:
-                // if there are armed people around the emt
-                // tell infected to come towards my location
-                // a group will head to the infected'slocation
-                //if a zombie is near have an armed person shoot
-            case HELP_BOMB_INFECTED:
-                // try to help the infected if it is safe to do so
-                //figure out ot
-                mAlerted = ARRIVE_BOMB_INFECTED;
-                if(!busy) {
-                    ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, temp, HELP_INFECTED_REPLY);
-                    if(temp != getPrey()) {
-                        setPursueSB(temp);
-                        //crashing here
-                        combinedSB.add(getPursueSB());
-                    }
-                    ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, temp, HELP_INFECTED_REPLY);
-                }
-                else {
+            switch(msg.message) {
+                case HELP_INFECTED:
+                case HELP_BOMB_INFECTED:
                     //busy helping some one else
                     ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, temp, HELP_INFECTED_REPLY_DENIED);
-                }
-                break;
-            case HELP_COP_NEEDS_EMT:
-                // help the cop out
-                break;
-            case HELP_BACKUP_COPS:
-                //getting sorounded or infected is really low call for backup,, else allocate more cop
-                break;
-            case FOLLOW_ME:
-                // follow the commanding cop
-                break;
+                    break;
+                case HELP_COP_NEEDS_EMT:
+                    break;
 
+            }
+
+        } else {
+
+            switch (msg.message) {
+                case NO_HELP_NEEDED:
+                    break;
+                // case HELP_BOMB_EXPLODED;
+                //break;
+                case HELP_ZOMBIE_SPOTTED:
+                    //watch out for that zombie
+
+                    zombie ztemp = (zombie) temp.getPrey();
+
+                    if (getPrey() != ztemp) {
+                        // check to see which one is closer
+                        setEvadeSB(ztemp);
+                    }
+
+                    mAlerted = EVADE_ZOMBIE;
+                    break;
+                case HELP_INFECTED:
+                    // if there are armed people around the emt
+                    // tell infected to come towards my location
+                    // a group will head to the infected'slocation
+                    //if a zombie is near have an armed person shoot
+                case HELP_BOMB_INFECTED:
+                    // try to help the infected if it is safe to do so
+                    //figure out ot
+                    mAlerted = ARRIVE_BOMB_INFECTED;
+                        ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, temp, HELP_BOMB_INFECTED_REPLY);
+                        if (temp != getPrey()) {
+                            setPursueSB(temp);
+                        }
+                    break;
+                case HELP_COP_NEEDS_EMT:
+                    ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, temp,HELP_COP_NEEDS_EMT_REPLY);
+                    if (temp != getPrey()) {
+                        setPursueSB(temp);
+                    }
+
+                    break;
+                case FOLLOW_ME:
+                    // follow the commanding cop
+                    break;
+
+            }
         }
         Log.d("MED", "Received a request");
         return true;
-    }
-
-//https://stackoverflow.com/questions/21835062/libgdx-draw-line
-    public static void DrawDebugLine(Vector2 start, Vector2 end, int lineWidth, Color color, Matrix4 projectionMatrix)
-    {
-        Gdx.gl.glLineWidth(lineWidth);
-        debugRenderer.setProjectionMatrix(projectionMatrix);
-        debugRenderer.begin(ShapeRenderer.ShapeType.Line);
-        debugRenderer.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-        debugRenderer.line(start, end);
-        debugRenderer.end();
-        Gdx.gl.glLineWidth(3);
-    }
-
-    public static void DrawDebugLine(Vector2 start, Vector2 end, Matrix4 projectionMatrix)
-    {
-        Gdx.gl.glLineWidth(3);
-        debugRenderer.setProjectionMatrix(projectionMatrix);
-        debugRenderer.begin(ShapeRenderer.ShapeType.Line);
-        debugRenderer.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-        debugRenderer.line(start, end);
-        debugRenderer.end();
-        Gdx.gl.glLineWidth(3);
     }
 
     public void testLine(){
@@ -226,39 +210,15 @@ public class EMT extends person {
         float tempY = getPosY();
         float radius = 5;
         //mAlerted = TEST_DONT_MOVE;
+        // works when some one is moving down the map, just going to ray cast instead
+        /*
         mMap.getWorld().QueryAABB(viewCB,
                 tempX - radius*2,
                 tempY - radius*5,
                 tempX + radius*4,
                 tempY - 3
-        );
-        //temp trying to get box ray cast to work
-        // need to check after we finish moving this might be set before we move
-      //  if(isMoveDown()) {
- /*
-            // this fires for any object bellow the entity
-            mMap.getWorld().QueryAABB(viewCB,
-                    tempX - radius*2,
-                    tempY - radius*5,
-                    tempX + radius*4,
-                    tempY - 3
-            );
-    //    }else if(isMoveUp()) {
+        );*/
 
-
-        } else if (isMoveRight()) {
-            mMap.getWorld().QueryAABB(viewCB,
-                    getPosX() + radius,
-                    getPosY() + radius*2,
-                    getPosX() + radius*5,
-                    getPosY() - radius*2
-            );
-
-        }  else if(isMoveLeft()) {
-        } else {
-        }
-*/
-       // mAlerted = TEST_DONT_MOVE;
         float tEndDis = -1;
         float nextDis = 0;
         entity closestZom = null;
@@ -305,7 +265,7 @@ public class EMT extends person {
             }
         }
 
-        if((mAlerted == EVADE_ZOMBIE) || (mAlerted == ARRIVE_INFECTED) ||(mAlerted == ARRIVE_BOMB_INFECTED)) {
+        if((mAlerted == EVADE_ZOMBIE) || (mAlerted == ARRIVE_INFECTED) || (mAlerted == ARRIVE_BOMB_INFECTED)) {
             steerEnt.setBehavior(combinedSB);
             steerEnt.update(dt);
             if(getPrey() != null) {
