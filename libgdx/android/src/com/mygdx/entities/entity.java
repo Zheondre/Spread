@@ -179,9 +179,9 @@ public abstract class entity implements Telegraph {
         fd.shape = cs;
 
         this.body = mMap.getWorld().createBody(entBody);
-        if (classID != classIdEnum.PZombie) {
+       // if (classID != classIdEnum.PZombie) {
             this.steerEnt = new Box2dSteering(this.body, 5);
-        }
+        //}
         //fd.filter.groupIndex = 0;
         this.body.setActive(true);
         this.body.createFixture(fd).setUserData(this);

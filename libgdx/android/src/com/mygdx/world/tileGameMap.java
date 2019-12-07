@@ -53,8 +53,8 @@ public class tileGameMap extends gameMap {
 
     public static Texture playerHealth;
 
-    private final classIdEnum DEBUGMODE = classIdEnum.PBomb;
-    //private final classIdEnum DEBUGMODE = classIdEnum.PZombie;
+    //private final classIdEnum DEBUGMODE = classIdEnum.PBomb;
+    private final classIdEnum DEBUGMODE = classIdEnum.PZombie;
     //private final classIdEnum DEBUGMODE = classIdEnum.PPerson;
     //private final classIdEnum DEBUGMODE = classIdEnum.PEMT;
     //private final classIdEnum DEBUGMODE = classIdEnum.PCop;
@@ -175,10 +175,10 @@ public class tileGameMap extends gameMap {
         for(int i = 0; i < 1; i++)
             people.add(new person(entityInfo.PERSON,this));
 
-        for(int i = 0; i < 1; i++)
+        for(int i = 0; i < 0; i++)
             people.add(new EMT(entityInfo.EMT,this));
 
-        for(int i = 0; i < 1; i++)
+        for(int i = 0; i < 0; i++)
             people.add(new cop(entityInfo.COP,this));
 
 
@@ -231,7 +231,6 @@ public class tileGameMap extends gameMap {
         for(person ent: people)
             if(ent.getClassID() == Emt)
                 ((EMT)ent).testLine();
-
 
     }
 

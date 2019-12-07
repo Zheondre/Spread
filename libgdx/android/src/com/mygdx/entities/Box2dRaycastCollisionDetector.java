@@ -1,5 +1,7 @@
 package com.mygdx.entities;
 
+import android.util.Log;
+
 import com.badlogic.gdx.ai.utils.Collision;
 import com.badlogic.gdx.ai.utils.Ray;
 import com.badlogic.gdx.ai.utils.RaycastCollisionDetector;
@@ -9,8 +11,10 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 
+import java.util.ArrayList;
+
 //https://github.com/libgdx/gdx-ai/blob/master/tests/src/com/badlogic/gdx/ai/tests/steer/box2d/Box2dRaycastCollisionDetector.java
-// couldnt find the file in the includes
+// couldnt find the file in the com.badlogic import
 
 public class Box2dRaycastCollisionDetector implements RaycastCollisionDetector <Vector2>{
     World world;
@@ -25,12 +29,16 @@ public class Box2dRaycastCollisionDetector implements RaycastCollisionDetector <
         this.callback = callback;
     }
 
-    //@Override
+    public Box2dRaycastCallback getCallback() {
+        return callback;
+    }
+
+    @Override
     public boolean collides (Ray<Vector2> ray) {
         return findCollision(null, ray);
     }
 
-    //@Override
+    @Override
     public boolean findCollision (Collision<Vector2> outputCollision, Ray<Vector2> inputRay) {
         callback.collided = false;
         if (!inputRay.start.epsilonEquals(inputRay.end, MathUtils.FLOAT_ROUNDING_ERROR)) {
@@ -45,15 +53,28 @@ public class Box2dRaycastCollisionDetector implements RaycastCollisionDetector <
         public Collision<Vector2> outputCollision;
         public boolean collided;
 
+        private static ArrayList<entity> foundEnts;
+
+
         public Box2dRaycastCallback () {
+            this.foundEnts = new ArrayList<entity>();
         }
 
         @Override
         public float reportRayFixture (Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
             //check the fixture if a zombie attack or evade depending on the class
             if (outputCollision != null) outputCollision.set(point, normal);
+            Log.d("Fixture Detected", "distance is " + fraction);
             collided = true;
+            if(fixture.getUserData() != null) {
+                if (((entity) fixture.getUserData()).getClassID() == classIdEnum.ConvertedPer|| (((entity) fixture.getUserData()).getClassID() == classIdEnum.PZombie))
+                    this.foundEnts.add((entity) fixture.getUserData());
+            }
             return fraction;
+        }
+
+        public static ArrayList<entity> getFoundEnts() {
+            return foundEnts;
         }
     }
 }

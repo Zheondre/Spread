@@ -54,6 +54,7 @@ public class person extends zombie {
     protected Flee<Vector2>  fleeSB;
     protected Hide<Vector2>  hideSB;
     protected RaycastObstacleAvoidance<Vector2> raycastObstacleAvoidanceSB;
+    protected Box2dRaycastCollisionDetector raycastCollisionDetector;
 
     public boolean firstVictim = false;
     public bombAnimation bombDrop = new bombAnimation();
@@ -112,8 +113,6 @@ public class person extends zombie {
         }
     }
 
-    protected RaycastCollisionDetector<Vector2> raycastCollisionDetector;
-	
     //seek or flee evad, face
     public person(entityInfo entityType, gameMap map) {
 
@@ -134,14 +133,11 @@ public class person extends zombie {
         }
 
         /////https://github.com/libgdx/gdx-ai/blob/master/tests/src/com/badlogic/gdx/ai/tests/steer/box2d/tests/Box2dRaycastObstacleAvoidanceTest.java
-        /////////
-        RayConfigurationBase<Vector2> rayConfiguration = new CentralRayWithWhiskersConfiguration<Vector2>(steerEnt, SteeringUtils.pixelsToMeters(100),
-                SteeringUtils.pixelsToMeters(114), 22.5f * MathUtils.degreesToRadians);
-
-        RaycastCollisionDetector<Vector2> raycastCollisionDetector = new Box2dRaycastCollisionDetector(mMap.getWorld());
+        RayConfigurationBase<Vector2> rayConfiguration = new CentralRayWithWhiskersConfiguration<Vector2>(steerEnt, SteeringUtils.pixelsToMeters(4000),
+                SteeringUtils.pixelsToMeters(4000), 22.5f * MathUtils.degreesToRadians);
+        raycastCollisionDetector = new Box2dRaycastCollisionDetector(mMap.getWorld());
         raycastObstacleAvoidanceSB = new RaycastObstacleAvoidance<Vector2>(steerEnt, rayConfiguration,
-                raycastCollisionDetector, SteeringUtils.pixelsToMeters(1000));
-
+                raycastCollisionDetector, SteeringUtils.pixelsToMeters(5000));
         combinedSB.add(raycastObstacleAvoidanceSB);
 
         /////////////////////////////
@@ -219,8 +215,35 @@ public class person extends zombie {
             super.update(dTime);
         else if(classID == classIdEnum.PPerson) //debug player is controlling person
             super.update(dTime);
-        else
+        else {
             processMoves(dTime);
+            //try to cast and see what happens if we are moving
+/*
+             if(raycastCollisionDetector.getCallback().getFoundEnts().size() > 0)
+                raycastCollisionDetector.getCallback().getFoundEnts().clear();
+
+             steerEnt.update(dTime);
+
+             zombie tEnt;
+            if(raycastCollisionDetector.getCallback().getFoundEnts().size() > 0) {
+                tEnt = (zombie)raycastCollisionDetector.getCallback().getFoundEnts().get(0);
+            }
+*/
+
+        }
+
+        if(raycastCollisionDetector.getCallback().getFoundEnts().size() > 0)
+            raycastCollisionDetector.getCallback().getFoundEnts().clear();
+
+        steerEnt.update(dTime);
+
+        zombie tEnt;
+        if(raycastCollisionDetector.getCallback().getFoundEnts().size() > 0) {
+            tEnt = (zombie)raycastCollisionDetector.getCallback().getFoundEnts().get(0);
+        }
+
+
+
         /*if(((SystemClock.elapsedRealtime() / 250) % 2) == 1)
             changeImage(true, 2);
         else changeImage(false, 1);*/
@@ -251,12 +274,10 @@ public class person extends zombie {
         {
             bombDrop.render(100, 100, 2000);
         }
-
-
     }
 
     public void processMoves(float dTime)
-    {//virtual function
+    {
         //check alertness
         //check if hurt or if infected
         if(!mZombie) {
@@ -266,10 +287,10 @@ public class person extends zombie {
                     turnIntoAZombie();
             }
         } else {
-			if(mInfctTime >= 1)
-				MessageMsk = 0; // temp for now
-			   // MessageMsk = (MessageMsk | (1 <<HELP_INFECTED)); set this bit to 0
-
+			if(mInfctTime >= 1) {
+			    int tMsk = ~((1 << HELP_INFECTED)|(1 << HELP_BOMB_INFECTED));
+                MessageMsk = (MessageMsk & tMsk);
+            }
 		}
         switch(mAlerted) {  //change steering ent based on alertness
             case TEST_WANDER_SB:

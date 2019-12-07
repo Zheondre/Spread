@@ -285,6 +285,7 @@ public class EMT extends person {
                             }
                         }
                 }
+                viewCB.getFoundEnts().clear();
             }
 
             setEvadeSB((zombie)closestZom);

@@ -75,8 +75,6 @@ public class zombie extends entity {
 
     private entity prey;
 
-   //protected Box2dSteering steerEnt;
-
     protected ArrayList<bullet> bullets;
 
     protected Pursue<Vector2>  pursueSB;
@@ -95,8 +93,6 @@ public class zombie extends entity {
     public Pursue<Vector2> getPursueSB() {
         return pursueSB;
     }
-
-    //changeSb();
 
     public void setWonderSB(Box2dSteering entSb) {
         if((entSb != null)) {
@@ -147,9 +143,6 @@ public class zombie extends entity {
             pursueSB.setTarget(prey);
     }
 
-    public void setPrey(entity prey){ this.prey = prey; }
-    public entity getPrey(){ return this.prey; }
-
     public zombie(entityInfo entType, gameMap map) {
         super(entType, map);
         /*
@@ -193,8 +186,8 @@ public class zombie extends entity {
 */
         //add raycasting object avoidence or object avoidence sb as default ?
 
-        this.combinedSB = new PrioritySteering<Vector2>(null);
-
+        this.combinedSB = new PrioritySteering<Vector2>(steerEnt);
+        steerEnt.setBehavior(combinedSB);
         if(this.mIsCpu){
             //put player towards the beginning of map if its not a new game
             //if its a new game dont draw the spite yet we got to set a bomb before hand
@@ -274,7 +267,6 @@ public class zombie extends entity {
     }
 
     public boolean handleMessage(Telegram msg) {
-;///////
         return true;
     }
 
@@ -315,8 +307,9 @@ public class zombie extends entity {
                         stopMoving();
                         super.update(dTime);
                     }
-                     else
-                         steerEnt.update(dTime);
+                     else {
+                        steerEnt.update(dTime);
+                    }
                     break;
 
                 case ConvertedPer: // debug
@@ -586,5 +579,8 @@ public class zombie extends entity {
     public void dcrseArmor(float pts){
         this.armorPts -= pts;
     }
+    public void setPrey(entity prey){ this.prey = prey; }
+    public entity getPrey(){ return this.prey; }
+
 
 }
