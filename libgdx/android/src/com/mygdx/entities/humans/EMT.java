@@ -262,27 +262,29 @@ public class EMT extends person {
         float tEndDis = -1;
         float nextDis = 0;
         entity closestZom = null;
-        if(viewCB.getFoundEnts().size() > 0) {
-            for (entity ent : viewCB.getFoundEnts()) {
-                if ((ent.getClassID() == classIdEnum.ConvertedPer)
-                        || (ent.getClassID() == classIdEnum.PZombie) ||
-                        (ent.getClassID() == classIdEnum.Zombie) || (ent != this))
-                    if (tEndDis == -1) {
-                        tEndDis = getEntDistance(ent);
-                        closestZom = ent;
-                    } else {
-                        nextDis = getEntDistance(ent);
-                        if (tEndDis > nextDis) {
-                            tEndDis = nextDis;
+        //taking this off for now until i have all directoins working
+        if(false){
+            if(viewCB.getFoundEnts().size() > 0) {
+                for (entity ent : viewCB.getFoundEnts()) {
+                    if ((ent.getClassID() == classIdEnum.ConvertedPer)
+                            || (ent.getClassID() == classIdEnum.PZombie) ||
+                            (ent.getClassID() == classIdEnum.Zombie) || (ent != this))
+                        if (tEndDis == -1) {
+                            tEndDis = getEntDistance(ent);
                             closestZom = ent;
-                            if( (((Box2dSteering)getPursueSB().getTarget()).body == getPrey().getBody()) )
-                            {
-                                getPursueSB().setEnabled(false);
-                            }
+                        } else {
+                            nextDis = getEntDistance(ent);
+                            if (tEndDis > nextDis) {
+                                tEndDis = nextDis;
+                                closestZom = ent;
+                                if ((((Box2dSteering) getPursueSB().getTarget()).body == getPrey().getBody())) {
+                                    getPursueSB().setEnabled(false);
+                                }
 
-                            //what if the person you are trying to help is now a zombie
+                                //what if the person you are trying to help is now a zombie
+                            }
                         }
-                    }
+                }
             }
 
             setEvadeSB((zombie)closestZom);
