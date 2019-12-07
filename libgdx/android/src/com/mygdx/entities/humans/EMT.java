@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -57,8 +58,18 @@ public class EMT extends person {
 
     public EMT(entityInfo entityType, gameMap map) {
         super(entityType, map);
-        if (entityType.getId() == classIdEnum.Emt)
+        if (entityType.getId() == classIdEnum.Emt) {
             this.setImage("emt.png");
+            setImage(new Texture("emt.png"));
+            setImageRight("emt.png");
+            setImageRightWalk("emtWalk.png");
+            setImageUp("emtUp.png");
+            setImageUpWalk("emtUp2.png");
+            setImageLeft("emtleft.png");
+            setImageLeftWalk("emtleft2.png");
+            setImageDown("emtDown.png");
+            setImageDownWalk("emtDown2.png");
+        }
         MessageManager.getInstance().addListeners(this,
                 HELP_INFECTED, HELP_BOMB_INFECTED, HELP_INFECTED_REPLY,
                 HELP_BACKUP_COPS, HELP_BACKUP_COPS_REPLY,

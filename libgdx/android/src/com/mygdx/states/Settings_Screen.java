@@ -33,6 +33,9 @@ public class Settings_Screen extends GameState {
             prefs.putInteger("converts", 0);
             converts = 0;
         }
+        else {
+            converts = prefs.getInteger("converts");
+        }
 
         if (prefs.contains("highScore")) {
             HighScore = prefs.getInteger("highScore");
@@ -50,14 +53,15 @@ public class Settings_Screen extends GameState {
 
     @Override
     public void render(SpriteBatch spriteBatch) {
-        Gdx.gl.glClearColor(0,1,0,1);
+        Gdx.gl.glClearColor(190/255f,77/255f,227/255f,0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         spriteBatch.begin();
 
         font.getData().setScale(10);
         font.draw(spriteBatch, "GAME STATS", 450, 1050);
-        font.draw(spriteBatch, "High Score: " + Integer.toString(HighScore), 450, 500);
-
+        font.getData().setScale(7);
+        font.draw(spriteBatch, "High Score: " + Integer.toString(HighScore), 550, 700);
+        font.draw(spriteBatch, "Converts: " + Integer.toString(converts), 600, 500);
         spriteBatch.draw(main_menu_button, Gdx.graphics.getWidth() / 2 - (main_menu_button.getWidth() / 2), Gdx.graphics.getHeight() / 18 - (main_menu_button.getHeight()/2));
         spriteBatch.end();
 
