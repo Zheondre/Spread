@@ -26,8 +26,6 @@ import static java.lang.StrictMath.abs;
 public abstract class entity implements Telegraph {
 
     private int speed = 80;
-    // private static int xspeed = 80;
-    //private static int yspeed = 80;
 
     private Texture image;
     private Texture imageRight;
@@ -49,7 +47,6 @@ public abstract class entity implements Telegraph {
 
     private  int mWidth = 13;
     private  int mHeight = 18;
-    private static final float mWeight = 40;
 
     protected float mVelocityY;
     protected static gameMap mMap;
@@ -179,9 +176,7 @@ public abstract class entity implements Telegraph {
         fd.shape = cs;
 
         this.body = mMap.getWorld().createBody(entBody);
-       // if (classID != classIdEnum.PZombie) {
-            this.steerEnt = new Box2dSteering(this.body, 5);
-        //}
+        this.steerEnt = new Box2dSteering(this.body, 5);
         //fd.filter.groupIndex = 0;
         this.body.setActive(true);
         this.body.createFixture(fd).setUserData(this);
