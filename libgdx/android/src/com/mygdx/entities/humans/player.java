@@ -24,7 +24,7 @@ public class player implements InputProcessor {
     private int converts;
     private int myIndex;
     private int tIndex;
-
+private float gameOverTime = 1;
     private float saveTime = 1;
     private float screenX;
     private float screenY;
@@ -226,16 +226,24 @@ public class player implements InputProcessor {
     public void update(float dTime) {
        // host.update(dTime);
 
+        if(host.getClassID() == classIdEnum.PBomb)
+            host.update(dTime);
+
         if(isAttackPressed)
         {
+
+            if(!bombExploded) {
+                //TODO place anamation
+                if (host.attack()) {
+                    points += ptsMgr(host);
+                }
+            }
             if(host.getClassID() == classIdEnum.PBomb)
                 bombExploded = true;
-            //TODO place anamation
-            if(host.attack()){
-                points += ptsMgr(host);
-            }
+
             isAttackPressed = false;
         }
+
 
         int entSize;
 
@@ -297,7 +305,12 @@ public class player implements InputProcessor {
                     ((zombie)host).setCpuStatus(false);
                     host.setClassID(classIdEnum.PZombie);
                     bombExploded = false;
+                } else {
+                    gameOverTime -= .0001;
                 }
+
+            if(gameOverTime < 0)
+                ;
         }
 
         if(host.getBody().getPosition().x < 260) playCam.position.x = 260;

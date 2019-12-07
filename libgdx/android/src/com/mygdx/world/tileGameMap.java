@@ -240,9 +240,7 @@ public class tileGameMap extends gameMap {
 
        world.step(1/60f,6,2);// need to read docs on this
 
-
-        if(playerOne.getHost().getClassID() == classIdEnum.PBomb)
-            playerOne.getHost().update(deltaT);
+        playerOne.update(deltaT);
 
         for(zombie ent: zombies) //if ready for clean up skip
             ent.update(deltaT);
