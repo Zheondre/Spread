@@ -128,11 +128,11 @@ public class person extends zombie {
         }
 
         /////https://github.com/libgdx/gdx-ai/blob/master/tests/src/com/badlogic/gdx/ai/tests/steer/box2d/tests/Box2dRaycastObstacleAvoidanceTest.java
-        RayConfigurationBase<Vector2> rayConfiguration = new CentralRayWithWhiskersConfiguration<Vector2>(steerEnt, SteeringUtils.pixelsToMeters(1700),
-                    SteeringUtils.pixelsToMeters(1400), 22.5f * MathUtils.degreesToRadians);
+        RayConfigurationBase<Vector2> rayConfiguration = new CentralRayWithWhiskersConfiguration<Vector2>(steerEnt, SteeringUtils.pixelsToMeters(1550),
+                    SteeringUtils.pixelsToMeters(1000), 27.5f * MathUtils.degreesToRadians);
         raycastCollisionDetector = new Box2dRaycastCollisionDetector((tileGameMap)mMap);
         raycastObstacleAvoidanceSB = new RaycastObstacleAvoidance<Vector2>(steerEnt, rayConfiguration,
-                raycastCollisionDetector, SteeringUtils.pixelsToMeters(1700));
+                raycastCollisionDetector, SteeringUtils.pixelsToMeters(1550));
         combinedSB.add(raycastObstacleAvoidanceSB);
         /////////////////////////////
         this.mInfctTime = 1;
@@ -194,8 +194,11 @@ public class person extends zombie {
             ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, msVal);
             return true;
         } else {
-            //helpDuration-= .01;
-            //if(helpDuration < 0)
+            // ask for help every like 10 seconds until help arrives ?
+            if(helpDuration < 0){
+                ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, msVal);
+                helpDuration = 1;
+            }
 
         }
             return false;
@@ -203,7 +206,8 @@ public class person extends zombie {
 	
     public boolean attack(){
         if(selectedWeapon != null)
-            selectedWeapon.attack(); //TODO update this
+            if(classID != classIdEnum.PZombie)
+               return selectedWeapon.attack(); //TODO update this
 
         if(areYouAZombie())
            return super.attack();
@@ -232,25 +236,19 @@ public class person extends zombie {
         if(raycastCollisionDetector.getCallback().getFoundEnts().size() > 0) {
             tEnt = (zombie)raycastCollisionDetector.getCallback().getFoundEnts().get(0);
 
-            switch(classID) {
-                case Emt:
-                    if(getPursueSB() != null) {
-                        // if the person we asked for helped turned into a zombie
-                        if(getPursueSB().getTarget().equals(tEnt.getSteerEnt())) {
-                            getPursueSB().setEnabled(false);
-                        }
-                    }
-                case Person:
-                    if(weapon == classIdEnum.NOWEAPON) {
-                        mAlerted = EVADE_ZOMBIE;
-                        setEvadeSB(tEnt);
-                    } else {
+            if(getPursueSB() != null) {
+                // if the person that asked for helped turned into a zombie
+                if(getPursueSB().getTarget().equals(tEnt.getSteerEnt())) {
+                    getPursueSB().setEnabled(false);
+                }
+            }
 
-                    }
-                    break;
-                case Cop:
-                    mAlerted = PURSUE_ZOMBIE;
-                    setPursueSB((person)tEnt);
+            if(weapon == classIdEnum.NOWEAPON) {
+                mAlerted = EVADE_ZOMBIE;
+                setEvadeSB(tEnt);
+            } else {
+                mAlerted = PURSUE_ZOMBIE;
+                setPursueSB((person)tEnt);
             }
 
             raycastCollisionDetector.getCallback().getFoundEnts().clear();
@@ -295,7 +293,7 @@ public class person extends zombie {
         //check if hurt or if infected
         if(!mZombie) {
             if (mInfected) {
-                mInfctTime -= .001;
+                mInfctTime -= .005;
                 if (mInfctTime < 0)
                     turnIntoAZombie();
             }
@@ -305,12 +303,14 @@ public class person extends zombie {
                 MessageMsk = (MessageMsk & tMsk);
             }
 		}
+
+        if(MessageMsk > 1) {
+            helpDuration -= .005;
+        }
+
         switch(mAlerted) {  //change steering ent based on alertness
             case TEST_WANDER_SB:
-                // test wander steering ent
-                if(getSteerEnt().getBehavior() != getWanderSB()){
-                   getSteerEnt().setBehavior(getWanderSB());
-                }
+                // Not Supported
                 break;
             case WALK_RANDOMLY:
                 walkRandomly(dTime);
@@ -360,6 +360,16 @@ public class person extends zombie {
         this.setImageDown("zombieDown.png");
         this.setImageDownWalk("zombieDown2.png");
         this.setPrey(null);
+
+        if(getEvadeSB() != null) {
+            getEvadeSB().setEnabled(false);
+            setPrey(null);
+        }
+
+        if(getPursueSB() != null) {
+            getPursueSB().setEnabled(false);
+            setPrey(null);
+        }
 
         //put a status bit here to make sure we only call once
         MessageManager.getInstance().removeListener(this,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY, GIVE_PER_LOCATION,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY_DENIED);

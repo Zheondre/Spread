@@ -84,7 +84,7 @@ public class Box2dRaycastCollisionDetector implements RaycastCollisionDetector <
                         Log.d("Zombie Fixture Detected", "distance is " + fraction);
                     break;
                 }
-                Log.d("Fixt Detected", "distance " + fraction);
+               //Log.d("Fixt Detected", "distance " + fraction);
             }
             return fraction;
         }

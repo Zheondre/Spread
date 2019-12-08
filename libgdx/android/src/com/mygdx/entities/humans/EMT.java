@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.AiStates.MessageType;
 import com.mygdx.entities.Box2dSteering;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
@@ -116,6 +117,17 @@ public class EMT extends person {
             }
         }
     }
+    public void sendMessage(){
+        switch(mAlerted) {  //change steering ent based on alertness
+            case EVADE_ZOMBIE:
+            case NEW_ZOMBIE:
+            case INFECTED:
+            //case ARRIVE_INFECTED:
+                callForHelp(MessageType.HELP_EMT_NEEDS_COP);
+                break;
+        }
+
+    }
 
     public boolean handleMessage(Telegram msg){
         //zombies for now will now be listening for messages
@@ -131,7 +143,6 @@ public class EMT extends person {
         //only change the evad steering behavoir if zombie is closer than the reported zombie
 
         if(busy) {
-
             switch(msg.message) {
                 case HELP_INFECTED:
                 case HELP_BOMB_INFECTED:
@@ -142,9 +153,7 @@ public class EMT extends person {
                     break;
 
             }
-
         } else {
-
             switch (msg.message) {
                 case NO_HELP_NEEDED:
                     break;
@@ -152,7 +161,7 @@ public class EMT extends person {
                 //break;
                 case HELP_ZOMBIE_SPOTTED:
                     //watch out for that zombie
-
+                    //TODO evade from the posiiton of where the zombie was spotted
                     zombie ztemp = (zombie) temp.getPrey();
 
                     if (getPrey() != ztemp) {
@@ -266,14 +275,17 @@ public class EMT extends person {
         }
 
         if((mAlerted == EVADE_ZOMBIE) || (mAlerted == ARRIVE_INFECTED) || (mAlerted == ARRIVE_BOMB_INFECTED)) {
-            steerEnt.setBehavior(combinedSB);
-            steerEnt.update(dt);
+            //steerEnt.setBehavior(combinedSB);
+            //steerEnt.update(dt);
             if(getPrey() != null) {
                if(18 > getEntDistance()) {
                     heal();
                }
                try {
                    // might crash here
+
+                   //if(getPrey().get)
+
                    if ( ((person)getPrey()).getmInfctTime() > 1) {
                       // mAlerted = EVADE_ZOMBIE;
                        getPursueSB().setEnabled(false);
@@ -286,7 +298,7 @@ public class EMT extends person {
                } catch(NullPointerException ex) {}
             }
         }
-        else
+
             super.update(dt);
 
         if(healing == false)

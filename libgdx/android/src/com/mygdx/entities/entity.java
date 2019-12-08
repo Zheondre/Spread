@@ -143,21 +143,22 @@ public abstract class entity implements Telegraph {
         if (classID == classIdEnum.PZombie) {
             tx = entType.getXpos();
             ty = entType.getYpos();
-        } else if (classID == classIdEnum.Emt) {
-           // tx = (float) (Math.random() * ((200 - 100) + 100)) + 1;
-            //ty = (float) (Math.random() * ((200 - 100) + 100)) + 1;
-            tx = 250;
-            ty = 60;
-        }else {
+        } else {
             while (!goodposition) {
-                tx = (float) (Math.random() * ((200 - 100) + 1)) + 100;
-                ty = (float) (Math.random() * ((200 - 100) + 1)) + 100;
+                tx = (float) (Math.random() * ((250 - 50) + 1)) + 50;
+                ty = (float) (Math.random() * ((250 - 50) + 1)) + 50;
 
                 goodposition = true;
                 TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int) ((tx) / tileW), (int) (ty / tileH));
 
                 if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty)/tileH)) != null)
                     goodposition = false;
+            }
+
+            if (classID == classIdEnum.Emt) {
+                //Debug
+                //tx = 250;
+                //ty = 60;
             }
         }
 

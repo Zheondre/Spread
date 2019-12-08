@@ -53,8 +53,6 @@ public class bomb extends entity {
         int entDist;
         entity tempEnt = null;
 
-
-		
         if(mMap.getPeople().size() == 0)
             return false;
 

@@ -119,11 +119,6 @@ public class zombie extends entity {
             arriveSB.setTarget(prey);
     }
 
-    public void setPursueSB(Pursue<Vector2> pursueSB) {
-        if((pursueSB != null))
-          this.pursueSB = pursueSB;
-    }
-
     public void setPursueSB(person prey) {
         if((prey != null)) {
             if(this.pursueSB == null) {
@@ -132,9 +127,9 @@ public class zombie extends entity {
                 //steerEnt.setBehavior(pursueSB);//might put this as its own function
             } else {
                 this.pursueSB.setTarget(prey.getSteerEnt());
-                this.pursueSB.setEnabled(true);
             }
             this.prey = prey;
+            this.pursueSB.setEnabled(true);
         }
     }
 
@@ -173,15 +168,10 @@ public class zombie extends entity {
 /*
         this.wanderSB = new Wander<Vector2>(steerEnt) //
                 .setFaceEnabled(true) // We want to use Face internally (independent facing is on)
-                .setAlignTolerance(1f) // Used by Face
-                .setDecelerationRadius(10f) // Used by Face
-                .setTimeToTarget(.5f) // Used by Face
-                .setWanderOffset(50f) //
-                .setWanderOrientation(400f) //
-                .setWanderRadius(300f) //
+                .setAlignTolerance(1f) // Used by Face    .setDecelerationRadius(10f) // Used by Face .setTimeToTarget(.5f) // Used by Face
+                .setWanderOffset(50f) //.setWanderOrientation(400f) // .setWanderRadius(300f) //
                 .setWanderRate(MathUtils.PI2 * 8);
 */
-        //add raycasting object avoidence or object avoidence sb as default ?
 
         this.combinedSB = new PrioritySteering<Vector2>(steerEnt, .001f);
         steerEnt.setBehavior(combinedSB);
@@ -189,8 +179,6 @@ public class zombie extends entity {
             //put player towards the beginning of map if its not a new game
             //if its a new game dont draw the spite yet we got to set a bomb before hand
            // steerEnt.setBehavior(wanderSB);
-        } else {
-           // viewCB = new viewQueryCallBack();
         }
     }
 
@@ -303,7 +291,7 @@ public class zombie extends entity {
                         super.update(dTime);
                     }
                      else {
-                        steerEnt.update(dTime);
+                        //steerEnt.update(dTime);
                     }
                     break;
 
@@ -388,16 +376,6 @@ public class zombie extends entity {
                         super.update(dTime);
                 }
         } else {
-
-            ///// temp /////
-            float tempX = this.getPosX();
-            float tempY = this.getPosY();
-            float radius = 5;
-            //mAlerted = TEST_DONT_MOVE;
-            //Debug
-           // DrawDebugLine(new Vector2(tempX - radius*2,tempY - radius*5), new Vector2(tempX - radius*2, tempY- 3), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined); //left line
-            //DrawDebugLine(new Vector2(tempX + radius*4,tempY - radius*5), new Vector2(tempX + radius*4, tempY-3), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined);
-
             //player has control
             super.update(dTime);
         }
@@ -429,9 +407,7 @@ public class zombie extends entity {
                 //batch.draw(mMap.getPlayerHealth(),  ((tileGameMap)mMap).getPlayerOne().getCamXPos(), ((tileGameMap)mMap).getPlayerOne().getCamYPos(), ((Gdx.graphics.getWidth() - 1300) / 3) * getHealth(), 6);
             } else if (getClassID() != classIdEnum.ConvertedPer) {
 
-                if(getHealth() > .95f)
-                    batch.setColor(Color.CLEAR);
-                else if(getHealth() > .8f)
+                if(getHealth() > .8f)
                     batch.setColor(Color.WHITE);
                 else if(getHealth() > .3f)
                     batch.setColor(Color.YELLOW);
@@ -441,9 +417,8 @@ public class zombie extends entity {
                     batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +25, 22* mInfctTime, 3);
 
             }
-            if(getHealth() > .95f)
-                batch.setColor(Color.CLEAR);
-            else if(getHealth() > .8f)
+
+            if(getHealth() > .8f)
                 batch.setColor(Color.GREEN);
             else if(getHealth() > .3f)
                 batch.setColor(Color.ORANGE);
@@ -454,8 +429,8 @@ public class zombie extends entity {
                 batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +20, 22* getHealth(), 3);
 
             //TODO make sure armor points decrease first before health
-            if(armorPts > 0 ) {
-                batch.setColor(Color.DARK_GRAY);
+            if(armorPts > 0) {
+                batch.setColor(Color.LIGHT_GRAY);
                 batch.draw(mMap.getPlayerHealth(), getPosX() + 8, getPosY() + 20, 22 *armorPts, 3);
             }
             batch.setColor(Color.WHITE);

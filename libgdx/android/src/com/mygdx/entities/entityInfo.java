@@ -61,7 +61,7 @@ public enum entityInfo {
         this.id = id;
         this.weapon = classIdEnum.NOWEAPON;
 
-       this.walkSpeed = 80;
+        this.walkSpeed = 80;
 
         this.armor = 0;
         this.health = 1;
@@ -80,7 +80,7 @@ public enum entityInfo {
                 this.livingObject = false;
                 break;
             case Emt:
-                this.health = 2;
+                this.health = 1.4f;
                 break;
             case PBomb:
                 this.isCpu = false;
@@ -213,7 +213,4 @@ public enum entityInfo {
     public boolean isLivingObject() {
         return livingObject;
     }
-
-
-
 }
