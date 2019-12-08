@@ -66,11 +66,7 @@ public class person extends zombie {
     private float wlkTime;
     private int wlkDirection;
 
-    public void setEvadeSB(Evade<Vector2> evadeSB) {
-        if(evadeSB!= null)
-            this.evadeSB = evadeSB;
-        steerEnt.setBehavior(evadeSB);
-    }
+    protected float helpDuration = 1;
 
     public void setEvadeSB(zombie target) {
         if(target!= null) {
@@ -78,12 +74,9 @@ public class person extends zombie {
                 //this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt(), .5f);
                 this.evadeSB = new Evade<>(this.steerEnt, target.getSteerEnt());
                 combinedSB.add(this.evadeSB);
-                steerEnt.setBehavior(evadeSB);
-
             } else{
                 this.evadeSB.setTarget(target.getSteerEnt());
             }
-            steerEnt.setBehavior(evadeSB);
             this.setPrey(target);// temp
             evadeSB.setEnabled(true);
         }
@@ -95,11 +88,11 @@ public class person extends zombie {
                 //this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt(), .5f);
                 this.evadeSB = new Evade<>(this.steerEnt, target.getSteerEnt());
                 combinedSB.add(evadeSB);
-                steerEnt.setBehavior(evadeSB);
              } else {
-                this.pursueSB.setTarget(target.getSteerEnt());
+                this.evadeSB.setTarget(target.getSteerEnt());
             }
             this.setPrey(target);// temp
+            evadeSB.setEnabled(true);
         }
     }
 
@@ -200,14 +193,22 @@ public class person extends zombie {
             MessageMsk = (MessageMsk | (1 <<msVal));
             ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, msVal);
             return true;
-        } else
+        } else {
+            //helpDuration-= .01;
+            //if(helpDuration < 0)
+
+        }
             return false;
     }
 	
     public boolean attack(){
         if(selectedWeapon != null)
-            selectedWeapon.attack();
-        return true;
+            selectedWeapon.attack(); //TODO update this
+
+        if(areYouAZombie())
+           return super.attack();
+
+        return false;
     }
    // @Override
     public void update(float dTime){
@@ -233,7 +234,6 @@ public class person extends zombie {
 
             switch(classID) {
                 case Emt:
-
                     if(getPursueSB() != null) {
                         // if the person we asked for helped turned into a zombie
                         if(getPursueSB().getTarget().equals(tEnt.getSteerEnt())) {
@@ -241,7 +241,6 @@ public class person extends zombie {
                         }
                     }
                 case Person:
-
                     if(weapon == classIdEnum.NOWEAPON) {
                         mAlerted = EVADE_ZOMBIE;
                         setEvadeSB(tEnt);
