@@ -22,6 +22,7 @@ import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
 import com.mygdx.entities.objects.bullet;
+import com.mygdx.utils.SteeringUtils;
 import com.mygdx.utils.viewQueryCallBack;
 import com.mygdx.world.gameMap;
 import com.mygdx.world.tileGameMap;
@@ -30,8 +31,6 @@ import java.util.ArrayList;
 
 import static com.mygdx.entities.BehaviorEnum.TEST_DONT_MOVE;
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
-import static com.mygdx.entities.entityInfo.BULLET;
-import static com.mygdx.entities.humans.EMT.DrawDebugLine;
 import static com.mygdx.utils.entUtils.getZombieAttack;
 import static com.mygdx.utils.entUtils.stopDownVec;
 import static com.mygdx.utils.entUtils.stopLeftVec;
@@ -75,8 +74,6 @@ public class zombie extends entity {
 
     private entity prey;
 
-   //protected Box2dSteering steerEnt;
-
     protected ArrayList<bullet> bullets;
 
     protected Pursue<Vector2>  pursueSB;
@@ -95,8 +92,6 @@ public class zombie extends entity {
     public Pursue<Vector2> getPursueSB() {
         return pursueSB;
     }
-
-    //changeSb();
 
     public void setWonderSB(Box2dSteering entSb) {
         if((entSb != null)) {
@@ -124,11 +119,6 @@ public class zombie extends entity {
             arriveSB.setTarget(prey);
     }
 
-    public void setPursueSB(Pursue<Vector2> pursueSB) {
-        if((pursueSB != null))
-          this.pursueSB = pursueSB;
-    }
-
     public void setPursueSB(person prey) {
         if((prey != null)) {
             if(this.pursueSB == null) {
@@ -139,6 +129,7 @@ public class zombie extends entity {
                 this.pursueSB.setTarget(prey.getSteerEnt());
             }
             this.prey = prey;
+            this.pursueSB.setEnabled(true);
         }
     }
 
@@ -147,15 +138,9 @@ public class zombie extends entity {
             pursueSB.setTarget(prey);
     }
 
-    public void setPrey(entity prey){ this.prey = prey; }
-    public entity getPrey(){ return this.prey; }
-
     public zombie(entityInfo entType, gameMap map) {
         super(entType, map);
-        /*
-        we will need to position characters in different locations based on the map and class  id
-        we can figure this out later
-         */
+
         this.isAlive = true;
         this.classID = entType.getId();
         this.armorPts = entType.getArmor();
@@ -179,28 +164,21 @@ public class zombie extends entity {
         this.mIsCpu = entType.isCpu();
 
         this.doISeeANoneZombie = false;
-        //this.steerEnt = new Box2dSteering(super.getBody(),10);
+
 /*
         this.wanderSB = new Wander<Vector2>(steerEnt) //
                 .setFaceEnabled(true) // We want to use Face internally (independent facing is on)
-                .setAlignTolerance(1f) // Used by Face
-                .setDecelerationRadius(10f) // Used by Face
-                .setTimeToTarget(.5f) // Used by Face
-                .setWanderOffset(50f) //
-                .setWanderOrientation(1000f) //
-                .setWanderRadius(1000f) //
+                .setAlignTolerance(1f) // Used by Face    .setDecelerationRadius(10f) // Used by Face .setTimeToTarget(.5f) // Used by Face
+                .setWanderOffset(50f) //.setWanderOrientation(400f) // .setWanderRadius(300f) //
                 .setWanderRate(MathUtils.PI2 * 8);
 */
-        //add raycasting object avoidence or object avoidence sb as default ?
 
-        this.combinedSB = new PrioritySteering<Vector2>(null);
-
+        this.combinedSB = new PrioritySteering<Vector2>(steerEnt, .001f);
+        steerEnt.setBehavior(combinedSB);
         if(this.mIsCpu){
             //put player towards the beginning of map if its not a new game
             //if its a new game dont draw the spite yet we got to set a bomb before hand
            // steerEnt.setBehavior(wanderSB);
-        } else {
-            viewCB = new viewQueryCallBack();
         }
     }
 
@@ -274,7 +252,6 @@ public class zombie extends entity {
     }
 
     public boolean handleMessage(Telegram msg) {
-;///////
         return true;
     }
 
@@ -302,9 +279,7 @@ public class zombie extends entity {
             return;
         }
         if(this.mIsCpu) {
-            //check if there are any special messages
             switch(this.classID) {
-
                 case Person:
                 case Security:
                 case Cop:
@@ -315,8 +290,9 @@ public class zombie extends entity {
                         stopMoving();
                         super.update(dTime);
                     }
-                     else
-                         steerEnt.update(dTime);
+                     else {
+                        //steerEnt.update(dTime);
+                    }
                     break;
 
                 case ConvertedPer: // debug
@@ -360,20 +336,10 @@ public class zombie extends entity {
                                 // if we multi thread use a semiphore // i dont think this should be handled here
                                 this.setPrey(null);
                                 doISeeANoneZombie = false;
+                                pursueSB.setEnabled(false);
                                 //increment score count
                             }  else {
-                                if (steerEnt.getLinearVelocity().x > 0)
-                                    steerEnt.body.applyLinearImpulse(stopLeftVec(), steerEnt.body.getWorldCenter(), true);
-
-                                if (steerEnt.getLinearVelocity().x < 0)
-                                    steerEnt.body.applyLinearImpulse(stopRightVec(), steerEnt.body.getWorldCenter(), true);
-
-                                if (steerEnt.getLinearVelocity().y > 0)
-                                    steerEnt.body.applyLinearImpulse(stopDownVec(), steerEnt.body.getWorldCenter(), true);
-
-                                if (steerEnt.getLinearVelocity().y < 0)
-                                    steerEnt.body.applyLinearImpulse(stopUpVec(), steerEnt.body.getWorldCenter(), true);
-
+                                stopMovingEnt();
                                 if (bitetime == biteTimeSetting)
                                     biteNonZombie((person) this.getPrey());
                                 else {
@@ -410,25 +376,6 @@ public class zombie extends entity {
                         super.update(dTime);
                 }
         } else {
-
-            ///// temp /////
-            float tempX = this.getPosX();
-            float tempY = this.getPosY();
-            float radius = 5;
-            //mAlerted = TEST_DONT_MOVE;
-            //Debug
-           // DrawDebugLine(new Vector2(tempX - radius*2,tempY - radius*5), new Vector2(tempX - radius*2, tempY- 3), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined); //left line
-            //DrawDebugLine(new Vector2(tempX + radius*4,tempY - radius*5), new Vector2(tempX + radius*4, tempY-3), ((tileGameMap)mMap).getPlayerOne().getPlayCam().combined);
-
-            //Debug
-            mMap.getWorld().QueryAABB(viewCB,
-                    tempX - radius*2,
-                    tempY - radius*5,
-                    tempX + radius*4,
-                    tempY - 3
-            );
-            ///// temp /////
-
             //player has control
             super.update(dTime);
         }
@@ -460,20 +407,18 @@ public class zombie extends entity {
                 //batch.draw(mMap.getPlayerHealth(),  ((tileGameMap)mMap).getPlayerOne().getCamXPos(), ((tileGameMap)mMap).getPlayerOne().getCamYPos(), ((Gdx.graphics.getWidth() - 1300) / 3) * getHealth(), 6);
             } else if (getClassID() != classIdEnum.ConvertedPer) {
 
-                if(getHealth() > .95f)
-                    batch.setColor(Color.CLEAR);
-                else if(getHealth() > .8f)
+                if(getHealth() > .8f)
                     batch.setColor(Color.WHITE);
                 else if(getHealth() > .3f)
                     batch.setColor(Color.YELLOW);
                 else
                     batch.setColor(Color.PURPLE);
-                batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +25, 22* mInfctTime, 3);
+                if(mInfctTime > 0)
+                    batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +25, 22* mInfctTime, 3);
 
             }
-            if(getHealth() > .95f)
-                batch.setColor(Color.CLEAR);
-            else if(getHealth() > .8f)
+
+            if(getHealth() > .8f)
                 batch.setColor(Color.GREEN);
             else if(getHealth() > .3f)
                 batch.setColor(Color.ORANGE);
@@ -484,8 +429,8 @@ public class zombie extends entity {
                 batch.draw(mMap.getPlayerHealth(),  getPosX() + 8, getPosY() +20, 22* getHealth(), 3);
 
             //TODO make sure armor points decrease first before health
-            if(armorPts > 0 ) {
-                batch.setColor(Color.DARK_GRAY);
+            if(armorPts > 0) {
+                batch.setColor(Color.LIGHT_GRAY);
                 batch.draw(mMap.getPlayerHealth(), getPosX() + 8, getPosY() + 20, 22 *armorPts, 3);
             }
             batch.setColor(Color.WHITE);
@@ -585,5 +530,23 @@ public class zombie extends entity {
     public void dcrseArmor(float pts){
         this.armorPts -= pts;
     }
+    public void setPrey(entity prey){ this.prey = prey; }
+    public entity getPrey(){ return this.prey; }
+
+   public void stopMovingEnt(){
+
+    if (steerEnt.getLinearVelocity().x > 0)
+        steerEnt.body.applyLinearImpulse(stopLeftVec(), steerEnt.body.getWorldCenter(), true);
+
+    if (steerEnt.getLinearVelocity().x < 0)
+        steerEnt.body.applyLinearImpulse(stopRightVec(), steerEnt.body.getWorldCenter(), true);
+
+    if (steerEnt.getLinearVelocity().y > 0)
+        steerEnt.body.applyLinearImpulse(stopDownVec(), steerEnt.body.getWorldCenter(), true);
+
+    if (steerEnt.getLinearVelocity().y < 0)
+        steerEnt.body.applyLinearImpulse(stopUpVec(), steerEnt.body.getWorldCenter(), true);
+    }
+
 
 }

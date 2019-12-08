@@ -37,8 +37,10 @@ import static com.mygdx.AiStates.MessageType.HELP_INFECTED_REPLY_DENIED;
 import static com.mygdx.AiStates.MessageType.HELP_ZOMBIE_SPOTTED;
 import static com.mygdx.AiStates.MessageType.HELP_ZOMBIE_SPOTTED_REPLY;
 import static com.mygdx.entities.BehaviorEnum.BOMB_INFECTED;
+import static com.mygdx.entities.BehaviorEnum.EVADE_ZOMBIE;
 import static com.mygdx.entities.BehaviorEnum.INFECTED;
 import static com.mygdx.entities.BehaviorEnum.NEW_ZOMBIE;
+import static com.mygdx.entities.BehaviorEnum.PURSUE_ZOMBIE;
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
 import com.mygdx.utils.bombAnimation;
 
@@ -54,6 +56,7 @@ public class person extends zombie {
     protected Flee<Vector2>  fleeSB;
     protected Hide<Vector2>  hideSB;
     protected RaycastObstacleAvoidance<Vector2> raycastObstacleAvoidanceSB;
+    protected Box2dRaycastCollisionDetector raycastCollisionDetector;
 
     public boolean firstVictim = false;
     public bombAnimation bombDrop = new bombAnimation();
@@ -63,11 +66,7 @@ public class person extends zombie {
     private float wlkTime;
     private int wlkDirection;
 
-    public void setEvadeSB(Evade<Vector2> evadeSB) {
-        if(evadeSB!= null)
-            this.evadeSB = evadeSB;
-        steerEnt.setBehavior(evadeSB);
-    }
+    protected float helpDuration = 1;
 
     public void setEvadeSB(zombie target) {
         if(target!= null) {
@@ -75,12 +74,9 @@ public class person extends zombie {
                 //this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt(), .5f);
                 this.evadeSB = new Evade<>(this.steerEnt, target.getSteerEnt());
                 combinedSB.add(this.evadeSB);
-                steerEnt.setBehavior(evadeSB);
-
             } else{
                 this.evadeSB.setTarget(target.getSteerEnt());
             }
-            steerEnt.setBehavior(evadeSB);
             this.setPrey(target);// temp
             evadeSB.setEnabled(true);
         }
@@ -92,11 +88,11 @@ public class person extends zombie {
                 //this.evadeSB = new Evade<>(this.steerEnt,target.getSteerEnt(), .5f);
                 this.evadeSB = new Evade<>(this.steerEnt, target.getSteerEnt());
                 combinedSB.add(evadeSB);
-                steerEnt.setBehavior(evadeSB);
              } else {
-                this.pursueSB.setTarget(target.getSteerEnt());
+                this.evadeSB.setTarget(target.getSteerEnt());
             }
             this.setPrey(target);// temp
+            evadeSB.setEnabled(true);
         }
     }
 
@@ -112,8 +108,6 @@ public class person extends zombie {
         }
     }
 
-    protected RaycastCollisionDetector<Vector2> raycastCollisionDetector;
-	
     //seek or flee evad, face
     public person(entityInfo entityType, gameMap map) {
 
@@ -134,16 +128,12 @@ public class person extends zombie {
         }
 
         /////https://github.com/libgdx/gdx-ai/blob/master/tests/src/com/badlogic/gdx/ai/tests/steer/box2d/tests/Box2dRaycastObstacleAvoidanceTest.java
-        /////////
-        RayConfigurationBase<Vector2> rayConfiguration = new CentralRayWithWhiskersConfiguration<Vector2>(steerEnt, SteeringUtils.pixelsToMeters(100),
-                SteeringUtils.pixelsToMeters(114), 22.5f * MathUtils.degreesToRadians);
-
-        RaycastCollisionDetector<Vector2> raycastCollisionDetector = new Box2dRaycastCollisionDetector(mMap.getWorld());
+        RayConfigurationBase<Vector2> rayConfiguration = new CentralRayWithWhiskersConfiguration<Vector2>(steerEnt, SteeringUtils.pixelsToMeters(1550),
+                    SteeringUtils.pixelsToMeters(1000), 27.5f * MathUtils.degreesToRadians);
+        raycastCollisionDetector = new Box2dRaycastCollisionDetector((tileGameMap)mMap);
         raycastObstacleAvoidanceSB = new RaycastObstacleAvoidance<Vector2>(steerEnt, rayConfiguration,
-                raycastCollisionDetector, SteeringUtils.pixelsToMeters(1000));
-
+                raycastCollisionDetector, SteeringUtils.pixelsToMeters(1550));
         combinedSB.add(raycastObstacleAvoidanceSB);
-
         /////////////////////////////
         this.mInfctTime = 1;
 
@@ -198,19 +188,31 @@ public class person extends zombie {
         return true;
     }
 
-    public boolean callForHelp( int msVal){
+    public boolean callForHelp(int msVal){
         if( (0) == (MessageMsk & (1 <<msVal)) ) { // ask for help every like 10 seconds until help arrives ?
             MessageMsk = (MessageMsk | (1 <<msVal));
             ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, msVal);
             return true;
-        } else
+        } else {
+            // ask for help every like 10 seconds until help arrives ?
+            if(helpDuration < 0){
+                ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, msVal);
+                helpDuration = 1;
+            }
+
+        }
             return false;
     }
 	
     public boolean attack(){
         if(selectedWeapon != null)
-            selectedWeapon.attack();
-        return true;
+            if(classID != classIdEnum.PZombie)
+               return selectedWeapon.attack(); //TODO update this
+
+        if(areYouAZombie())
+           return super.attack();
+
+        return false;
     }
    // @Override
     public void update(float dTime){
@@ -219,8 +221,40 @@ public class person extends zombie {
             super.update(dTime);
         else if(classID == classIdEnum.PPerson) //debug player is controlling person
             super.update(dTime);
-        else
+        else {
             processMoves(dTime);
+        }
+        //breakpoint
+
+        // i think the ray cast gets the closest entity..
+        if(raycastCollisionDetector.getCallback().getFoundEnts().size() > 0)
+            raycastCollisionDetector.getCallback().getFoundEnts().clear();
+
+        steerEnt.update(dTime);
+
+        zombie tEnt;
+        if(raycastCollisionDetector.getCallback().getFoundEnts().size() > 0) {
+            tEnt = (zombie)raycastCollisionDetector.getCallback().getFoundEnts().get(0);
+
+            if(getPursueSB() != null) {
+                // if the person that asked for helped turned into a zombie
+                if(getPursueSB().getTarget().equals(tEnt.getSteerEnt())) {
+                    getPursueSB().setEnabled(false);
+                }
+            }
+
+            if(weapon == classIdEnum.NOWEAPON) {
+                mAlerted = EVADE_ZOMBIE;
+                setEvadeSB(tEnt);
+            } else {
+                mAlerted = PURSUE_ZOMBIE;
+                setPursueSB((person)tEnt);
+            }
+
+            raycastCollisionDetector.getCallback().getFoundEnts().clear();
+        }
+
+
         /*if(((SystemClock.elapsedRealtime() / 250) % 2) == 1)
             changeImage(true, 2);
         else changeImage(false, 1);*/
@@ -251,83 +285,53 @@ public class person extends zombie {
         {
             bombDrop.render(100, 100, 2000);
         }
-
-
     }
 
     public void processMoves(float dTime)
-    {//virtual function
+    {
         //check alertness
         //check if hurt or if infected
         if(!mZombie) {
             if (mInfected) {
-                mInfctTime -= .001;
+                mInfctTime -= .005;
                 if (mInfctTime < 0)
                     turnIntoAZombie();
             }
         } else {
-			if(mInfctTime >= 1)
-				MessageMsk = 0; // temp for now
-			   // MessageMsk = (MessageMsk | (1 <<HELP_INFECTED)); set this bit to 0
-
+			if(mInfctTime >= 1) {
+			    int tMsk = ~((1 << HELP_INFECTED)|(1 << HELP_BOMB_INFECTED));
+                MessageMsk = (MessageMsk & tMsk);
+            }
 		}
+
+        if(MessageMsk > 1) {
+            helpDuration -= .005;
+        }
+
         switch(mAlerted) {  //change steering ent based on alertness
             case TEST_WANDER_SB:
-                // test wander steering ent
-                if(getSteerEnt().getBehavior() != getWanderSB()){
-                   getSteerEnt().setBehavior(getWanderSB());
-                }
+                // Not Supported
                 break;
             case WALK_RANDOMLY:
                 walkRandomly(dTime);
-                //avoid object collision
                 break;
             case EVADE_ZOMBIE:
-                //zombie has been spotted
-                //run away or attack at a safe distance
-                //if we dont have the correct steering ent change
                 callForHelp(MessageType.HELP_ZOMBIE_SPOTTED);
-
-                if(getSteerEnt().getBehavior() != getEvadeSB()){
-                    getSteerEnt().setBehavior(getEvadeSB());
-                }
-
             break;
             case EVADE_ZOMBIE_ARRIVE_INFECTED:
                 //combine both steering behavoir
+                //callForHelp(MessageType.HELP_ZOMBIE_SPOTTED);
                break ;
 
             case BOMB_INFECTED:
                 callForHelp(HELP_BOMB_INFECTED);
                 Log.d("Person", "Infected By bomb I need an Emt !");
-                getSteerEnt().setBehavior(blendedSB);
-                /*
-                if(getSteerEnt().getBehavior() != getEvadeSB()){
-                    // make sure to check if we have the evade sb allocated
-                    getSteerEnt().setBehavior(getEvadeSB());
-                }
-                */
-
             break;
 
             case INFECTED:
-                //if a zombie is too close evade
                 callForHelp(HELP_INFECTED);
                 Log.d("Person", "I need an Emt !");
-                if(false)
-                    if(getSteerEnt().getBehavior() != getEvadeSB()){
-                        // make sure to check if we have the evade sb allocated
-                        getSteerEnt().setBehavior(getEvadeSB());
-                    }
-                else if(false) { // other wise seek the cure point when told by police or security
-                       /*
-                        if(getSteerEnt().getBehavior() != getSeekSB()){
-                            // make sure to check if we have the seek sb allocated
-                            getSteerEnt().setBehavior(getSeekSB());
-                        }
-                        */
-                    }
-                //if we dont have the correct steering ent change
+            // ask to be helped or go to an emt
                 break;
             case NEW_ZOMBIE:
                 // turned into a zombie so act as such.
@@ -356,6 +360,16 @@ public class person extends zombie {
         this.setImageDown("zombieDown.png");
         this.setImageDownWalk("zombieDown2.png");
         this.setPrey(null);
+
+        if(getEvadeSB() != null) {
+            getEvadeSB().setEnabled(false);
+            setPrey(null);
+        }
+
+        if(getPursueSB() != null) {
+            getPursueSB().setEnabled(false);
+            setPrey(null);
+        }
 
         //put a status bit here to make sure we only call once
         MessageManager.getInstance().removeListener(this,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY, GIVE_PER_LOCATION,HELP_ZOMBIE_SPOTTED_REPLY, HELP_INFECTED_REPLY_DENIED);

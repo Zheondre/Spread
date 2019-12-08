@@ -53,8 +53,6 @@ public class bomb extends entity {
         int entDist;
         entity tempEnt = null;
 
-
-		
         if(mMap.getPeople().size() == 0)
             return false;
 
@@ -98,9 +96,7 @@ public class bomb extends entity {
                 //dont set anything
             }
         }
-
-        //if(tempEnt != null)
-            //((tileGameMap)mMap).getPlayerOne().setTempHost(tempEnt);
+        getBody().getFixtureList().get(0).setSensor(true);
         return true;
     }
 
@@ -132,6 +128,4 @@ public class bomb extends entity {
     public void dispose(){
        ;
     }
-
-
 }
