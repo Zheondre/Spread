@@ -26,8 +26,6 @@ import static java.lang.StrictMath.abs;
 public abstract class entity implements Telegraph {
 
     private int speed = 80;
-    // private static int xspeed = 80;
-    //private static int yspeed = 80;
 
     private Texture image;
     private Texture imageRight;
@@ -49,7 +47,6 @@ public abstract class entity implements Telegraph {
 
     private  int mWidth = 13;
     private  int mHeight = 18;
-    private static final float mWeight = 40;
 
     protected float mVelocityY;
     protected static gameMap mMap;
@@ -146,21 +143,22 @@ public abstract class entity implements Telegraph {
         if (classID == classIdEnum.PZombie) {
             tx = entType.getXpos();
             ty = entType.getYpos();
-        } else if (classID == classIdEnum.Emt) {
-           // tx = (float) (Math.random() * ((200 - 100) + 100)) + 1;
-            //ty = (float) (Math.random() * ((200 - 100) + 100)) + 1;
-            tx = 250;
-            ty = 60;
-        }else {
+        } else {
             while (!goodposition) {
-                tx = (float) (Math.random() * ((200 - 100) + 100)) + 1;
-                ty = (float) (Math.random() * ((200 - 100) + 100)) + 1;
+                tx = (float) (Math.random() * ((250 - 50) + 1)) + 50;
+                ty = (float) (Math.random() * ((250 - 50) + 1)) + 50;
 
                 goodposition = true;
                 TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int) ((tx) / tileW), (int) (ty / tileH));
 
                 if(collisionLayer.getCell((int)((tx)/tileW),(int)((ty)/tileH)) != null)
                     goodposition = false;
+            }
+
+            if (classID == classIdEnum.Emt) {
+                //Debug
+                //tx = 250;
+                //ty = 60;
             }
         }
 
@@ -179,9 +177,7 @@ public abstract class entity implements Telegraph {
         fd.shape = cs;
 
         this.body = mMap.getWorld().createBody(entBody);
-        if (classID != classIdEnum.PZombie) {
-            this.steerEnt = new Box2dSteering(this.body, 5);
-        }
+        this.steerEnt = new Box2dSteering(this.body, 5);
         //fd.filter.groupIndex = 0;
         this.body.setActive(true);
         this.body.createFixture(fd).setUserData(this);

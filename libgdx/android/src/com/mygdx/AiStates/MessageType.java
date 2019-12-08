@@ -33,5 +33,6 @@ public final class MessageType {
     public static final int NO_HELP_NEEDED = 15;
     public static final int HELP_BOMB_INFECTED = 16;
     public static final int HELP_BOMB_INFECTED_REPLY = 17;
+    public static final int HELP_EMT_NEEDS_COP = 18;
 
 }

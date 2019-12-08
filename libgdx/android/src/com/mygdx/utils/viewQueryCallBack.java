@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class viewQueryCallBack implements QueryCallback {
 
     private ArrayList<entity> foundEnts;
-
+// should i pass the instance of the owner in here and get the shortest distance enemy ent ?
   public viewQueryCallBack(){
 
         foundEnts = new ArrayList<entity>();

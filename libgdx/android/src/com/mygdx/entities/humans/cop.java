@@ -82,25 +82,13 @@ public class cop extends security {
             // might have to use raycasting here
             if(shotIsClear)
                 attack();
-        } else
-            attack();
+        }
 
         super.update(dt);
-
-    }
-
-    @Override
-    public boolean attack() {
-
-        super.attack();
-        //return super.attack();
-        return true;
     }
 
     public boolean handleMessage(Telegram msg){
-        //zombies for now will now be listening for messages
-        //if(areYouAZombie())
-            //takeoutlistener
+
         entity temp = (entity)msg.sender;
 
         //what should happen if the person asking for help turns into a zombie ?
@@ -117,9 +105,6 @@ public class cop extends security {
             case HELP_BACKUP_COPS:
                 //getting sorounded or infected is really low call for backup,, else allocate more cops
             break;
-            case HELP_BACKUP_ARMY:
-                //shit has hit the fan call the army
-            break;
             case FOLLOW_ME:
                 // follow the commanding cop
             break;
@@ -135,10 +120,21 @@ public class cop extends security {
     }
 
     public boolean isShotIsClear() {
+
+        if(getPrey() != null) {
+            //raycast and see if the closet fixture is that entity.
+        }
+
         return shotIsClear;
     }
 
     public void setShotIsClear(boolean shotIsClear) {
         this.shotIsClear = shotIsClear;
     }
+
+    @Override
+    public boolean attack() {
+        return super.attack();
+    }
+
 }
