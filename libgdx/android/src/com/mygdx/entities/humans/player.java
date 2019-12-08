@@ -6,12 +6,14 @@ import android.util.Log;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.entities.BehaviorEnum;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.objects.bomb;
+import com.mygdx.states.GameOver_Screen;
 
 import java.util.ArrayList;
 
@@ -28,6 +30,7 @@ private float gameOverTime = 1;
     private float saveTime = 1;
     private float screenX;
     private float screenY;
+    private GameOver_Screen gameOver_screen;
 
     private float CamXPos;
     private float CamYPos;
@@ -70,6 +73,7 @@ private float gameOverTime = 1;
     private Preferences prefs;
 
     public player(entity host) {
+
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
         playCam = new OrthographicCamera();
@@ -296,6 +300,8 @@ private float gameOverTime = 1;
         }
 
         if(bombExploded) {
+            //gameOver_screen = new GameOver_Screen(this);
+            //gameOver_screen.render(dTime);
             //TODO if no one turns into a zombie after an exposion after 30 seconds you failed the game try again
             //TODO hide bomb or showing explosion animation
             if(host.getClassID() != classIdEnum.ConvertedPer)
@@ -310,7 +316,10 @@ private float gameOverTime = 1;
                 }
 
             if(gameOverTime < 0)
-                ;
+            {
+                gameOver_screen.render(dTime);
+            }
+
         }
 
         if(host.getBody().getPosition().x < 260) playCam.position.x = 260;
@@ -412,6 +421,12 @@ private float gameOverTime = 1;
     @Override
     public boolean scrolled(int amount) {
         return false;
+    }
+
+    public void showGameOver()
+    {
+        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 }
 

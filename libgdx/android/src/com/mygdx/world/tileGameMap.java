@@ -172,13 +172,13 @@ public class tileGameMap extends gameMap {
         for(int i = 0; i < 0; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
-        for(int i = 0; i < 1; i++)
+        for(int i = 0; i < 20; i++)
             people.add(new person(entityInfo.PERSON,this));
 
         for(int i = 0; i < 1; i++)
             people.add(new EMT(entityInfo.EMT,this));
 
-        for(int i = 0; i < 1; i++)
+        for(int i = 0; i < 3; i++)
             people.add(new cop(entityInfo.COP,this));
 
 
