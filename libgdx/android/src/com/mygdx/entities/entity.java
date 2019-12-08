@@ -150,8 +150,8 @@ public abstract class entity implements Telegraph {
             ty = 60;
         }else {
             while (!goodposition) {
-                tx = (float) (Math.random() * ((200 - 100) + 100)) + 1;
-                ty = (float) (Math.random() * ((200 - 100) + 100)) + 1;
+                tx = (float) (Math.random() * ((200 - 100) + 1)) + 100;
+                ty = (float) (Math.random() * ((200 - 100) + 1)) + 100;
 
                 goodposition = true;
                 TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int) ((tx) / tileW), (int) (ty / tileH));
