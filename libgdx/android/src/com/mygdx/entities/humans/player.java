@@ -1,17 +1,17 @@
 package com.mygdx.entities.humans;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.entities.BehaviorEnum;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.objects.bomb;
+import com.mygdx.world.GameOver_Screen;
 
 import java.util.ArrayList;
 
@@ -24,11 +24,11 @@ public class player implements InputProcessor {
     private int converts;
     private int myIndex;
     private int tIndex;
-
-    private float gameOverTime = 1;
+    public float gameOverTime = 1;
     private float saveTime = 1;
     private float screenX;
     private float screenY;
+
     private float CamXPos;
     private float CamYPos;
 
@@ -65,11 +65,14 @@ public class player implements InputProcessor {
     private boolean leftCyclePressed = false;
     private boolean rightCyclePressed = false;
 
+    private Texture gameOver = new Texture("bomb.png");
+
     private Vector3 pos;
 
     private Preferences prefs;
 
     public player(entity host) {
+
         float wdth = Gdx.graphics.getWidth();
         float hght = Gdx.graphics.getHeight();
         playCam = new OrthographicCamera();
@@ -244,6 +247,7 @@ public class player implements InputProcessor {
             isAttackPressed = false;
         }
 
+
         int entSize;
 
         zombie tHost = null;
@@ -293,16 +297,20 @@ public class player implements InputProcessor {
                             tHost = null;
                         }
                     }
+
                 }
             }
+
+            if(leftCyclePressed)
+                leftCyclePressed = false;
+            if(rightCyclePressed)
+                rightCyclePressed = false;
         }
 
-        if(leftCyclePressed)
-            leftCyclePressed = false;
-        if(rightCyclePressed)
-            rightCyclePressed = false;
-
         if(bombExploded) {
+
+            //gameOver_screen = new GameOver_Screen(this);
+            //gameOver_screen.render(dTime);
             //TODO if no one turns into a zombie after an exposion after 30 seconds you failed the game try again
             //TODO hide bomb or showing explosion animation
             if(host.getClassID() != classIdEnum.ConvertedPer)
@@ -310,16 +318,6 @@ public class player implements InputProcessor {
 
                     host = host.getMap().getZombies().get(0);
                     ((zombie)host).setCpuStatus(false);
-
-                    if(((person)host).getEvadeSB() != null) {
-                        ((person)host).getEvadeSB().setEnabled(false);
-                        ((person)host).setPrey(null);
-                    }
-
-                    if(((person)host).getPursueSB() != null) {
-                        ((person)host).getPursueSB().setEnabled(false);
-                        ((person)host).setPrey(null);
-                    }
                     host.setClassID(classIdEnum.PZombie);
                     bombExploded = false;
                 } else {
@@ -327,7 +325,10 @@ public class player implements InputProcessor {
                 }
 
             if(gameOverTime < 0)
-                ;
+            {
+                //gameOver_screen.render(dTime);
+            }
+
         }
 
         if(host.getBody().getPosition().x < 210) playCam.position.x = 210;
@@ -429,6 +430,12 @@ public class player implements InputProcessor {
     @Override
     public boolean scrolled(int amount) {
         return false;
+    }
+
+    public void showGameOver()
+    {
+        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 }
 

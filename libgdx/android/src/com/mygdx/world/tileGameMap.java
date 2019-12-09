@@ -22,7 +22,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.bullet.Bullet;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
@@ -41,17 +40,16 @@ import com.mygdx.utils.contListener;
 
 import java.util.ArrayList;
 
-import static com.mygdx.entities.classIdEnum.Cop;
 import static com.mygdx.entities.classIdEnum.Emt;
 import static com.mygdx.entities.entityInfo.CPlAYER;
 import static com.mygdx.entities.entityInfo.PBOMB;
-import static com.mygdx.entities.entityInfo.ZOMBIE;
 import static com.mygdx.utils.entUtils.getStopVec;
 
 
 public class tileGameMap extends gameMap {
 
     public static Texture playerHealth;
+    private Texture gameOver = new Texture("gameOverLabel.png");
 
     private final classIdEnum DEBUGMODE = classIdEnum.PBomb;
     //private final classIdEnum DEBUGMODE = classIdEnum.PZombie;
@@ -105,6 +103,8 @@ public class tileGameMap extends gameMap {
 
     private player playerOne;
     private static Controller controller;
+    private static GameOver_Screen gameOver_screen;
+
 
     private boolean paused = false;
 
@@ -172,7 +172,8 @@ public class tileGameMap extends gameMap {
         for(int i = 0; i < 0; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
-        for(int i = 0; i < 7; i++)
+
+        for(int i = 0; i < 15; i++)
             people.add(new person(entityInfo.PERSON,this));
 
         for(int i = 0; i < 2; i++)
@@ -183,6 +184,7 @@ public class tileGameMap extends gameMap {
 
         statsScreen = new libgdxSreen(batch, people.size());
         controller = new Controller(playerOne);
+
 
         playerOne.setZombieRef(zombies);
 
@@ -200,32 +202,46 @@ public class tileGameMap extends gameMap {
     @Override
     public void render(){
 
-        m_TileMapRender.setView(this.playerOne.getPlayCam());
-        m_TileMapRender.render();
+        if(playerOne.gameOverTime < 0)
+        {
+            batch.begin();
+            batch.draw(gameOver, playerOne.getCamXPos() - 100, playerOne.getCamYPos() - 100, 200, 200);
+            batch.end();
+            if(playerOne.gameOverTime < -0.1f) playerOne.gameOverTime = 1;
+        }
+        else {
 
-        batch.setProjectionMatrix(statsScreen.stage.getCamera().combined);
 
-        statsScreen.updateScreen(this); // calling statsScreen.stage.draw() after batch.begin() will crash the program
+            m_TileMapRender.setView(this.playerOne.getPlayCam());
+            m_TileMapRender.render();
 
-        batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
-        batch.begin();
+            batch.setProjectionMatrix(statsScreen.stage.getCamera().combined);
 
-        if(playerOne.getHost().getClassID() == classIdEnum.PBomb)
-            playerOne.getHost().render(batch);
+            statsScreen.updateScreen(this); // calling statsScreen.stage.draw() after batch.begin() will crash the program
 
-       for(zombie ent: zombies)
-           ent.render(batch);
+            batch.setProjectionMatrix(this.playerOne.getPlayCam().combined);
+            batch.begin();
 
-        for(person ent: people)
-            ent.render(batch);
+            if (playerOne.getHost().getClassID() == classIdEnum.PBomb)
+                playerOne.getHost().render(batch);
 
-        for(bullet ent:bullets)
-            ent.render(batch);
+            for (zombie ent : zombies)
+                ent.render(batch);
 
-        //box2d Debug
-        b2dr.render(world,playerOne.getPlayCam().combined);
-        controller.draw();
-        batch.end();
+            for (person ent : people)
+                ent.render(batch);
+
+            for (bullet ent : bullets)
+                ent.render(batch);
+
+            //box2d Debug
+            //b2dr.render(world, playerOne.getPlayCam().combined);
+
+            controller.draw();
+            batch.end();
+        }
+
+
 
         for(person ent: people)
             if(ent.getClassID() == Emt)
