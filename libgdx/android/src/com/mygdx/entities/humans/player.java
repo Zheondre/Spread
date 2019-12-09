@@ -1,19 +1,17 @@
 package com.mygdx.entities.humans;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.entities.BehaviorEnum;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.objects.bomb;
-import com.mygdx.states.GameOver_Screen;
+import com.mygdx.world.GameOver_Screen;
 
 import java.util.ArrayList;
 
@@ -26,11 +24,10 @@ public class player implements InputProcessor {
     private int converts;
     private int myIndex;
     private int tIndex;
-private float gameOverTime = 1;
+    public float gameOverTime = 1;
     private float saveTime = 1;
     private float screenX;
     private float screenY;
-    private GameOver_Screen gameOver_screen;
 
     private float CamXPos;
     private float CamYPos;
@@ -67,6 +64,8 @@ private float gameOverTime = 1;
 
     private boolean leftCyclePressed = false;
     private boolean rightCyclePressed = false;
+
+    private Texture gameOver = new Texture("bomb.png");
 
     private Vector3 pos;
 
@@ -300,6 +299,7 @@ private float gameOverTime = 1;
         }
 
         if(bombExploded) {
+
             //gameOver_screen = new GameOver_Screen(this);
             //gameOver_screen.render(dTime);
             //TODO if no one turns into a zombie after an exposion after 30 seconds you failed the game try again
@@ -317,15 +317,15 @@ private float gameOverTime = 1;
 
             if(gameOverTime < 0)
             {
-                gameOver_screen.render(dTime);
+                //gameOver_screen.render(dTime);
             }
 
         }
 
-        if(host.getBody().getPosition().x < 260) playCam.position.x = 260;
+        if(host.getBody().getPosition().x < 210) playCam.position.x = 210;
         else playCam.position.x = host.getBody().getPosition().x;
 
-        if(host.getBody().getPosition().y < 120) playCam.position.y = 120;
+        if(host.getBody().getPosition().y < 100) playCam.position.y = 100;
         else playCam.position.y = host.getBody().getPosition().y;
 
         CamXPos = playCam.position.x;

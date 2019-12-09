@@ -22,11 +22,10 @@ import com.mygdx.entities.humans.player;
 
 import static com.mygdx.utils.entUtils.getStopVec;
 
-public class Controller {
+public class GameOver_Screen {
 
     Viewport viewport;
     Stage stage;
-    Stage stage2;
     boolean upPressed, downPressed, leftPressed, rightPressed, attackPressed;
     OrthographicCamera cam;
 
@@ -36,18 +35,15 @@ public class Controller {
     Image downImg = new Image(new Texture("down_button.png"));
     Image leftImg = new Image(new Texture("left_button.png"));
     Image rightImg = new Image(new Texture("right_button.png"));
-    Image attackImg = new Image(new Texture("attack_button.png"));
+    Image attackImg = new Image(new Texture("bomb.png"));
     Image leftCycle = new Image(new Texture("left_button.png"));
     Image rightCycle = new Image(new Texture("right_button.png"));
-    private Texture gameOver = new Texture("bomb.png");
 
-
-    public Controller(final player playerOne) {
+    public GameOver_Screen(final player playerOne) {
         this.player1 = playerOne;
         cam = new OrthographicCamera();
         viewport = new FitViewport(800, 480, cam);
         stage = new Stage(viewport); //this line might cause errors with batch
-
 
         Table attack = new Table();
         attack.left().bottom();
@@ -55,8 +51,6 @@ public class Controller {
         Table table = new Table();
         table.left().bottom();
 
-
-        
 
         upImg.setSize(50, 50);
         downImg.setSize(50, 50);
@@ -152,7 +146,7 @@ public class Controller {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 attackPressed = false;
 
-              //  player1.setAttackPressed(attackPressed);
+                //  player1.setAttackPressed(attackPressed);
             }
         });
 
@@ -166,7 +160,7 @@ public class Controller {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 leftCycle.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("left_button.png"))));
-               // player1.setLeftCyclePressed(false);
+                // player1.setLeftCyclePressed(false);
             }
         });
 
@@ -207,8 +201,6 @@ public class Controller {
 
         stage.addActor(attack);
 
-
-
         /*attack.row().pad(5, 650, 75, 5);
         attack.add(leftCycle).size(leftCycle.getWidth(), leftCycle.getHeight());
         attack.add(attackImg).size(attackImg.getWidth(), attackImg.getHeight());
@@ -217,9 +209,7 @@ public class Controller {
     }
 
     public void draw() {
-
         stage.draw();
-
     }
 
     public boolean isUpPressed() {
