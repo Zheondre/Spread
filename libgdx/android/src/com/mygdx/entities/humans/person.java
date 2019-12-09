@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.ai.msg.Telegram;
+import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.Evade;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.Hide;
@@ -49,6 +50,13 @@ public class person extends zombie {
 
     private boolean mInfected;
     private boolean mZombie;
+
+    public boolean ismInfected() {
+        return mInfected;
+    }
+
+    //private Steerable<Vector2> spottedLocation;
+
     protected entity selectedWeapon;
 
     protected int MessageMsk = 0; // reminder only 32 messages can be placed in the mask
@@ -128,11 +136,11 @@ public class person extends zombie {
         }
 
         /////https://github.com/libgdx/gdx-ai/blob/master/tests/src/com/badlogic/gdx/ai/tests/steer/box2d/tests/Box2dRaycastObstacleAvoidanceTest.java
-        RayConfigurationBase<Vector2> rayConfiguration = new CentralRayWithWhiskersConfiguration<Vector2>(steerEnt, SteeringUtils.pixelsToMeters(1550),
-                    SteeringUtils.pixelsToMeters(1000), 27.5f * MathUtils.degreesToRadians);
+        RayConfigurationBase<Vector2> rayConfiguration = new CentralRayWithWhiskersConfiguration<Vector2>(steerEnt, SteeringUtils.pixelsToMeters(1700),
+                    SteeringUtils.pixelsToMeters(850), 22.5f * MathUtils.degreesToRadians);
         raycastCollisionDetector = new Box2dRaycastCollisionDetector((tileGameMap)mMap);
         raycastObstacleAvoidanceSB = new RaycastObstacleAvoidance<Vector2>(steerEnt, rayConfiguration,
-                raycastCollisionDetector, SteeringUtils.pixelsToMeters(1550));
+                raycastCollisionDetector, SteeringUtils.pixelsToMeters(750));
         combinedSB.add(raycastObstacleAvoidanceSB);
         /////////////////////////////
         this.mInfctTime = 1;
@@ -148,6 +156,8 @@ public class person extends zombie {
         this.mAlerted = BehaviorEnum.WALK_RANDOMLY;
         this.wlkDirection = 0;
         this.wlkTime = -1;
+
+       // spottedLocation = new Steerable();
     }
 
     public boolean handleMessage(Telegram msg){
@@ -199,7 +209,6 @@ public class person extends zombie {
                 ((tileGameMap) getMap()).getMgMang().dispatchMessage(this, msVal);
                 helpDuration = 1;
             }
-
         }
             return false;
     }
@@ -217,9 +226,7 @@ public class person extends zombie {
    // @Override
     public void update(float dTime){
 
-        if(mZombie)
-            super.update(dTime);
-        else if(classID == classIdEnum.PPerson) //debug player is controlling person
+        if(mZombie || (classID == classIdEnum.PPerson))
             super.update(dTime);
         else {
             processMoves(dTime);
@@ -293,7 +300,7 @@ public class person extends zombie {
         //check if hurt or if infected
         if(!mZombie) {
             if (mInfected) {
-                mInfctTime -= .005;
+                mInfctTime -= .0025;
                 if (mInfctTime < 0)
                     turnIntoAZombie();
             }
@@ -305,7 +312,7 @@ public class person extends zombie {
 		}
 
         if(MessageMsk > 1) {
-            helpDuration -= .005;
+            helpDuration -= .035;
         }
 
         switch(mAlerted) {  //change steering ent based on alertness
@@ -321,13 +328,11 @@ public class person extends zombie {
             case EVADE_ZOMBIE_ARRIVE_INFECTED:
                 //combine both steering behavoir
                 //callForHelp(MessageType.HELP_ZOMBIE_SPOTTED);
-               break ;
-
+               break;
             case BOMB_INFECTED:
                 callForHelp(HELP_BOMB_INFECTED);
                 Log.d("Person", "Infected By bomb I need an Emt !");
             break;
-
             case INFECTED:
                 callForHelp(HELP_INFECTED);
                 Log.d("Person", "I need an Emt !");

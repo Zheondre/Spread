@@ -21,6 +21,7 @@ import com.mygdx.entities.Box2dSteering;
 import com.mygdx.entities.classIdEnum;
 import com.mygdx.entities.entity;
 import com.mygdx.entities.entityInfo;
+import com.mygdx.entities.objects.bomb;
 import com.mygdx.entities.objects.bullet;
 import com.mygdx.utils.SteeringUtils;
 import com.mygdx.utils.viewQueryCallBack;
@@ -29,6 +30,7 @@ import com.mygdx.world.tileGameMap;
 
 import java.util.ArrayList;
 
+import static com.mygdx.entities.BehaviorEnum.BOMB_EXPLODED;
 import static com.mygdx.entities.BehaviorEnum.TEST_DONT_MOVE;
 import static com.mygdx.entities.BehaviorEnum.WALK_RANDOMLY;
 import static com.mygdx.utils.entUtils.getZombieAttack;
@@ -124,7 +126,19 @@ public class zombie extends entity {
             if(this.pursueSB == null) {
                 pursueSB = new Pursue<Vector2>(steerEnt, prey.getSteerEnt(), .5f);
                 combinedSB.add(pursueSB);
-                //steerEnt.setBehavior(pursueSB);//might put this as its own function
+            } else {
+                this.pursueSB.setTarget(prey.getSteerEnt());
+            }
+            this.prey = prey;
+            this.pursueSB.setEnabled(true);
+        }
+    }
+
+    public void setPursueSB(bomb prey) {
+        if((prey != null)) {
+            if(this.pursueSB == null) {
+                pursueSB = new Pursue<Vector2>(steerEnt, prey.getSteerEnt(), .5f);
+                combinedSB.add(pursueSB);
             } else {
                 this.pursueSB.setTarget(prey.getSteerEnt());
             }
@@ -241,7 +255,7 @@ public class zombie extends entity {
         else
             if(victum.getPrey() != this) {
                 // change or add to the behaviors
-                victum.changeEvadeTarget(this);
+                victum.setEvadeSB(this);
             }
         areWeBiting = true;
         victum.decreaseInfectTime(.10f);
@@ -294,9 +308,7 @@ public class zombie extends entity {
                         //steerEnt.update(dTime);
                     }
                     break;
-
-                case ConvertedPer: // debug
-                    int xxx = 0; // debug
+                case ConvertedPer:
                 case Zombie:
 
                     if(this.getPrey() == null)
@@ -328,7 +340,7 @@ public class zombie extends entity {
                     if (doISeeANoneZombie) {
 
                         float tempD = getEntDistance();
-                        if(tempD < 13 && tempD > -1){
+                        if(tempD < 15 && tempD > -1){
                             // what if two zombies are pointing at the same converted person/////
                             // to do, just send a message to all zombie listeners hunting for prey to stop when prey is a zombie
 
@@ -343,7 +355,7 @@ public class zombie extends entity {
                                 if (bitetime == biteTimeSetting)
                                     biteNonZombie((person) this.getPrey());
                                 else {
-                                    bitetime -= .30;
+                                    bitetime -= .5;
                                     if (bitetime < 0)
                                         bitetime = biteTimeSetting;
                                 }

@@ -23,12 +23,12 @@ public final class SteeringUtils {
     }
 
     ///// https://stackoverflow.com/questions/21835062/libgdx-draw-line //////
-    public static void DrawDebugLine(Vector2 start, Vector2 end, int lineWidth, Color color, Matrix4 projectionMatrix)
+    public static void DrawDebugLine(Vector2 start, Vector2 end, int lineWidth, Matrix4 projectionMatrix)
     {
         Gdx.gl.glLineWidth(lineWidth);
         debugRenderer.setProjectionMatrix(projectionMatrix);
         debugRenderer.begin(ShapeRenderer.ShapeType.Line);
-        debugRenderer.setColor(com.badlogic.gdx.graphics.Color.BLACK);
+        debugRenderer.setColor(com.badlogic.gdx.graphics.Color.RED);
         debugRenderer.line(start, end);
         debugRenderer.end();
         Gdx.gl.glLineWidth(3);

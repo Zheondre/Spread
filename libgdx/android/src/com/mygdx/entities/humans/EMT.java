@@ -95,7 +95,7 @@ public class EMT extends person {
                         temp.setmInfctTime(temp.getmInfctTime() + .2f);
                     if (temp.getHealth() < 1)
                         temp.setHealth(temp.getHealth() + .2f);
-                    healingTime -= .25;
+                    healingTime -= .35;
                     healing = false;
                     busy = healing;
                 }
@@ -112,7 +112,7 @@ public class EMT extends person {
                     increaseInfcTime(.3f);
                 if (getHealth() < 1.5f)
                     increaseHlth(.3f);
-                healingTime -= .25;
+                healingTime -= .30;
                 healing = false;
             }
         }
@@ -275,10 +275,9 @@ public class EMT extends person {
         }
 
         if((mAlerted == EVADE_ZOMBIE) || (mAlerted == ARRIVE_INFECTED) || (mAlerted == ARRIVE_BOMB_INFECTED)) {
-            //steerEnt.setBehavior(combinedSB);
-            //steerEnt.update(dt);
             if(getPrey() != null) {
-               if(18 > getEntDistance()) {
+                //crashing here... wtf
+               if(20 > getEntDistance()) {
                     heal();
                }
                try {
@@ -303,7 +302,7 @@ public class EMT extends person {
 
         if(healing == false)
             if(healingTime < 1)
-                healingTime += .01;
+                healingTime += .005;
 
         //if we view a zombie closer then the one we have set avoid that one
     }

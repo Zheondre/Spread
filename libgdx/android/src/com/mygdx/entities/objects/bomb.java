@@ -1,5 +1,6 @@
 package com.mygdx.entities.objects;
 
+import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.SoundLoader;
 import com.badlogic.gdx.ai.msg.Telegram;
@@ -91,7 +92,13 @@ public class bomb extends entity {
             } else if (entDist < alertnedRadius) {
                 //change alertness that a bomb went off
                 //to investage for authorities
-                //victum.setmAlerted(BOMB_EXPLODED);
+                if(victum.getClassID() == classIdEnum.Person)
+                    victum.setEvadeSB(this);
+                else if((victum.getClassID() == classIdEnum.Emt)
+                        ||(victum.getClassID() == classIdEnum.Cop)
+                )
+                    victum.setPursueSB(this);
+                victum.setmAlerted(BOMB_EXPLODED);
             } else  if(entDist < nonEffectsRadius) {
                 //dont set anything
             }
