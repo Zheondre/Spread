@@ -140,7 +140,7 @@ public class person extends zombie {
                     SteeringUtils.pixelsToMeters(850), 22.5f * MathUtils.degreesToRadians);
         raycastCollisionDetector = new Box2dRaycastCollisionDetector((tileGameMap)mMap);
         raycastObstacleAvoidanceSB = new RaycastObstacleAvoidance<Vector2>(steerEnt, rayConfiguration,
-                raycastCollisionDetector, SteeringUtils.pixelsToMeters(750));
+                raycastCollisionDetector, SteeringUtils.pixelsToMeters(1700));
         combinedSB.add(raycastObstacleAvoidanceSB);
         /////////////////////////////
         this.mInfctTime = 1;

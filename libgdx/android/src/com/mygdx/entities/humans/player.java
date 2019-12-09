@@ -247,6 +247,10 @@ public class player implements InputProcessor {
         int entSize;
 
         zombie tHost = null;
+        if(getHost().getClassID() != classIdEnum.PBomb)
+            if(!((zombie)getHost()).isAlive())
+                leftCyclePressed = true;
+
         if(host.getMap().getZombies().size() > 0) {
             if(leftCyclePressed){
                 myIndex = getZombieIndex();
@@ -262,7 +266,7 @@ public class player implements InputProcessor {
                 tIndex = myIndex;
                 entSize = ZombieRef.size();
                 tIndex++;
-                if(tIndex > entSize - 1)
+                if(tIndex > (entSize - 1))
                     tIndex = 0;
                 tHost = ZombieRef.get(tIndex);
             }
@@ -270,21 +274,24 @@ public class player implements InputProcessor {
                 //need to change class id
                 if (myIndex != tIndex) {
                     if (tHost != null) {
-                        ((zombie) host).setClassID(classIdEnum.ConvertedPer);
-                        ((zombie) host).setCpuStatus(true);
-                        ((zombie) host).setmAlerted(BehaviorEnum.WALK_RANDOMLY);
-                        ((zombie) host).setWlkTime(0);
-                        host = tHost;
-                        ((zombie) host).setCpuStatus(false);
-                        if(((person)host).getEvadeSB() != null) {
-                            ((person)host).getEvadeSB().setEnabled(false);
-                            ((person)host).setPrey(null);
+                        if(tHost.isAlive()) {
+                            ((zombie) host).setClassID(classIdEnum.ConvertedPer);
+                            ((zombie) host).setCpuStatus(true);
+                            ((zombie) host).setmAlerted(BehaviorEnum.WALK_RANDOMLY);
+                            ((zombie) host).setWlkTime(0);
+                            host = tHost;
+                            ((zombie) host).setCpuStatus(false);
+                            if (((person) host).getEvadeSB() != null) {
+                                ((person) host).getEvadeSB().setEnabled(false);
+                                ((person) host).setPrey(null);
+                            }
+                            if (((person) host).getPursueSB() != null) {
+                                ((person) host).getPursueSB().setEnabled(false);
+                                ((person) host).setPrey(null);
+                            }
+                            myIndex = tIndex;
+                            tHost = null;
                         }
-                        if(((person)host).getPursueSB() != null) {
-                            ((person)host).getPursueSB().setEnabled(false);
-                            ((person)host).setPrey(null);
-                        }
-                        myIndex = tIndex;
                     }
                 }
             }

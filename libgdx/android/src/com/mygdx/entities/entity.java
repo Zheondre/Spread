@@ -228,8 +228,10 @@ public abstract class entity implements Telegraph {
         mPos = null;
         // becarefull bellow if some one is stilling pointing to this object it wont be freed
         steerEnt = null;
-        body.destroyFixture(body.getFixtureList().first());
+        //if(body.getFixtureList()!= null)
+          //  body.destroyFixture(body.getFixtureList().first());
         body = null;  // check on this
+
 
     }
 
