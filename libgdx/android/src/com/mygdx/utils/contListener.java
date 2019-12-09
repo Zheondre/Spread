@@ -20,12 +20,16 @@ public class contListener implements ContactListener {
 
         boolean didIGetShot = false;
 
+        bullet b = null;
+
         if (((entity) fixA.getUserData()).getClassID() == classIdEnum.Bullet) {
-            ((bullet) fixA.getUserData()).setRemove(true);
+            //((bullet) fixA.getUserData()).setRemove(true);
+            b = ((bullet) fixA.getUserData());
             didIGetShot = true;
         }
         if (((entity) fixB.getUserData()).getClassID() == classIdEnum.Bullet) {
-            ((bullet) fixB.getUserData()).setRemove(true);
+            //((bullet) fixB.getUserData()).setRemove(true);
+            b = ((bullet) fixB.getUserData());
             didIGetShot = true;
         }
 
@@ -36,8 +40,15 @@ public class contListener implements ContactListener {
 
             entity ent = ((entity) fixA.getUserData()).isLivingObject() == true ? ((entity) fixA.getUserData()) : ((entity) fixB.getUserData());
 
+            //temp
+
+            //
+            // temp need to change this later if the zombie cop wants to shoot
+            if(ent.getClassID() == classIdEnum.Cop)
+                return;
+
             float t1 = ((zombie) ent).getArmorPts();
-            float temp = ((zombie) ent).getArmorPts() - .4f;
+            float temp = ((zombie) ent).getArmorPts() - .2f;
 
             if (t1 > 0) {
                 if (temp < 0) {
@@ -45,11 +56,14 @@ public class contListener implements ContactListener {
                     ((zombie) ent).dcrseArmor(temp);
                     ((zombie) ent).decreaseHlth(t1 - temp);
                 } else {
-                    ((zombie) ent).dcrseArmor(.4f);
+                    ((zombie) ent).dcrseArmor(.2f);
                 }
             } else {
-                ((zombie) ent).decreaseHlth(.4f);
+                ((zombie) ent).decreaseHlth(.2f);
             }
+
+            if(ent.getClassID() != classIdEnum.Cop)
+                b.setRemove(true);
         }
     }
 

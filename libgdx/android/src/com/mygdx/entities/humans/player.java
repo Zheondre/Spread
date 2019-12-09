@@ -323,10 +323,10 @@ public class player implements InputProcessor {
                 ;
         }
 
-        if(host.getBody().getPosition().x < 260) playCam.position.x = 260;
+        if(host.getBody().getPosition().x < 210) playCam.position.x = 210;
         else playCam.position.x = host.getBody().getPosition().x;
 
-        if(host.getBody().getPosition().y < 120) playCam.position.y = 120;
+        if(host.getBody().getPosition().y < 100) playCam.position.y = 100;
         else playCam.position.y = host.getBody().getPosition().y;
 
         CamXPos = playCam.position.x;
