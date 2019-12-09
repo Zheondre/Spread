@@ -18,8 +18,10 @@ public class gun extends entity {
 
   private float reloadRate;
   private float reloadTime;
-  private float fireRate;
 
+  private float fireRate;
+  private float fireTime = 1;
+  private float currFireTime = 1;
   private boolean equiped;
 
     public void setShooter(zombie shooter) {
@@ -34,17 +36,25 @@ public class gun extends entity {
         this.weapon = guntype;
        switch(weapon) {
            case PISTOL:
+               fireRate = .08f;
                reloadRate = 2;
                bullets = 8;
+               break;
            case UZI:
+               fireRate = .2f;
                reloadRate = 3;
                bullets = 30;
+               break;
            case SHOTTI:
+               fireRate = .03f;
                reloadRate= .5f;
                bullets = 12;
+               break;
            case SEMIAUTORIFLE:
+               fireRate = .08f;
                bullets = 45;
                reloadRate = 5;
+               break;
        }
        bulletsRemaining = bullets;
        equiped = false;
@@ -56,13 +66,25 @@ public class gun extends entity {
         this.weapon = guntype;
         switch(weapon) {
             case PISTOL:
+                fireRate = .08f;
+                reloadRate = 2;
                 bullets = 8;
+                break;
             case UZI:
+                fireRate = .2f;
+                reloadRate = 3;
                 bullets = 30;
+                break;
             case SHOTTI:
+                fireRate = .03f;
+                reloadRate= .5f;
                 bullets = 12;
+                break;
             case SEMIAUTORIFLE:
+                fireRate = .08f;
                 bullets = 45;
+                reloadRate = 5;
+                break;
         }
 
         bulletsRemaining = bullets;
@@ -73,14 +95,19 @@ public class gun extends entity {
         bullet tbullet = null;
 
         if (bulletsRemaining  > -1) {
-            tbullet = new bullet(entityInfo.BULLET, shooter,(zombie)shooter.getPrey(), mMap);
-            //only add if we were able to shoot
-            ((tileGameMap) mMap).getBullets().add(tbullet);
-            tbullet.shoot();
-            bulletsRemaining--;
+
+            if (currFireTime >= fireTime) {
+                tbullet = new bullet(entityInfo.BULLET, shooter, (zombie) shooter.getPrey(), mMap);
+                //only add if we were able to shoot
+                ((tileGameMap) mMap).getBullets().add(tbullet);
+                tbullet.shoot();
+                bulletsRemaining--;
+                currFireTime = 0;
+            }
+            currFireTime+= fireRate;
         } else {
             if(reloadRate > reloadTime)
-                reloadTime+= .5;
+                reloadTime+= .02;
             else if(weapon == classIdEnum.SHOTTI)
                 bulletsRemaining++;
             else

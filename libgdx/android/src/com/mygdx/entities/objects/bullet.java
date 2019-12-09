@@ -1,6 +1,7 @@
 package com.mygdx.entities.objects;
 
 import com.badlogic.gdx.ai.msg.Telegram;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -59,7 +60,9 @@ public class bullet extends entity {
            adj = (target.getPosX() + (float)target.getWidth()/2)  - (shooter.getPosX() + (float)shooter.getWidth()/2);
            obs = (target.getPosY() + (float)target.getHeight()/2) - (shooter.getPosY() + (float)shooter.getHeight()/2);
            tarR = getEntDistance(shooter, target);
-           shotR = tarR - 3; //ent radius - shooters' body radius
+           // needs an adjustment
+          // shotR = tarR - 6.2f; //ent radius - shooters' body radius
+           shotR = tarR;
 // might want to put catch throw here...
            tangle = (float)Math.atan(obs/adj);
            ty = (float)(shotR * Math.sin(tangle));
@@ -132,8 +135,11 @@ public class bullet extends entity {
        //shoot requested draw image
         Texture image = getImage();
         //if((image != null) && (!remove))
-        if(image != null)
-            batch.draw(image,mPos.x, mPos.y, getWidth(), getHeight());
+        if(image != null) {
+            batch.setColor(Color.RED);
+            batch.draw(image, mPos.x - getWidth() / 2, mPos.y - getHeight() / 2, getWidth(), getHeight());
+            batch.setColor(Color.WHITE);
+        }
     }
 
     public boolean attack(){

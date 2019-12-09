@@ -102,6 +102,8 @@ public abstract class entity implements Telegraph {
 
     public entity(entityInfo entType, zombie ent, gameMap Map) {
     // bullet constructor
+       this.mWidth = 5;
+       this.mHeight = 5;
         this.mVelocityY = 0;
         this.mMap = Map;
         this.amIOnTheGound = false; // every thing will be on the ground for now
@@ -145,8 +147,8 @@ public abstract class entity implements Telegraph {
             ty = entType.getYpos();
         } else {
             while (!goodposition) {
-                tx = (float) (Math.random() * ((250 - 50) + 1)) + 50;
-                ty = (float) (Math.random() * ((250 - 50) + 1)) + 50;
+                tx = (float) (Math.random() * ((350 - 50) + 1)) + 50;
+                ty = (float) (Math.random() * ((350 - 50) + 1)) + 50;
 
                 goodposition = true;
                 TiledMapTileLayer.Cell cellx = collisionLayer.getCell((int) ((tx) / tileW), (int) (ty / tileH));
@@ -403,10 +405,6 @@ public abstract class entity implements Telegraph {
         if (amount > 0) {
             if (body.getLinearVelocity().x <= 55)
                 body.applyLinearImpulse(getMoveLeftVec(), body.getWorldCenter(), true);
-            //body.getAngle();
-            //body.appl
-
-
         } else {
             if (body.getLinearVelocity().x >= -55)
                 body.applyLinearImpulse(getMoveRightVec(), body.getWorldCenter(), true);
