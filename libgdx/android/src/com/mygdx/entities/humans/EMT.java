@@ -86,7 +86,9 @@ public class EMT extends person {
         person temp;
         temp = (person) getPrey();
         if(temp != null) {
-            if (temp.getClassID() == classIdEnum.Person) {
+            if(temp.getClassID() == classIdEnum.Person)
+                return;
+            if (temp.getClassID() != classIdEnum.ConvertedPer) {
                 temp.setInfected(false);
                 if (healingTime > 0) {
                     healing = true;
@@ -136,7 +138,8 @@ public class EMT extends person {
         // i think we should reply with the instance that sent the request so that if multiple instances are listening,
         // that one will know that it's request was denied and the rest can ignore
         person temp = (person) msg.sender;
-
+        if(temp == null)
+            return false;
         float distance = getEntDistance(temp);
         //what should happen if the person asking for help turns into a zombie ?
         //if we are close enough and we seen that person changed into a zombie evade

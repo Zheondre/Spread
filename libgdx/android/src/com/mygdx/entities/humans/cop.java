@@ -85,7 +85,7 @@ public class cop extends security {
                 callForHelp(HELP_BACKUP_COPS);
 
             float tEndDis;
-            if (getPursueSB() != null) {
+            if ((getPursueSB() != null) && (getPrey() != null) ) {
                 if (getPursueSB().isEnabled()) {
                     tEndDis = getEntDistance(getPrey());
                     if (35 > tEndDis) {
@@ -144,10 +144,14 @@ public class cop extends security {
     }
 
     boolean aim(){
+       // boolean t = false;
         if(getPrey() != null) {
             if(getPrey().getClassID() == classIdEnum.ConvertedPer ||getPrey().getClassID() == classIdEnum.PZombie ) {
-                if(((zombie)getPrey()).getHealth() < 0 )
+                if(((zombie)getPrey()).getHealth() < 0) {
                     getPursueSB().setEnabled(false);
+                    setPrey(null);// might crash
+                    return false;
+                }
                 //getBody().getWorld().rayCast(raycastCollisionDetector.getCallback(), this.mPos.x, this.mPos.y,
                  //       getPrey().getPos().x, getPrey().getPos().y);
             return true;

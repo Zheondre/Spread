@@ -19,7 +19,6 @@ public class contListener implements ContactListener {
         Fixture fixB = contact.getFixtureB();
 
         boolean didIGetShot = false;
-
         bullet b = null;
 
         if (((entity) fixA.getUserData()).getClassID() == classIdEnum.Bullet) {
@@ -34,18 +33,17 @@ public class contListener implements ContactListener {
         }
 
         if(didIGetShot){
+
         if (((entity) fixA.getUserData()).isLivingObject()
                 ||
                 ((entity) fixB.getUserData()).isLivingObject()) {
 
             entity ent = ((entity) fixA.getUserData()).isLivingObject() == true ? ((entity) fixA.getUserData()) : ((entity) fixB.getUserData());
 
-            //temp
-
-            //
             // temp need to change this later if the zombie cop wants to shoot
             if(ent.getClassID() == classIdEnum.Cop)
                 return;
+
 
             float t1 = ((zombie) ent).getArmorPts();
             float temp = ((zombie) ent).getArmorPts() - .2f;
@@ -61,10 +59,9 @@ public class contListener implements ContactListener {
             } else {
                 ((zombie) ent).decreaseHlth(.2f);
             }
-
-            if(ent.getClassID() != classIdEnum.Cop)
-                b.setRemove(true);
         }
+                if(b != null)
+                    b.setRemove(true);
     }
 
     }

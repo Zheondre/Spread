@@ -42,6 +42,8 @@ public class bullet extends entity {
     private boolean remove;
     private boolean fired;
 
+    private int watchDogimer = 0;
+
    public bullet(entityInfo eT, zombie shooter, zombie target, gameMap map){
         super(eT, shooter, map);
        setImage("blank.jpg"); // temp change this later...
@@ -109,7 +111,10 @@ public class bullet extends entity {
     @Override
     public void update(float dt){
         //if we get off the map remove
-        //if we hit any ent remove
+        // if we hit any ent remove
+        watchDogimer+= 1;
+        if(watchDogimer == 130)
+            setRemove(true);
 
         mPos.x = this.getBody().getPosition().x;
         mPos.y = this.getBody().getPosition().y;

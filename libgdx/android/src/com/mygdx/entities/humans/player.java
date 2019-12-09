@@ -251,44 +251,53 @@ public class player implements InputProcessor {
         int entSize;
 
         zombie tHost = null;
-        if(leftCyclePressed){
-            myIndex = getZombieIndex();
-            tIndex = myIndex;
-            entSize = ZombieRef.size();
+        if(getHost().getClassID() != classIdEnum.PBomb)
+            if(!((zombie)getHost()).isAlive())
+                leftCyclePressed = true;
 
-            tIndex--;
+        if(host.getMap().getZombies().size() > 0) {
+            if(leftCyclePressed){
+                myIndex = getZombieIndex();
+                tIndex = myIndex;
+                entSize = ZombieRef.size();
+                tIndex--;
+                if(tIndex < 0)
+                    tIndex = entSize-1;
+                tHost = ZombieRef.get(tIndex);
+            }
+            if(rightCyclePressed){
+                myIndex = getZombieIndex();
+                tIndex = myIndex;
+                entSize = ZombieRef.size();
+                tIndex++;
+                if(tIndex > (entSize - 1))
+                    tIndex = 0;
+                tHost = ZombieRef.get(tIndex);
+            }
+            if(leftCyclePressed || rightCyclePressed) {
+                //need to change class id
+                if (myIndex != tIndex) {
+                    if (tHost != null) {
+                        if(tHost.isAlive()) {
+                            ((zombie) host).setClassID(classIdEnum.ConvertedPer);
+                            ((zombie) host).setCpuStatus(true);
+                            ((zombie) host).setmAlerted(BehaviorEnum.WALK_RANDOMLY);
+                            ((zombie) host).setWlkTime(0);
+                            host = tHost;
+                            ((zombie) host).setCpuStatus(false);
+                            if (((person) host).getEvadeSB() != null) {
+                                ((person) host).getEvadeSB().setEnabled(false);
+                                ((person) host).setPrey(null);
+                            }
+                            if (((person) host).getPursueSB() != null) {
+                                ((person) host).getPursueSB().setEnabled(false);
+                                ((person) host).setPrey(null);
+                            }
+                            myIndex = tIndex;
+                            tHost = null;
+                        }
+                    }
 
-            if(tIndex < 0)
-                tIndex = entSize-1;
-
-            tHost = ZombieRef.get(tIndex);
-        }
-
-        if(rightCyclePressed){
-            myIndex = getZombieIndex();
-            tIndex = myIndex;
-            entSize = ZombieRef.size();
-
-            tIndex++;
-
-            if(tIndex > entSize - 1)
-                tIndex = 0;
-
-            tHost = ZombieRef.get(tIndex);
-        }
-
-        if(leftCyclePressed || rightCyclePressed) {
-            //need to change class id
-            if (myIndex!=tIndex) {
-                if(tHost != null) {
-                    ((zombie) host).setClassID(classIdEnum.ConvertedPer);
-                    ((zombie) host).setCpuStatus(true);
-                    ((zombie) host).setmAlerted(BehaviorEnum.WALK_RANDOMLY);
-                    ((zombie) host).setWlkTime(0);
-                    host = tHost;
-                    ((zombie) host).setCpuStatus(false);
-
-                    myIndex = tIndex;
                 }
             }
 
