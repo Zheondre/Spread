@@ -49,7 +49,7 @@ public class Box2dRaycastCollisionDetector implements RaycastCollisionDetector <
     @Override
     public boolean findCollision (Collision<Vector2> outputCollision, Ray<Vector2> inputRay) {
         callback.collided = false;
-        SteeringUtils.DrawDebugLine(inputRay.start, inputRay.end, map.getPlayerOne().getPlayCam().combined);
+        //SteeringUtils.DrawDebugLine(inputRay.start, inputRay.end, map.getPlayerOne().getPlayCam().combined);
 
         if (!inputRay.start.epsilonEquals(inputRay.end, MathUtils.FLOAT_ROUNDING_ERROR)) {
             callback.outputCollision = outputCollision;
