@@ -53,8 +53,8 @@ public class tileGameMap extends gameMap {
 
     public static Texture playerHealth;
 
-    //private final classIdEnum DEBUGMODE = classIdEnum.PBomb;
-    private final classIdEnum DEBUGMODE = classIdEnum.PZombie;
+    private final classIdEnum DEBUGMODE = classIdEnum.PBomb;
+    //private final classIdEnum DEBUGMODE = classIdEnum.PZombie;
     //private final classIdEnum DEBUGMODE = classIdEnum.PPerson;
     //private final classIdEnum DEBUGMODE = classIdEnum.PEMT;
     //private final classIdEnum DEBUGMODE = classIdEnum.PCop;
@@ -172,15 +172,14 @@ public class tileGameMap extends gameMap {
         for(int i = 0; i < 0; i++)
             zombies.add(new zombie(entityInfo.ZOMBIE,this));
 
-        for(int i = 0; i < 1; i++)
+        for(int i = 0; i < 7; i++)
             people.add(new person(entityInfo.PERSON,this));
 
-        for(int i = 0; i < 0; i++)
+        for(int i = 0; i < 2; i++)
             people.add(new EMT(entityInfo.EMT,this));
 
-        for(int i = 0; i < 0; i++)
+        for(int i = 0; i < 3; i++)
             people.add(new cop(entityInfo.COP,this));
-
 
         statsScreen = new libgdxSreen(batch, people.size());
         controller = new Controller(playerOne);
@@ -241,10 +240,10 @@ public class tileGameMap extends gameMap {
 
         playerOne.update(deltaT);
 
-        for(zombie ent: zombies) //if ready for clean up skip
+        for(zombie ent:zombies)
             ent.update(deltaT);
 
-        for(person ent: people) //if ready for clean up skip
+        for(person ent:people)
             ent.update(deltaT);
 
         for(bullet ent:bullets)
@@ -275,26 +274,30 @@ public class tileGameMap extends gameMap {
                     break;
                 case ConvertedPer:
                 case Zombie:
+                    if(getZombies().size() == 1) {
+                        //say game over;
+                        return;
+                    }
+
                     getZombies().remove(entToBeDeleted);
                     default:
                 case Bullet:
                     bullets.remove(entToBeDeleted);
                     break;
             }
+
+
             ReadyForDeletion.remove(entToBeDeleted);
             entToBeDeleted.dispose();// index one size one error ? 8.14pm 11.19.19
             entToBeDeleted = null;
             lastEntPos--;
         }
-
-
         if(people.size() == 0) {
             zombies.clear();
             getPlayerOne().addPoints(currentLevel * 10);
             getPlayerOne().resetBomb();
-            loadEnts();
+            //loadEnts();
         }
-
         if(zombies.size() == 0) {
             ; //all zombied were killed or no one was converted say game over
         }
