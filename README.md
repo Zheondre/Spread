@@ -11,6 +11,9 @@
 Develop a zombie game where the player or players play as the zombies and your responsibility is
 infecting or convertering as many civilians as possible before law enforcement stops you or before the infected get cured. Difficulty will be increased per level. We would like to have this in 3d so we have to start doing the research now to see which libraries will be needed and how long will it take. 2d would be easier. 
 
+# Final Demo 
+https://www.youtube.com/watch?v=C9seU1FbcHU&t=30s
+
 # Final Project Goals
 
 * 3d if possible if not then 2d bird's eye view, or 2d scrolling 
